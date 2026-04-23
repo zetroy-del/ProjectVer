@@ -1,0 +1,1193 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>캐릭터 능력치 — Project 베르시온</title>
+<style>
+/* ═══════════════════════════════════════════════
+   전역 변수 / 리셋
+═══════════════════════════════════════════════ */
+*  { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg-deep:   #0d1117;
+    --bg-panel:  #161b22;
+    --bg-card:   #21262d;
+    --bg-hover:  #2d333b;
+    --border:    #30363d;
+    --text:      #c9d1d9;
+    --sub:       #8b949e;
+    --dim:       #484f58;
+    --blue:      #58a6ff;
+    --green:     #3fb950;
+    --yellow:    #d29922;
+    --red:       #f85149;
+    --purple:    #c084fc;
+    --gold:      #ffd700;
+}
+
+body {
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: 'Malgun Gothic', 'Segoe UI', sans-serif;
+    font-size: 15px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   상단 헤더
+═══════════════════════════════════════════════ */
+#header {
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.hdr-title {
+    font-size: 16px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--gold), #ff9500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+}
+
+.hdr-level {
+    background: linear-gradient(135deg, #1f6feb, #58a6ff);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.hdr-sync {
+    font-size: 15px;
+    color: var(--dim);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sync-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+}
+
+.hdr-spacer { flex: 1; }
+
+.hdr-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--sub);
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.hdr-btn:hover { background: var(--bg-hover); color: var(--text); }
+.hdr-btn.primary { border-color: #1f6feb; color: var(--blue); }
+.hdr-btn.primary:hover { background: #1f6feb; color: #fff; }
+
+/* ═══════════════════════════════════════════════
+   HP / MP 섹션
+═══════════════════════════════════════════════ */
+#vital-section {
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 18px;
+    display: flex;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.vital-block { flex: 1; max-width: 420px; }
+
+.vital-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+}
+
+.vital-name {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.vital-name.hp { color: #ff7b72; }
+.vital-name.mp { color: var(--blue); }
+
+.vital-nums { font-size: 15px; color: var(--sub); }
+.vital-nums .cur { font-size: 16px; font-weight: 700; }
+.vital-nums.hp .cur { color: #ff7b72; }
+.vital-nums.mp .cur { color: var(--blue); }
+.vital-nums .sep { color: var(--dim); margin: 0 3px; }
+.vital-nums .max { color: var(--text); font-weight: 600; }
+
+.vital-bar-wrap {
+    height: 16px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    position: relative;
+}
+
+.vital-fill {
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.6s ease;
+    position: relative;
+}
+.vital-fill.hp {
+    background: linear-gradient(90deg, #7f1d1d, #dc2626, #ef4444);
+    box-shadow: 0 0 10px rgba(239,68,68,0.35);
+}
+.vital-fill.mp {
+    background: linear-gradient(90deg, #1e3a8a, #2563eb, #60a5fa);
+    box-shadow: 0 0 10px rgba(96,165,250,0.35);
+}
+
+.vital-bar-label {
+    position: absolute;
+    right: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.8);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.vital-note {
+    font-size: 15px;
+    color: var(--dim);
+    margin-top: 4px;
+    font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════
+   게임 스타일 스크롤바 (전역 적용)
+═══════════════════════════════════════════════ */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: #30363d;
+    border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover { background: #484f58; }
+
+/* ═══════════════════════════════════════════════
+   기본 스탯 섹션
+═══════════════════════════════════════════════ */
+#base-stat-section {
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 18px 12px;
+    flex-shrink: 0;
+}
+
+#base-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.bs-card {
+    background: var(--bg-card);
+    border: 1px solid #238636;
+    border-radius: 7px;
+    padding: 8px 10px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.bs-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--green);
+    border-radius: 7px 0 0 7px;
+}
+.bs-card-name { font-size: 15px; color: var(--sub); margin-bottom: 2px; }
+.bs-card-val  { font-size: 20px; font-weight: 700; color: var(--green); line-height: 1.1; }
+.bs-card-sub  { font-size: 15px; color: var(--dim); margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════
+   메인 패널 — 치환 능력치 / 전체 능력치 탭
+═══════════════════════════════════════════════ */
+#main-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* 메인 탭 바 */
+.main-tab-bar {
+    display: flex;
+    background: var(--bg-panel);
+    border-bottom: 2px solid var(--border);
+    flex-shrink: 0;
+    padding: 0 12px;
+    gap: 0;
+}
+
+.main-tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--sub);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 10px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -2px;
+}
+.main-tab-btn:hover { color: var(--text); }
+.main-tab-btn.on { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* 패널 공통 */
+.main-panel-page {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+.main-panel-page.on { display: flex; }
+
+/* ── 치환 능력치 패널 ── */
+#mtab-subst {
+    overflow-y: auto;
+    padding: 8px 18px 12px;
+}
+
+/* 치환 능력치 — 2열 그리드 래퍼 */
+#key-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 12px;
+}
+
+/* 기본 스탯 그룹 헤더 — 2열 전체 차지 */
+.key-group-header {
+    grid-column: 1 / -1;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    padding: 8px 0 4px;
+    border-bottom: 1px solid var(--border);
+    margin-top: 8px;
+    position: sticky;
+    top: 0;
+    background: var(--bg-deep);
+    z-index: 1;
+}
+.key-group-header:first-child { margin-top: 0; }
+
+/* 치환 능력치 한 줄 아이템 */
+.key-item {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 3px 4px;
+    border-bottom: 1px solid rgba(48,54,61,0.35);
+    gap: 6px;
+    min-width: 0;
+}
+.key-item-name {
+    font-size: 15px;
+    color: var(--sub);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.key-item-val {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.key-item.atk .key-item-val { color: #ff7b72; }
+.key-item.def .key-item-val { color: var(--blue); }
+.key-item.util .key-item-val { color: var(--yellow); }
+
+/* ── 전체 능력치 패널 ── */
+#mtab-stat {
+    overflow: hidden;
+}
+
+.section-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--sub);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+/* 능력치 종류 서브탭 */
+.tab-bar {
+    display: flex;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    padding: 0 18px;
+    flex-shrink: 0;
+    gap: 2px;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: var(--sub);
+    font-family: inherit;
+    font-size: 15px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.on {
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+    font-weight: 600;
+}
+
+.tab-cnt {
+    display: inline-block;
+    background: var(--bg-card);
+    color: var(--sub);
+    font-size: 15px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-left: 4px;
+}
+.tab-btn.on .tab-cnt { background: #1f6feb; color: #fff; }
+
+.search-wrap {
+    padding: 8px 18px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 340px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 11px;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.search-input:focus { border-color: var(--blue); }
+.search-input::placeholder { color: var(--dim); }
+
+/* 스탯 목록 */
+#stat-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 18px;
+}
+
+/* 그룹 섹션 래퍼 — 전체 너비 차지 */
+.stat-group-section {
+    margin-bottom: 10px;
+}
+
+/* 그룹 헤더 */
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px 4px;
+    margin-bottom: 2px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg-deep);
+    z-index: 2;
+}
+
+.group-icon { font-size: 15px; }
+
+.group-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--sub);
+    letter-spacing: 0.5px;
+}
+
+.group-count {
+    font-size: 15px;
+    background: var(--bg-card);
+    color: var(--dim);
+    padding: 2px 7px;
+    border-radius: 8px;
+    margin-left: auto;
+}
+
+/* 약화 그룹은 회색 강조 */
+.group-header.yakwa .group-name { color: var(--dim); }
+.group-header.yakwa .group-icon { opacity: 0.5; }
+
+/* 스탯 그리드 — 그룹 내 */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2px;
+    padding: 0 0 4px 0;
+}
+
+.stat-row {
+    display: flex;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 4px;
+    gap: 7px;
+    transition: background 0.1s;
+}
+.stat-row:hover { background: var(--bg-hover); }
+
+.dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.dot-기타 { background: var(--green); }
+.dot-공격 { background: var(--red); }
+.dot-방어 { background: var(--blue); }
+.dot-특수 { background: var(--purple); }
+
+.stat-names { flex: 1; min-width: 0; }
+.stat-kr { font-size: 15px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stat-en { font-size: 15px; color: var(--dim); }
+
+.stat-vals { text-align: right; flex-shrink: 0; min-width: 68px; }
+.stat-base { font-size: 15px; font-weight: 600; color: var(--text); }
+.stat-bonus-lbl { font-size: 15px; color: var(--green); min-height: 18px; }
+.stat-total-lbl { font-size: 15px; font-weight: 700; color: var(--gold); }
+
+.empty { text-align: center; color: var(--dim); padding: 36px 0; }
+
+/* scope 서브헤더 (공통 / PVE / PVP 구분선) */
+.scope-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px 2px 20px;
+    margin-top: 4px;
+}
+
+.scope-divider-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dim);
+    letter-spacing: 0.5px;
+}
+
+.scope-divider-cnt {
+    font-size: 15px;
+    color: var(--dim);
+    background: var(--bg-card);
+    padding: 2px 7px;
+    border-radius: 8px;
+}
+
+/* scope 배지 (검색 결과에서 표시) */
+.scope-badge {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-left: 5px;
+    vertical-align: middle;
+    letter-spacing: 0.3px;
+}
+.scope-pve { background: rgba(31,111,235,0.25); color: #58a6ff; border: 1px solid rgba(31,111,235,0.4); }
+.scope-pvp { background: rgba(248,81,73,0.2);   color: #ff7b72; border: 1px solid rgba(248,81,73,0.35); }
+
+/* ═══════════════════════════════════════════════
+   하단 보너스 바
+═══════════════════════════════════════════════ */
+#bonus-bar {
+    background: var(--bg-panel);
+    border-top: 1px solid var(--border);
+    padding: 7px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    font-size: 15px;
+    color: var(--sub);
+    flex-wrap: wrap;
+}
+
+.bonus-tag {
+    background: rgba(63,185,80,0.12);
+    border: 1px solid rgba(63,185,80,0.3);
+    color: var(--green);
+    font-size: 15px;
+    padding: 2px 7px;
+    border-radius: 9px;
+}
+
+/* 토스트 */
+.toast {
+    position: fixed;
+    bottom: 52px; right: 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 7px;
+    font-size: 15px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+}
+.toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<div id="header">
+    <div class="hdr-title">📊 캐릭터 능력치</div>
+    <div style="font-size:15px;color:var(--sub);">Project 베르시온</div>
+    <div class="hdr-level" id="hdr-lv">Lv. 1</div>
+    <div class="hdr-sync">
+        <div class="sync-dot" id="sync-dot"></div>
+        <span id="sync-txt">게임과 실시간 연동 중</span>
+    </div>
+    <div class="hdr-spacer"></div>
+    <button class="hdr-btn primary" onclick="syncNow()">↻ 지금 동기화</button>
+    <button class="hdr-btn" onclick="window.close()">✕ 닫기</button>
+</div>
+
+<!-- HP / MP -->
+<div id="vital-section">
+    <!-- HP -->
+    <div class="vital-block">
+        <div class="vital-top">
+            <span class="vital-name hp">❤ HP (생명력)</span>
+            <div class="vital-nums hp">
+                <span class="cur" id="hp-cur">0</span>
+                <span class="sep">/</span>
+                <span class="max" id="hp-max">0</span>
+            </div>
+        </div>
+        <div class="vital-bar-wrap">
+            <div class="vital-fill hp" id="hp-fill" style="width:100%">
+                <span class="vital-bar-label" id="hp-pct">100%</span>
+            </div>
+        </div>
+        <div class="vital-note">※ 게임 내 전투 및 회복에 따라 실시간으로 변동됩니다.</div>
+    </div>
+    <!-- MP -->
+    <div class="vital-block">
+        <div class="vital-top">
+            <span class="vital-name mp">💧 MP (마나)</span>
+            <div class="vital-nums mp">
+                <span class="cur" id="mp-cur">0</span>
+                <span class="sep">/</span>
+                <span class="max" id="mp-max">0</span>
+            </div>
+        </div>
+        <div class="vital-bar-wrap">
+            <div class="vital-fill mp" id="mp-fill" style="width:100%">
+                <span class="vital-bar-label" id="mp-pct">100%</span>
+            </div>
+        </div>
+        <div class="vital-note">※ 스킬 사용 시 소모되며 MP 회복에 따라 자동 회복됩니다.</div>
+    </div>
+</div>
+
+<!-- 기본 스탯 섹션 (항상 표시) -->
+<div id="base-stat-section">
+    <div class="section-label">🧬 기본 스탯</div>
+    <div id="base-stat-grid"></div>
+</div>
+
+<!-- 메인 패널: 치환 능력치 / 전체 능력치 탭 -->
+<div id="main-panel">
+
+    <!-- 메인 탭 바 -->
+    <div class="main-tab-bar">
+        <button class="main-tab-btn on" id="mtab-btn-subst" onclick="setMainTab('subst')">⚡ 치환 능력치</button>
+        <button class="main-tab-btn"    id="mtab-btn-stat"  onclick="setMainTab('stat')">📋 전체 능력치</button>
+    </div>
+
+    <!-- 치환 능력치 패널 -->
+    <div class="main-panel-page on" id="mtab-subst">
+        <div id="key-grid"></div>
+    </div>
+
+    <!-- 전체 능력치 패널 -->
+    <div class="main-panel-page" id="mtab-stat">
+        <div class="tab-bar">
+            <button class="tab-btn on" id="tab-전체"  onclick="setTab('전체')">전체<span class="tab-cnt" id="cnt-전체">0</span></button>
+            <button class="tab-btn"    id="tab-기타"  onclick="setTab('기타')">기타<span class="tab-cnt" id="cnt-기타">0</span></button>
+            <button class="tab-btn"    id="tab-공격"  onclick="setTab('공격')">공격<span class="tab-cnt" id="cnt-공격">0</span></button>
+            <button class="tab-btn"    id="tab-방어"  onclick="setTab('방어')">방어<span class="tab-cnt" id="cnt-방어">0</span></button>
+            <button class="tab-btn"    id="tab-특수"  onclick="setTab('특수')">특수<span class="tab-cnt" id="cnt-특수">0</span></button>
+        </div>
+        <div class="search-wrap">
+            <input type="text" class="search-input" id="search"
+                   placeholder="🔍  능력치 검색 (한글/영문 모두 가능)  예: 공격력, STR, 치명타, Fire..."
+                   oninput="renderList()">
+        </div>
+        <div id="stat-list">
+            <!-- JS로 그룹별 섹션 동적 생성 -->
+        </div>
+    </div>
+
+</div>
+
+<!-- 하단 보너스 바 -->
+<div id="bonus-bar">
+    <span>적용된 보너스 출처:</span>
+    <div id="bonus-srcs" style="display:flex;gap:5px;flex-wrap:wrap;">
+        <span style="color:var(--dim);">없음 — 장착 아이템 / 버프 / 스킬이 추가되면 여기에 표시됩니다.</span>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════
+     stats_calc.js 로드 (STAT_LIST + computeStats 함수 포함)
+═══════════════════════════════════════════════ -->
+<script src="stats_calc.js"></script>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  상태 변수
+// ════════════════════════════════════════════════════════════
+let currentLevel  = 1;
+let currentTab    = '전체';
+let currentStats  = {};     // computeStats 결과 캐시
+
+// 현재 HP/MP (field_battle.html에서 localStorage로 전달받음)
+let currentHP = null;
+let currentMP = null;
+
+// 기본 스탯 (field_battle.html에서 versione_base_stats로 전달받음)
+let currentBaseStats = { STR:10, DEX:10, INT:10, AGI:10, CON:10, WIS:10, LUK:10 };
+
+// 보너스 레지스트리 { sourceId: { en키: 값 } }
+const bonusReg = {};
+
+// ════════════════════════════════════════════════════════════
+//  보너스 API — 이후 아이템/스킬/버프 시스템에서 호출
+//  예: addBonus('무기_강검', { MeleeMinAttack: 100, STR: 5 })
+// ════════════════════════════════════════════════════════════
+function addBonus(sourceId, stats) {
+    bonusReg[sourceId] = stats;
+    renderAll();
+    toast(`보너스 적용: [${sourceId}]`);
+}
+
+function removeBonus(sourceId) {
+    delete bonusReg[sourceId];
+    renderAll();
+}
+
+// 모든 보너스 합산 (computeStats 계산용 — 기본값 포함)
+function mergedBonuses() {
+    const out = {};
+    for (const src of Object.values(bonusReg)) {
+        for (const [k, v] of Object.entries(src)) {
+            out[k] = (out[k] || 0) + v;
+        }
+    }
+    return out;
+}
+
+// ── 게임 기본값 출처 판별 ──────────────────────────────────────────
+// bonusReg 키가 '__'로 시작하면 "게임 기본값"으로 분류한다.
+// 현재: __lv_stat_config__, __base_stats_sub__
+// 앞으로 능력치 설정에 새 항목이 추가될 때도 키를 '__...__' 형식으로 만들면
+// 자동으로 기본값으로 처리된다.
+function isGameDefault(sourceId) {
+    return sourceId.startsWith('__');
+}
+
+// 외부 보너스만 반환 (장비·버프 등 — 게임 기본값 출처 제외)
+// 전체 능력치 UI에서 "추가 수치(초록)"와 "최종값(노란)" 표시에 사용
+function externalBonuses() {
+    const out = {};
+    for (const [src, stats] of Object.entries(bonusReg)) {
+        if (isGameDefault(src)) continue;
+        for (const [k, v] of Object.entries(stats)) {
+            out[k] = (out[k] || 0) + v;
+        }
+    }
+    return out;
+}
+
+// ════════════════════════════════════════════════════════════
+//  localStorage 동기화
+//  field_battle.html이 저장하는 키: 'versione_char'
+//  {level, currentHP, maxHP, currentMP, maxMP, savedAt, ...}
+// ════════════════════════════════════════════════════════════
+function syncNow() {
+    try {
+        const raw = localStorage.getItem('versione_char');
+        if (!raw) {
+            toast('게임 데이터 없음 — field_battle.html을 먼저 실행하세요.');
+            updateSyncStatus(false);
+            return;
+        }
+        const d = JSON.parse(raw);
+        const prev = currentLevel;
+        currentLevel = d.level || 1;
+
+        // 게임에서 전달한 currentHP/MP가 있으면 사용, 없으면 최대값(풀 회복)
+        currentHP = (d.currentHP != null) ? d.currentHP : null;
+        currentMP = (d.currentMP != null) ? d.currentMP : null;
+
+        // ── 레벨 능력치 설정(LV_STAT_CONFIG) 반영
+        try {
+            const lvRaw = localStorage.getItem('versione_lv_stat_config');
+            if (lvRaw) {
+                const lvCfg = JSON.parse(lvRaw);
+                const lvBon = {};
+                for (const row of lvCfg) {
+                    lvBon[row.en] = (lvBon[row.en] || 0)
+                        + row.base + (currentLevel - 1) * row.perLv;
+                }
+                bonusReg['__lv_stat_config__'] = lvBon;
+            } else {
+                delete bonusReg['__lv_stat_config__'];
+            }
+        } catch (_) { delete bonusReg['__lv_stat_config__']; }
+
+        // ── 기본 스탯 치환 반영 (versione_base_stats)
+        try {
+            const bsRaw = localStorage.getItem('versione_base_stats');
+            if (bsRaw) {
+                currentBaseStats = JSON.parse(bsRaw);
+            } else {
+                currentBaseStats = { STR:10, DEX:10, INT:10, AGI:10, CON:10, WIS:10, LUK:10 };
+            }
+            bonusReg['__base_stats_sub__'] = computeSubstitutedBonuses(currentBaseStats);
+        } catch (_) {
+            currentBaseStats = { STR:10, DEX:10, INT:10, AGI:10, CON:10, WIS:10, LUK:10 };
+            delete bonusReg['__base_stats_sub__'];
+        }
+
+        const age = Math.round((Date.now() - (d.savedAt || Date.now())) / 1000);
+        document.getElementById('sync-txt').textContent =
+            `${age}초 전 동기화 · Lv.${currentLevel}`;
+        updateSyncStatus(true);
+
+        renderAll();
+        if (prev !== currentLevel) toast(`Lv.${currentLevel} 데이터 동기화 완료`);
+    } catch (e) {
+        updateSyncStatus(false);
+    }
+}
+
+function updateSyncStatus(ok) {
+    const dot = document.getElementById('sync-dot');
+    dot.style.background = ok ? 'var(--green)' : 'var(--red)';
+}
+
+// ════════════════════════════════════════════════════════════
+//  전체 렌더링
+// ════════════════════════════════════════════════════════════
+function renderAll() {
+    const lv  = currentLevel;
+    const bon = mergedBonuses();
+    currentStats = computeStats(lv, bon);
+
+    // 헤더 레벨 뱃지
+    document.getElementById('hdr-lv').textContent = `Lv. ${lv}`;
+
+    // HP/MP — field_battle에서 전달받은 값 우선, 없으면 최대값
+    const maxHp = currentStats.MaxHP;
+    const maxMp = currentStats.MaxMP;
+    const curHp = (currentHP != null) ? Math.min(currentHP, maxHp) : maxHp;
+    const curMp = (currentMP != null) ? Math.min(currentMP, maxMp) : maxMp;
+    const hpPct = maxHp > 0 ? Math.round(curHp / maxHp * 100) : 100;
+    const mpPct = maxMp > 0 ? Math.round(curMp / maxMp * 100) : 100;
+
+    document.getElementById('hp-cur').textContent  = curHp.toLocaleString();
+    document.getElementById('hp-max').textContent  = maxHp.toLocaleString();
+    document.getElementById('mp-cur').textContent  = curMp.toLocaleString();
+    document.getElementById('mp-max').textContent  = maxMp.toLocaleString();
+    document.getElementById('hp-fill').style.width = hpPct + '%';
+    document.getElementById('mp-fill').style.width = mpPct + '%';
+    document.getElementById('hp-pct').textContent  = hpPct + '%';
+    document.getElementById('mp-pct').textContent  = mpPct + '%';
+
+    // 탭 카운트 (재분류 후 실제 kind 기준)
+    const kinds = ['기타','공격','방어','특수'];
+    const total = STAT_LIST.filter(s => kinds.includes(s.kind)).length;
+    document.getElementById('cnt-전체').textContent = total;
+    kinds.forEach(k => {
+        const el = document.getElementById('cnt-' + k);
+        if (el) el.textContent = STAT_LIST.filter(s => s.kind === k).length;
+    });
+
+    // 기본 스탯 카드 (최우선)
+    renderBaseStatCards();
+
+    // 주요 능력치 카드
+    renderKeyCards(lv, bon);
+
+    // 보너스 출처 표시
+    renderBonusSrcs();
+
+    // 스탯 목록
+    renderList();
+}
+
+// ════════════════════════════════════════════════════════════
+//  기본 스탯 카드 렌더링
+// ════════════════════════════════════════════════════════════
+const BASE_STAT_CARD_DEFS = [
+    { key:'STR', label:'힘',   abbr:'STR', desc:'근거리 계열' },
+    { key:'DEX', label:'민첩', abbr:'DEX', desc:'원거리 계열' },
+    { key:'INT', label:'지능', abbr:'INT', desc:'마법 계열'   },
+    { key:'AGI', label:'순발', abbr:'AGI', desc:'속도/회피'   },
+    { key:'CON', label:'건강', abbr:'CON', desc:'HP/방어'     },
+    { key:'WIS', label:'지혜', abbr:'WIS', desc:'MP/마법방어' },
+    { key:'LUK', label:'행운', abbr:'LUK', desc:'치명타/저항' },
+];
+
+function renderBaseStatCards() {
+    const grid = document.getElementById('base-stat-grid');
+    if (!grid) return;
+    grid.innerHTML = BASE_STAT_CARD_DEFS.map(d => {
+        const val = currentBaseStats[d.key] || 10;
+        return `<div class="bs-card">
+            <div class="bs-card-name">${d.label} (${d.abbr})</div>
+            <div class="bs-card-val">${val}</div>
+            <div class="bs-card-sub">${d.desc}</div>
+        </div>`;
+    }).join('');
+}
+
+// ════════════════════════════════════════════════════════════
+//  주요 능력치 카드 (공격력 / 방어력 우선 배치)
+// ════════════════════════════════════════════════════════════
+//  주요 능력치 카드 — 010_스탯_치환값 기준 7개 기본 스탯 그룹
+// ════════════════════════════════════════════════════════════
+const KEY_GROUP_META = [
+    { stat:'STR', label:'💪 힘(STR)',   cls:'atk' },
+    { stat:'DEX', label:'🏹 민첩(DEX)', cls:'atk' },
+    { stat:'INT', label:'🔮 지능(INT)', cls:'atk' },
+    { stat:'AGI', label:'⚡ 순발(AGI)', cls:'def' },
+    { stat:'CON', label:'🛡 건강(CON)', cls:'def' },
+    { stat:'WIS', label:'💡 지혜(WIS)', cls:'def' },
+    { stat:'LUK', label:'🍀 행운(LUK)', cls:'util' },
+];
+
+function renderKeyCards(lv, bon) {
+    if (typeof BASE_STAT_SUBSTITUTION === 'undefined') return;
+    const grid   = document.getElementById('key-grid');
+    const pctSet = (typeof SUBST_PCT_STATS !== 'undefined') ? SUBST_PCT_STATS : new Set();
+
+    let html = '';
+    for (const grp of KEY_GROUP_META) {
+        const entries = BASE_STAT_SUBSTITUTION[grp.stat] || [];
+        if (!entries.length) continue;
+        html += `<div class="key-group-header">${grp.label}</div>`;
+        for (const e of entries) {
+            // computeStats 반환값 우선, 없으면 bon(치환 보너스 포함)에서 읽음
+            const raw     = currentStats[e.key] != null ? currentStats[e.key] : (bon[e.key] ?? 0);
+            const isPct   = pctSet.has(e.key);
+            const dispVal = isPct
+                ? (raw / 100).toFixed(2) + '%'
+                : Math.round(raw).toLocaleString();
+            // 형식: 한글명(영문명)  수치
+            html += `<div class="key-item ${grp.cls}">
+                <span class="key-item-name">${e.label}(${e.key})</span>
+                <span class="key-item-val">${dispVal}</span>
+            </div>`;
+        }
+    }
+    grid.innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════════════
+//  메인 탭 전환 (치환 능력치 ↔ 전체 능력치)
+// ════════════════════════════════════════════════════════════
+function setMainTab(tab) {
+    ['subst', 'stat'].forEach(t => {
+        document.getElementById('mtab-btn-' + t).classList.toggle('on', t === tab);
+        document.getElementById('mtab-' + t).classList.toggle('on', t === tab);
+    });
+}
+
+// ════════════════════════════════════════════════════════════
+//  전체 능력치 서브탭 전환
+// ════════════════════════════════════════════════════════════
+function setTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+    document.getElementById('tab-' + tab).classList.add('on');
+    document.getElementById('search').value = '';
+    renderList();
+}
+
+// ════════════════════════════════════════════════════════════
+//  스탯 목록 렌더링
+// ════════════════════════════════════════════════════════════
+//  그룹 메타 정의
+// ════════════════════════════════════════════════════════════
+const GROUP_META = {
+    '01_기본 스탯':            { label:'기본 스탯',            icon:'🔵' },
+    '02_기본 스탯 증폭':       { label:'기본 스탯 증폭',       icon:'📈' },
+    '03_HP / MP':              { label:'HP / MP',              icon:'❤'  },
+    '04_회복':                 { label:'회복',                 icon:'💊' },
+    '05_속도':                 { label:'속도',                 icon:'⚡' },
+    '06_전투 보조':            { label:'전투 보조',            icon:'⚙'  },
+    '07_기타':                 { label:'기타',                 icon:'🔹' },
+    '01_기본 공격력 / 치명타': { label:'기본 공격력 / 치명타', icon:'⚔'  },
+    '02_PVE 공격력':           { label:'PVE 공격력',           icon:'🐉' },
+    '03_PVE 치명타':           { label:'PVE 치명타',           icon:'💥' },
+    '04_PVE 명중':             { label:'PVE 명중',             icon:'🎯' },
+    '05_PVE 방어 관통':        { label:'PVE 방어 관통',        icon:'🔪' },
+    '05_PVP 공격력':           { label:'PVP 공격력',           icon:'⚔'  },
+    '06_PVE 피해감소 무시':    { label:'PVE 피해감소 무시',    icon:'🔥' },
+    '06_PVP 치명타':           { label:'PVP 치명타',           icon:'💥' },
+    '05_PVP 방어 관통':        { label:'PVP 방어 관통',        icon:'🔪' },
+    '06_PVP 피해감소 무시':    { label:'PVP 피해감소 무시',    icon:'🔥' },
+    '07_PVP 명중':             { label:'PVP 명중',             icon:'🎯' },
+    '08_상태이상 적중':        { label:'상태이상 적중',        icon:'🌀' },
+    '09_보스/특수 대상':       { label:'보스 / 특수 대상',     icon:'👑' },
+    '01_방어력':               { label:'방어력',               icon:'🛡' },
+    '02_회피':                 { label:'회피',                 icon:'💨' },
+    '03_치명타 저항':          { label:'치명타 저항',          icon:'🔰' },
+    '04_PVP/PVE 방어력':      { label:'PVP/PVE 방어력',       icon:'🛡' },
+    '05_피해 감소':            { label:'피해 감소',            icon:'🔻' },
+    '05_PVP 피해 감소':        { label:'PVP 피해 감소',        icon:'🔻' },
+    '06_상태이상 저항':        { label:'상태이상 저항',        icon:'🧿' },
+    '07_보스 방어':            { label:'보스 방어',            icon:'👑' },
+    '08_방어 증폭':            { label:'방어 증폭',            icon:'📈' },
+    '01_경험치/성장':          { label:'경험치 / 성장',        icon:'✨' },
+    '02_재화':                 { label:'재화',                 icon:'💰' },
+    '03_채집/생활':            { label:'채집 / 생활',          icon:'🌿' },
+    'Z_약화':                  { label:'약화 (디버프 계열)',    icon:'⬇', yakwa:true },
+    '99_기타':                 { label:'기타',                 icon:'🔹' },
+};
+
+function getGroupMeta(g) {
+    return GROUP_META[g] || { label: g.replace(/^\d+_/,''), icon:'🔹' };
+}
+
+// scope 배지 HTML — 공통/PVE/PVP 구분
+const SCOPE_BADGE = {
+    '공통': '',   // 배지 없음 (기본)
+    'PVE':  '<span class="scope-badge scope-pve">PVE</span>',
+    'PVP':  '<span class="scope-badge scope-pvp">PVP</span>',
+};
+
+// scope 정렬 순서: 공통 → PVE → PVP
+const SCOPE_ORDER = { '공통':0, 'PVE':1, 'PVP':2 };
+
+// ════════════════════════════════════════════════════════════
+//  스탯 목록 렌더링 — 그룹 → scope(공통/PVE/PVP) 2단계 계층
+// ════════════════════════════════════════════════════════════
+function renderList() {
+    // 외부 보너스만 사용 — 게임 기본값(레벨 능력치·기본 스탯 치환)은 기본값으로 처리
+    const bon     = externalBonuses();
+    const search  = document.getElementById('search').value.toLowerCase().trim();
+    const kinds   = ['기타','공격','방어','특수'];
+
+    let list = STAT_LIST.filter(s => kinds.includes(s.kind));
+    if (currentTab !== '전체') list = list.filter(s => s.kind === currentTab);
+    if (search) {
+        list = list.filter(s =>
+            s.kr.toLowerCase().includes(search) ||
+            s.en.toLowerCase().includes(search) ||
+            (s.desc||'').toLowerCase().includes(search)
+        );
+    }
+
+    const container = document.getElementById('stat-list');
+    if (list.length === 0) {
+        container.innerHTML = '<div class="empty">검색 결과가 없습니다.</div>';
+        return;
+    }
+
+    const isSearching = !!search;
+
+    // 1단계: group별로 묶기
+    const groupMap = new Map();
+    for (const stat of list) {
+        const g = stat.group || '99_기타';
+        if (!groupMap.has(g)) groupMap.set(g, []);
+        groupMap.get(g).push(stat);
+    }
+    const sortedGroups = [...groupMap.keys()].sort();
+
+    const html = sortedGroups.map(groupKey => {
+        const groupStats = groupMap.get(groupKey);
+        const meta       = getGroupMeta(groupKey);
+        const isYakwa    = groupKey.startsWith('Z_');
+
+        // 그룹 헤더
+        const groupHeaderHtml = isSearching ? '' :
+            `<div class="group-header${isYakwa ? ' yakwa' : ''}">
+                <span class="group-icon">${meta.icon}</span>
+                <span class="group-name">${meta.label}</span>
+                <span class="group-count">${groupStats.length}개</span>
+            </div>`;
+
+        // 2단계: scope별로 묶기 (공통 → PVE → PVP)
+        const scopeMap = new Map();
+        for (const stat of groupStats) {
+            const sc = stat.scope || '공통';
+            if (!scopeMap.has(sc)) scopeMap.set(sc, []);
+            scopeMap.get(sc).push(stat);
+        }
+        const sortedScopes = [...scopeMap.keys()].sort((a,b) => (SCOPE_ORDER[a]??9) - (SCOPE_ORDER[b]??9));
+
+        // scope가 1종류뿐이면 scope 서브헤더 생략
+        const needScopeHeader = sortedScopes.length > 1 && !isSearching;
+
+        const scopeSectionsHtml = sortedScopes.map(scope => {
+            const scopeStats = scopeMap.get(scope);
+
+            const scopeHeaderHtml = needScopeHeader
+                ? `<div class="scope-header">
+                       <span class="scope-divider-label">${scope === '공통' ? '⬛ 공통' : scope === 'PVE' ? '🟦 PVE' : '🟥 PVP'}</span>
+                       <span class="scope-divider-cnt">${scopeStats.length}</span>
+                   </div>`
+                : '';
+
+            const rowsHtml = scopeStats.map(stat => {
+                // computeStats가 STAT_LIST en 키로 별칭을 가지면 그 값, 없으면 bonus 값 자체가 해당 스탯의 값
+                const computedVal = currentStats[stat.en];
+                const bonus       = bon[stat.en] || 0;
+                const val         = (computedVal !== undefined) ? computedVal : bonus;
+                // 기본값 = 전체에서 보너스를 뺀 레벨/공식 기여분 (음수 방지)
+                const base        = Math.max(0, val - bonus);
+                const dimStyle    = isYakwa ? 'color:var(--dim)' : '';
+
+                const fmtVal   = (typeof fmtStatDisplay === 'function') ? fmtStatDisplay(stat.en, val)   : val.toLocaleString();
+                const fmtBase  = (typeof fmtStatDisplay === 'function') ? fmtStatDisplay(stat.en, base)  : base.toLocaleString();
+                const fmtBonus = (typeof fmtStatDisplay === 'function') ? fmtStatDisplay(stat.en, bonus) : bonus.toLocaleString();
+                const valHtml = bonus !== 0
+                    ? `<div class="stat-base" style="color:var(--sub);font-size:15px;">${fmtBase}</div>
+                       <div class="stat-bonus-lbl">+${fmtBonus}</div>
+                       <div class="stat-total-lbl">${fmtVal}</div>`
+                    : `<div class="stat-base" style="${dimStyle}">${val !== 0 ? fmtVal : '—'}</div>
+                       <div class="stat-bonus-lbl"></div>`;
+
+                // 검색 중에는 scope 배지 표시
+                const badgeHtml = isSearching ? (SCOPE_BADGE[stat.scope||'공통']||'') : '';
+
+                return `<div class="stat-row" title="${(stat.desc||'').replace(/"/g,"'")}">
+                    <div class="dot dot-${stat.kind}"></div>
+                    <div class="stat-names">
+                        <div class="stat-kr" style="${dimStyle}">${stat.kr}${badgeHtml}</div>
+                        <div class="stat-en">${stat.en}</div>
+                    </div>
+                    <div class="stat-vals">${valHtml}</div>
+                </div>`;
+            }).join('');
+
+            return `${scopeHeaderHtml}<div class="stat-grid">${rowsHtml}</div>`;
+        }).join('');
+
+        return `<div class="stat-group-section">
+            ${groupHeaderHtml}
+            ${scopeSectionsHtml}
+        </div>`;
+    }).join('');
+
+    container.innerHTML = html;
+}
+
+// ════════════════════════════════════════════════════════════
+//  보너스 출처 표시
+// ════════════════════════════════════════════════════════════
+function renderBonusSrcs() {
+    const el = document.getElementById('bonus-srcs');
+    // 게임 기본값 출처(__로 시작)는 표시하지 않음 — 외부 보너스(장비·버프)만 표시
+    const srcs = Object.keys(bonusReg).filter(s => !isGameDefault(s));
+    if (srcs.length === 0) {
+        el.innerHTML = '<span style="color:var(--dim);">없음 — 장착 아이템 / 버프 / 스킬이 추가되면 여기에 표시됩니다.</span>';
+    } else {
+        el.innerHTML = srcs.map(s => `<span class="bonus-tag">✦ ${s}</span>`).join('');
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+//  토스트 알림
+// ════════════════════════════════════════════════════════════
+function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ════════════════════════════════════════════════════════════
+//  초기화 + 자동 동기화 (1초마다 localStorage 폴링)
+// ════════════════════════════════════════════════════════════
+// iframe 내에서 실행될 때: 헤더 숨김 (팝업 타이틀바가 대신 표시)
+(function() {
+    if (window.parent !== window) {
+        const hdr = document.getElementById('header');
+        if (hdr) hdr.style.display = 'none';
+    }
+})();
+
+syncNow();
+setInterval(syncNow, 1000);
+
+// localStorage 변경 즉시 반영 (field_battle.html이 저장하면 바로 갱신)
+window.addEventListener('storage', (e) => {
+    if (['versione_char', 'versione_lv_stat_config', 'versione_base_stats'].includes(e.key)) {
+        syncNow();
+    }
+});
+</script>
+</body>
+</html>

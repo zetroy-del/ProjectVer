@@ -1,0 +1,4174 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project 베르시온</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: #0d1117;
+    color: #c9d1d9;
+    font-family: 'Malgun Gothic', 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* ══════════════════════════════════════════
+   타이틀 화면
+══════════════════════════════════════════ */
+#title-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 40%, #1a0a30 0%, #0d0d1a 60%, #000 100%);
+    transition: opacity 0.8s ease;
+}
+
+/* 타이틀 배경 별빛 파티클 (CSS 애니메이션) */
+#title-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 20% 80%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 85%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 45% 45%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(2px 2px at 65% 90%, rgba(248,81,73,0.4) 0%, transparent 100%),
+        radial-gradient(2px 2px at 15% 50%, rgba(88,166,255,0.3) 0%, transparent 100%);
+    animation: starTwinkle 6s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes starTwinkle {
+    from { opacity: 0.6; }
+    to   { opacity: 1.0; }
+}
+
+.title-wrap {
+    text-align: center;
+    z-index: 1;
+}
+
+.title-sub-label {
+    font-size: 15px;
+    letter-spacing: 6px;
+    color: #8b949e;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    animation: fadeInDown 1s ease both;
+}
+
+.title-project {
+    font-size: 52px;
+    font-weight: 300;
+    color: #c9d1d9;
+    letter-spacing: 12px;
+    text-transform: uppercase;
+    animation: fadeInDown 1s ease 0.2s both;
+}
+
+.title-name {
+    font-size: 88px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffd700 0%, #ff9500 40%, #f85149 80%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    letter-spacing: 4px;
+    animation: fadeInUp 1s ease 0.4s both, titlePulse 3s ease-in-out 1.4s infinite alternate;
+    filter: drop-shadow(0 0 30px rgba(255,180,0,0.4));
+}
+
+@keyframes titlePulse {
+    from { filter: drop-shadow(0 0 20px rgba(255,180,0,0.3)); }
+    to   { filter: drop-shadow(0 0 50px rgba(255,130,0,0.6)); }
+}
+
+.title-divider {
+    width: 280px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #f85149, #ffd700, #f85149, transparent);
+    margin: 20px auto;
+    animation: fadeIn 1s ease 0.7s both;
+}
+
+.title-desc {
+    font-size: 15px;
+    letter-spacing: 4px;
+    color: #6e7681;
+    text-transform: uppercase;
+    animation: fadeIn 1s ease 0.9s both;
+}
+
+/* 게임 스타트 버튼 */
+#btn-start {
+    margin-top: 52px;
+    padding: 16px 64px;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    color: #fff;
+    background: linear-gradient(135deg, #f85149, #c0392b);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: fadeInUp 1s ease 1.1s both;
+    box-shadow: 0 0 30px rgba(248,81,73,0.4);
+}
+#btn-start::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.4s;
+}
+#btn-start:hover::before { transform: translateX(100%); }
+#btn-start:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 50px rgba(248,81,73,0.7);
+}
+#btn-start:active { transform: translateY(0); }
+
+.title-hint {
+    margin-top: 20px;
+    font-size: 15px;
+    color: #484f58;
+    letter-spacing: 2px;
+    animation: fadeIn 1.5s ease 1.5s both;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ══════════════════════════════════════════
+   일시정지 오버레이
+══════════════════════════════════════════ */
+#pause-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+}
+
+.pause-box {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 40px 60px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    min-width: 340px;
+}
+
+.pause-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.pause-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #e6edf3;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+}
+
+.pause-info {
+    font-size: 15px;
+    color: #6e7681;
+    margin-bottom: 32px;
+    letter-spacing: 1px;
+}
+
+.pause-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #30363d;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    transition: all 0.15s;
+}
+.pause-btn:last-child { margin-bottom: 0; }
+
+.pause-btn-resume {
+    background: #1f6feb;
+    color: #fff;
+    border-color: #1f6feb;
+}
+.pause-btn-resume:hover { background: #388bfd; }
+
+.pause-btn-restart {
+    background: #21262d;
+    color: #f85149;
+    border-color: #f85149;
+}
+.pause-btn-restart:hover { background: #f85149; color: #fff; }
+
+.pause-key-hint {
+    margin-top: 20px;
+    font-size: 15px;
+    color: #484f58;
+    letter-spacing: 1px;
+}
+
+/* ══════════════════════════════════════════
+   상단 HUD
+══════════════════════════════════════════ */
+#hud {
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+    min-height: 62px;
+}
+
+#hud .title {
+    font-weight: bold;
+    color: #f85149;
+    font-size: 15px;
+    white-space: nowrap;
+    letter-spacing: 1px;
+}
+
+.hud-stat { display: flex; flex-direction: column; align-items: center; }
+.hud-stat .label { font-size: 15px; color: #8b949e; }
+.hud-stat .value { font-size: 16px; font-weight: bold; color: #e6edf3; }
+
+.exp-wrap { flex: 1; min-width: 120px; max-width: 400px; }
+.exp-wrap .label { font-size: 15px; color: #8b949e; margin-bottom: 3px; }
+.exp-bar-bg {
+    background: #21262d;
+    height: 14px;
+    border-radius: 7px;
+    overflow: hidden;
+    border: 1px solid #30363d;
+}
+.exp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #1f6feb, #58a6ff);
+    border-radius: 7px;
+    transition: width 0.15s ease;
+}
+.exp-bar-text {
+    font-size: 15px;
+    color: #8b949e;
+    text-align: center;
+    margin-top: 2px;
+}
+
+/* 속도 버튼 */
+.speed-group { display: flex; gap: 4px; align-items: center; }
+.speed-label { font-size: 15px; color: #8b949e; margin-right: 2px; white-space: nowrap; }
+.speed-btn {
+    background: #21262d;
+    color: #8b949e;
+    border: 1px solid #30363d;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: all 0.15s;
+}
+.speed-btn:hover { border-color: #58a6ff; color: #58a6ff; }
+.speed-btn.active { background: #1f6feb; color: #fff; border-color: #1f6feb; }
+
+/* HUD 조작 버튼 그룹 */
+.hud-ctrl { display: flex; gap: 6px; align-items: center; margin-left: auto; }
+
+.hud-btn {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: 1px solid #30363d;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.hud-btn-pause {
+    background: #21262d;
+    color: #d29922;
+    border-color: #d29922;
+}
+.hud-btn-pause:hover { background: #d29922; color: #0d1117; }
+.hud-btn-pause.paused { background: #d29922; color: #0d1117; }
+
+.hud-btn-restart {
+    background: #21262d;
+    color: #f85149;
+    border-color: #30363d;
+}
+.hud-btn-restart:hover { background: #f85149; color: #fff; }
+
+/* HP바 토글 버튼 */
+.hud-btn-hp {
+    background: #21262d;
+    color: #8b949e;
+    border-color: #30363d;
+}
+.hud-btn-hp:hover { border-color: #3fb950; color: #3fb950; }
+.hud-btn-hp.active { background: #0d3018; color: #3fb950; border-color: #3fb950; }
+
+/* ══════════════════════════════════════════
+   메인 영역
+══════════════════════════════════════════ */
+#main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* 캔버스 + 로그를 세로로 묶는 컨테이너 */
+#canvas-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+}
+
+#canvas-wrap {
+    flex: 1;
+    position: relative;
+    background: #0d1117;
+    overflow: hidden;
+    min-height: 0;
+}
+
+#gameCanvas { display: block; }
+
+/* ══════════════════════════════════════════
+   사이드 패널
+══════════════════════════════════════════ */
+#side {
+    width: 240px;
+    background: #161b22;
+    border-left: 1px solid #30363d;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 0;
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+
+.section {
+    padding: 10px 12px;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+}
+
+.section-title {
+    font-size: 15px;
+    color: #f85149;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+
+.info-row .lbl { color: #8b949e; }
+.info-row .val { color: #e6edf3; font-weight: bold; }
+.info-row .val.green { color: #3fb950; }
+.info-row .val.yellow { color: #d29922; }
+.info-row .val.red { color: #f85149; }
+
+.level-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 6px;
+    align-items: center;
+}
+
+.btn {
+    border: 1px solid #30363d;
+    padding: 5px 9px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.btn-red  { background: #21262d; color: #f85149; border-color: #30363d; }
+.btn-red:hover  { background: #f85149; color: #fff; }
+.btn-blue { background: #21262d; color: #58a6ff; border-color: #30363d; }
+.btn-blue:hover { background: #1f6feb; color: #fff; }
+.btn-gray { background: #21262d; color: #8b949e; border-color: #30363d; }
+.btn-gray:hover { background: #30363d; color: #e6edf3; }
+
+.level-input {
+    width: 52px;
+    background: #0d1117;
+    color: #e6edf3;
+    border: 1px solid #30363d;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 15px;
+    text-align: center;
+}
+.level-input:focus { outline: none; border-color: #58a6ff; }
+
+.btn-full {
+    width: 100%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #30363d;
+    cursor: pointer;
+    font-size: 15px;
+    transition: all 0.15s;
+    margin-bottom: 4px;
+}
+.btn-full:last-child { margin-bottom: 0; }
+
+/* ══ 캔버스 하단 전투 로그 바 ══ */
+#log-bottom {
+    flex-shrink: 0;
+    height: 140px;
+    min-height: 48px;
+    max-height: 70vh;
+    background: #0d1117;
+    border-top: 1px solid #21262d;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 세로 리사이즈 핸들 */
+#log-resize-handle {
+    flex-shrink: 0;
+    height: 6px;
+    background: #21262d;
+    cursor: ns-resize;
+    transition: background 0.15s;
+    position: relative;
+}
+#log-resize-handle::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 2px;
+    border-radius: 2px;
+    background: #484f58;
+}
+#log-resize-handle:hover,
+#log-resize-handle.dragging {
+    background: #1f6feb40;
+}
+#log-resize-handle:hover::after,
+#log-resize-handle.dragging::after {
+    background: #58a6ff;
+}
+
+#log-bottom-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+}
+#log-bottom-title {
+    font-size: 15px;
+    color: #6e7681;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    flex: 1;
+}
+#log-clear-btn {
+    background: none;
+    border: 1px solid #30363d;
+    color: #6e7681;
+    font-size: 15px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+#log-clear-btn:hover { background: #21262d; color: #c9d1d9; }
+
+#log-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 10px 4px;
+    display: flex;
+    flex-direction: column-reverse; /* 최신 로그가 아래에 표시 */
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+#log-list::-webkit-scrollbar { width: 4px; }
+#log-list::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
+
+.log-entry {
+    padding: 3px 6px;
+    margin-bottom: 3px;
+    border-radius: 3px;
+    font-size: 15px;
+    line-height: 1.4;
+    color: #8b949e;
+}
+.log-entry.kill   { color: #3fb950; }
+.log-entry.levelup{ color: #d29922; background: rgba(210,153,34,0.08); }
+.log-entry.reset  { color: #f85149; background: rgba(248,81,73,0.08); font-weight: bold; }
+.log-entry.info   { color: #58a6ff; }
+.log-entry.miss   { color: #6e7681; font-style: italic; }
+.log-entry.crit   { color: #ffd700; font-weight: bold; }
+.log-entry.damage { color: #f85149; }
+
+/* ══════════════════════════════════════════
+   레벨 능력치 설정 팝업
+══════════════════════════════════════════ */
+.lvstat-modal {
+    width: 640px;
+    max-width: 98vw;
+    max-height: 90vh;
+}
+.lvstat-desc {
+    font-size: 15px;
+    color: #8b949e;
+    line-height: 1.6;
+    padding: 10px 18px;
+    background: #0d1117;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+}
+.lvstat-head {
+    display: flex;
+    align-items: center;
+    padding: 6px 18px;
+    background: #0d1117;
+    border-bottom: 1px solid #21262d;
+    font-size: 15px;
+    color: #6e7681;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+.lvsh-stat { flex: 2; min-width: 0; }
+.lvsh-val  { flex: 1.2; text-align: center; }
+.lvsh-del  { width: 28px; flex-shrink: 0; }
+
+.lvstat-rows {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+.lvstat-rows::-webkit-scrollbar { width: 4px; }
+.lvstat-rows::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
+
+.lvstat-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    background: #0d1117;
+    border: 1px solid #21262d;
+    transition: border-color 0.15s;
+}
+.lvstat-row:hover { border-color: #30363d; }
+
+.lvstat-name {
+    flex: 2;
+    min-width: 0;
+}
+.lvstat-name-kr {
+    font-size: 15px;
+    font-weight: bold;
+    color: #e6edf3;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.lvstat-name-en {
+    font-size: 15px;
+    color: #58a6ff;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lvstat-field {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+.lvstat-input {
+    width: 100%;
+    background: #161b22;
+    color: #e6edf3;
+    border: 1px solid #30363d;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 15px;
+    text-align: center;
+    transition: border-color 0.15s;
+}
+.lvstat-input:focus { outline: none; border-color: #58a6ff; }
+.lvstat-pct {
+    font-size: 15px;
+    color: #3fb950;
+    font-weight: bold;
+}
+
+.lvstat-del {
+    width: 28px;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: #6e7681;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 2px;
+    transition: color 0.15s, background 0.15s;
+    align-self: center;
+}
+.lvstat-del:hover { color: #f85149; background: #f8514920; }
+
+.lvstat-empty {
+    text-align: center;
+    color: #6e7681;
+    font-size: 15px;
+    padding: 24px 0;
+}
+
+.lvstat-add-bar {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 18px;
+    border-top: 1px solid #21262d;
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+/* 검색 래퍼 — 드롭다운의 기준점 */
+.lvstat-search-wrap {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+}
+.lvstat-search-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #0d1117;
+    color: #e6edf3;
+    border: 1px solid #30363d;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-size: 15px;
+    transition: border-color 0.15s;
+}
+.lvstat-search-input:focus { outline: none; border-color: #58a6ff; }
+.lvstat-search-input.has-selection { border-color: #3fb950; color: #3fb950; }
+
+/* 검색 결과 드롭다운 */
+.lvstat-search-list {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 4px);   /* 입력창 위쪽에 표시 */
+    left: 0;
+    right: 0;
+    background: #161b22;
+    border: 1px solid #388bfd;
+    border-radius: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+    z-index: 600;
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.6);
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+.lvstat-search-list.open { display: block; }
+.lvstat-search-list::-webkit-scrollbar { width: 4px; }
+.lvstat-search-list::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
+
+.lvstat-search-group {
+    padding: 6px 10px 3px;
+    font-size: 15px;
+    color: #6e7681;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-top: 1px solid #21262d;
+    margin-top: 2px;
+}
+.lvstat-search-group:first-child { border-top: none; margin-top: 0; }
+
+.lvstat-search-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: background 0.1s;
+}
+.lvstat-search-item:hover,
+.lvstat-search-item.focused { background: #1f6feb30; }
+.lvstat-search-item.focused { background: #1f6feb50; }
+
+.lvstat-si-kr {
+    font-size: 15px;
+    color: #e6edf3;
+    font-weight: bold;
+}
+.lvstat-si-en {
+    font-size: 15px;
+    color: #58a6ff;
+}
+.lvstat-si-match { color: #ffd700; }   /* 검색어 하이라이트 */
+
+.lvstat-search-empty {
+    padding: 14px;
+    text-align: center;
+    font-size: 15px;
+    color: #6e7681;
+}
+
+.lvstat-add-btn {
+    background: #1f6feb;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+    flex-shrink: 0;
+}
+.lvstat-add-btn:hover { background: #388bfd; }
+
+/* ══════════════════════════════════════════
+   능력치 제한값 설정 팝업
+══════════════════════════════════════════ */
+.limit-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(2px);
+    align-items: center;
+    justify-content: center;
+}
+.limit-overlay.open { display: flex; }
+
+.limit-modal {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    width: 480px;
+    max-width: 96vw;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.7);
+    animation: modalIn 0.18s ease;
+}
+@keyframes modalIn {
+    from { opacity:0; transform: translateY(-12px) scale(0.97); }
+    to   { opacity:1; transform: translateY(0)     scale(1); }
+}
+/* 기본 스탯 카드 레이아웃 */
+.bsc-card { background:#21262d;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:flex;gap:14px; }
+.bsc-left { flex:0 0 230px;display:flex;flex-direction:column;gap:8px; }
+.bsc-right { flex:1;min-width:0;background:#0d1117;border:1px solid #21262d;border-radius:4px;padding:8px 10px;overflow-y:auto;max-height:200px; }
+.bsp-title { font-size:15px;color:#58a6ff;margin-bottom:5px;font-weight:600;letter-spacing:0.02em; }
+.bsp-grid  { display:flex;flex-direction:column;gap:2px; }
+.bsp-row   { display:flex;justify-content:space-between;align-items:center;font-size:15px; }
+.bsp-name  { color:#8b949e; }
+.bsp-val   { color:#3fb950;font-weight:600;font-variant-numeric:tabular-nums; }
+
+.limit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px 12px;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+}
+.limit-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #d29922;
+    letter-spacing: 0.5px;
+}
+.limit-close {
+    background: none;
+    border: none;
+    color: #8b949e;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    line-height: 1;
+    transition: background 0.1s, color 0.1s;
+}
+.limit-close:hover { background: #f8514920; color: #f85149; }
+
+/* ── 몬스터 능력치 팝업 ── */
+.mon-modal {
+    width: 560px;
+}
+.mon-header-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+.mon-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #ff9966;
+    flex: 1;
+}
+.mon-search-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px 0;
+    flex-shrink: 0;
+}
+.mon-lv-label { font-size: 15px; color: #8b949e; white-space: nowrap; }
+.mon-lv-input {
+    width: 80px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 5px;
+    color: #e6edf3;
+    font-size: 15px;
+    padding: 4px 8px;
+    text-align: center;
+}
+.mon-lv-input:focus { outline: none; border-color: #ff6633; }
+.mon-range-label { font-size: 15px; color: #6e7681; }
+.mon-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 10px 18px 0;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+}
+.mon-tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 6px 14px;
+    font-size: 15px;
+    color: #8b949e;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+}
+.mon-tab:hover { color: #e6edf3; }
+.mon-tab.active { color: #ff9966; border-bottom-color: #ff6633; font-weight: bold; }
+.mon-tab.boss-tab.active { color: #ff4444; border-bottom-color: #cc0000; }
+.mon-body {
+    overflow-y: auto;
+    flex: 1;
+    padding: 14px 18px;
+}
+.mon-stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 16px;
+}
+.mon-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: #0d1117;
+    border-radius: 5px;
+    border: 1px solid #21262d;
+}
+.mon-stat-row.boss-row { border-color: #440000; background: #1a0000; }
+.mon-stat-lbl { font-size: 15px; color: #8b949e; }
+.mon-stat-val { font-size: 15px; font-weight: bold; color: #e6edf3; }
+.mon-stat-val.highlight { color: #ff9966; }
+.mon-stat-val.boss-val  { color: #ff4444; }
+.mon-hp-bar-wrap {
+    margin: 0 0 14px;
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 7px;
+    padding: 10px 14px;
+}
+.mon-hp-bar-wrap.boss-wrap { border-color: #440000; background: #1a0000; }
+.mon-hp-label { font-size: 15px; color: #8b949e; margin-bottom: 5px; }
+.mon-hp-track {
+    height: 10px;
+    background: #21262d;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+.mon-hp-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: #3fb950;
+    transition: width 0.3s;
+}
+.mon-hp-fill.boss-fill { background: linear-gradient(90deg, #cc0000, #ff4500); }
+.mon-hp-text { font-size: 15px; color: #e6edf3; font-weight: bold; text-align: right; }
+.mon-section-title {
+    font-size: 15px;
+    color: #6e7681;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 12px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #21262d;
+}
+.mon-compare-note {
+    font-size: 15px;
+    color: #6e7681;
+    text-align: center;
+    padding: 6px 0 0;
+}
+.mon-current-badge {
+    display: inline-block;
+    font-size: 15px;
+    background: #1f3d1f;
+    color: #3fb950;
+    border: 1px solid #3fb950;
+    border-radius: 3px;
+    padding: 1px 5px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+/* 탭 */
+.limit-tabs {
+    display: flex;
+    gap: 2px;
+    padding: 10px 18px 0;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+}
+.limit-tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #8b949e;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 6px 14px 8px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    letter-spacing: 0.3px;
+}
+.limit-tab:hover { color: #e6edf3; }
+.limit-tab.active { color: #d29922; border-bottom-color: #d29922; }
+
+/* 콘텐츠 */
+.limit-content {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 18px;
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+.limit-content.active { display: block; }
+.limit-desc {
+    font-size: 15px;
+    color: #8b949e;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    padding: 8px 10px;
+    background: #0d1117;
+    border-radius: 6px;
+    border-left: 3px solid #30363d;
+}
+
+/* 각 제한값 필드 카드 */
+.limit-field {
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+}
+.limit-field:last-child { margin-bottom: 0; }
+
+.limit-field-header {
+    margin-bottom: 10px;
+}
+.limit-field-label {
+    font-size: 15px;
+    font-weight: bold;
+    color: #e6edf3;
+    display: block;
+    margin-bottom: 3px;
+}
+.limit-field-id {
+    font-size: 15px;
+    color: #58a6ff;
+    font-weight: normal;
+    background: #1f2d3d;
+    border: 1px solid #1f6feb40;
+    border-radius: 3px;
+    padding: 1px 5px;
+    margin-left: 4px;
+}
+.limit-field-desc {
+    font-size: 15px;
+    color: #6e7681;
+    line-height: 1.5;
+    display: block;
+}
+
+.limit-input-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.limit-input {
+    width: 80px;
+    background: #161b22;
+    color: #e6edf3;
+    border: 1px solid #30363d;
+    padding: 5px 8px;
+    border-radius: 5px;
+    font-size: 15px;
+    text-align: center;
+    transition: border-color 0.15s;
+}
+.limit-input:focus   { outline: none; border-color: #58a6ff; }
+.limit-input.invalid { border-color: #f85149; color: #f85149; }
+.limit-slash, .limit-max-hint {
+    color: #6e7681;
+    font-size: 15px;
+}
+.limit-eq { color: #6e7681; font-size: 15px; }
+.limit-pct {
+    font-size: 15px;
+    font-weight: bold;
+    color: #3fb950;
+    min-width: 58px;
+}
+.limit-hint {
+    font-size: 15px;
+    color: #f85149;
+    margin-top: 5px;
+    min-height: 14px;
+}
+
+/* 푸터 */
+.limit-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-top: 1px solid #21262d;
+    flex-shrink: 0;
+}
+.limit-apply-msg {
+    flex: 1;
+    font-size: 15px;
+    color: #3fb950;
+}
+.limit-btn-cancel {
+    background: #21262d;
+    color: #8b949e;
+    border: 1px solid #30363d;
+    padding: 6px 16px;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.limit-btn-cancel:hover { background: #30363d; color: #e6edf3; }
+.limit-btn-apply {
+    background: #238636;
+    color: #fff;
+    border: 1px solid #2ea043;
+    padding: 6px 18px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.limit-btn-apply:hover { background: #2ea043; }
+
+/* ═══ 패치 노트 팝업 ═══ */
+.patchnote-modal {
+    width: 1080px;
+    max-width: 96vw;
+    height: 82vh;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+}
+/* 타이틀 화면(z-index:1000) 위에 표시되도록 패치 노트 오버레이만 z-index 상향 */
+#patchnote-overlay { z-index: 1100; }
+.patchnote-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px 20px;
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+.patchnote-body::-webkit-scrollbar { width: 4px; }
+.patchnote-body::-webkit-scrollbar-track { background: transparent; }
+.patchnote-body::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
+.patchnote-body::-webkit-scrollbar-thumb:hover { background: #484f58; }
+.pn-ver {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+    margin-top: 20px;
+}
+.pn-ver:first-child { margin-top: 0; }
+.pn-ver-date {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffd700;
+}
+.pn-ver-time {
+    font-size: 15px;
+    color: #8b949e;
+}
+.pn-divider {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, #30363d, transparent);
+}
+.pn-list {
+    list-style: none;
+    margin: 0 0 6px 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.pn-item {
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    color: #c9d1d9;
+    line-height: 1.5;
+}
+.pn-tag {
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+.pn-tag.sys  { background: rgba(88,166,255,0.15); color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
+.pn-tag.ui   { background: rgba(63,185,80,0.12);  color: #3fb950; border: 1px solid rgba(63,185,80,0.3); }
+.pn-tag.gfx  { background: rgba(192,132,252,0.15);color: #c084fc; border: 1px solid rgba(192,132,252,0.3); }
+.pn-tag.game { background: rgba(248,81,73,0.15);  color: #ff7b72; border: 1px solid rgba(248,81,73,0.3); }
+.pn-tag.fix  { background: rgba(210,153,34,0.15); color: #d29922; border: 1px solid rgba(210,153,34,0.3); }
+
+/* 타이틀 하단 버튼 행 (패치노트 + 데이터 최신화) */
+.title-btn-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 14px;
+    animation: fadeIn 1.5s ease 1.3s both;
+}
+
+/* 타이틀 데이터 최신화 버튼 */
+#btn-refresh-data {
+    padding: 9px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #3fb950;
+    background: rgba(63,185,80,0.07);
+    border: 1px solid rgba(63,185,80,0.35);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+#btn-refresh-data:hover { color: #56d364; border-color: #3fb950; background: rgba(63,185,80,0.16); }
+
+/* 타이틀 패치 노트 버튼 */
+#btn-patchnote {
+    padding: 9px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #8b949e;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid #30363d;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+#btn-patchnote:hover { color: #ffd700; border-color: #ffd700; background: rgba(255,215,0,0.06); }
+
+/* ═══ 캐릭터 능력치 상세 팝업 ═══ */
+.charinfo-modal {
+    width: 960px;
+    max-width: 96vw;
+    height: 90vh;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+.charinfo-frame-wrap {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+.charinfo-frame-wrap iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    background: #0d1117;
+}
+
+/* ═══ 통합 능력치 설정 모달 ═══ */
+.settings-modal {
+    width: 920px;
+    max-width: 96vw;
+    height: 88vh;      /* 탭 전환 시 크기 고정 — 항상 최대 높이 유지 */
+    max-height: 88vh;
+}
+.settings-panels {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+.settings-panel {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+.settings-panel.active {
+    display: flex;
+}
+/* 기본 스탯 패널 스크롤 영역 */
+.settings-basestat-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+/* 제한값 패널 내부 서브탭 콘텐츠 */
+.settings-limit-content {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 18px;
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+.settings-limit-content.active {
+    display: block;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     타이틀 화면
+══════════════════════════════════════════ -->
+<div id="title-screen">
+    <div class="title-wrap">
+        <div class="title-sub-label">⚔ Field Battle Simulator ⚔</div>
+        <div class="title-project">Project</div>
+        <div class="title-name">베르시온</div>
+        <div class="title-divider"></div>
+        <div class="title-desc">Level 1 ~ 300 · Auto Battle · Field Hunt</div>
+        <button id="btn-start" onclick="startGame()">게임 스타트</button>
+        <div class="title-btn-row">
+            <button id="btn-refresh-data" onclick="refreshGameData()">🔄 데이터 최신화</button>
+            <button id="btn-patchnote" onclick="openPatchNotes()">📋 패치 노트</button>
+        </div>
+        <div class="title-hint">오토배틀 · 레벨 1 ~ 300 · 스테이지 1 ~ 1,000,000</div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     일시정지 오버레이
+══════════════════════════════════════════ -->
+<div id="pause-overlay">
+    <div class="pause-box">
+        <div class="pause-icon">⏸</div>
+        <div class="pause-title">일시정지</div>
+        <div class="pause-info" id="pause-info">Lv.1 · 처치 0회</div>
+        <button class="pause-btn pause-btn-resume" onclick="resumeGame()">
+            ▶ 이어서 플레이
+        </button>
+        <button class="pause-btn pause-btn-restart" onclick="goToTitle()">
+            ↩ 처음부터 재시작
+        </button>
+        <div class="pause-key-hint">SPACE 또는 ESC — 이어서 플레이</div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     상단 HUD
+══════════════════════════════════════════ -->
+<div id="hud">
+    <span class="title">⚔ PROJECT 베르시온</span>
+
+    <div class="hud-stat" style="background:rgba(180,30,0,0.15);border:1px solid rgba(255,80,0,0.3);border-radius:5px;padding:2px 8px;">
+        <span class="label" style="color:#ff9966;">스테이지</span>
+        <span class="value" style="color:#ff6633;" id="h-stage">1</span>
+    </div>
+
+    <div class="hud-stat">
+        <span class="label">캐릭터 레벨</span>
+        <span class="value" id="h-level">1</span>
+    </div>
+
+    <div class="exp-wrap">
+        <div class="label">경험치</div>
+        <div class="exp-bar-bg">
+            <div class="exp-bar-fill" id="h-exp-bar" style="width:0%"></div>
+        </div>
+        <div class="exp-bar-text" id="h-exp-text">0 / 10</div>
+    </div>
+
+    <div class="hud-stat">
+        <span class="label">총 처치</span>
+        <span class="value" id="h-kills">0</span>
+    </div>
+
+    <div class="speed-group">
+        <span class="speed-label">게임 속도</span>
+        <button class="speed-btn active" onclick="setSpeed(1)"    id="spd-1">×1</button>
+        <button class="speed-btn"        onclick="setSpeed(2)"    id="spd-2">×2</button>
+        <button class="speed-btn"        onclick="setSpeed(5)"    id="spd-5">×5</button>
+        <button class="speed-btn"        onclick="setSpeed(10)"   id="spd-10">×10</button>
+        <button class="speed-btn"        onclick="setSpeed(50)"   id="spd-50">×50</button>
+        <button class="speed-btn"        onclick="setSpeed(100)"  id="spd-100" style="color:#d29922;border-color:#9e6a03;">×100</button>
+        <button class="speed-btn"        onclick="setSpeed(1000)" id="spd-1000" style="color:#f85149;border-color:#6e3434;">×1000</button>
+    </div>
+
+    <!-- 일시정지 / 재시작 버튼 -->
+    <div class="hud-ctrl">
+        <button class="hud-btn hud-btn-hp" id="btn-hp-toggle" onclick="toggleHPBars()">
+            ♥ HP바 OFF
+        </button>
+        <button class="hud-btn" onclick="openPatchNotes()"
+                style="background:#1a1f2e;color:#8b949e;border:1px solid #30363d;">
+            📋 패치 노트
+        </button>
+        <button class="hud-btn hud-btn-pause" id="btn-pause" onclick="togglePause()">
+            ⏸ 일시정지
+        </button>
+        <button class="hud-btn hud-btn-restart" onclick="goToTitle()">
+            ↩ 재시작
+        </button>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     메인 영역
+══════════════════════════════════════════ -->
+<div id="main">
+    <!-- 캔버스 + 로그를 세로로 묶은 래퍼 (사이드 패널 오른쪽을 침범하지 않음) -->
+    <div id="canvas-col">
+        <div id="canvas-wrap">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <!-- 전투 로그 (canvas-col 안에 위치) -->
+        <div id="log-bottom">
+            <!-- 드래그 리사이즈 핸들 -->
+            <div id="log-resize-handle" title="드래그하여 높이 조절"></div>
+            <div id="log-bottom-header">
+                <span id="log-bottom-title">⚔ 전투 로그</span>
+                <button id="log-clear-btn" onclick="clearLog()">지우기</button>
+            </div>
+            <div id="log-list"></div>
+        </div>
+    </div>
+
+    <div id="side">
+
+        <!-- 스테이지 정보 (필드 정보 통합) -->
+        <div class="section" style="border-left:3px solid #ff4500;">
+            <div class="section-title" style="color:#ff9966;">스테이지 정보</div>
+            <div class="info-row">
+                <span class="lbl">현재 스테이지</span>
+                <span class="val" style="color:#ff6633;" id="s-stage">1</span>
+            </div>
+            <div class="info-row">
+                <span class="lbl">처치 / 보스 조건</span>
+                <span class="val" style="color:#ffaa44;" id="s-stage-kills">0 / 10</span>
+            </div>
+            <div class="info-row">
+                <span class="lbl">보스 상태</span>
+                <span class="val" id="s-boss-status">대기 중</span>
+            </div>
+            <div class="info-row">
+                <span class="lbl">몬스터 레벨</span>
+                <span class="val yellow" id="s-monlevel">1</span>
+            </div>
+            <div class="info-row">
+                <span class="lbl">전체 몬스터</span>
+                <span class="val" id="s-total">15</span>
+            </div>
+            <div class="info-row">
+                <span class="lbl">생존 중</span>
+                <span class="val green" id="s-alive">15</span>
+            </div>
+            <div class="info-row">
+                <span class="lbl">리스폰 대기</span>
+                <span class="val red" id="s-dead">0</span>
+            </div>
+            <button class="btn-full" onclick="openMonsterInfo()"
+                    style="background:#1a1a2e;color:#ff9966;border:1px solid #cc3300;margin-top:6px;">
+                👾 몬스터 능력치 조회
+            </button>
+        </div>
+
+        <!-- 마을 / 전투 -->
+        <div class="section">
+            <div class="section-title">전투 / 마을</div>
+            <div id="town-status-row" style="text-align:center;font-size:15px;padding:4px 0 6px;color:#8b949e;">
+                <span id="town-status-txt">⚔ 전투 중</span>
+            </div>
+            <button class="btn-full" id="btn-return-town" onclick="returnToTown()"
+                    style="background:#1e2d1e;color:#3fb950;border:1px solid #238636;margin-bottom:6px;font-weight:700;">
+                🏠 마을 귀환
+            </button>
+            <button class="btn-full" id="btn-resume-combat" onclick="resumeCombat()"
+                    style="background:#2d1e1e;color:#f85149;border:1px solid #6e3434;margin-bottom:2px;font-weight:700;display:none;">
+                ⚔ 전투 재개
+            </button>
+        </div>
+
+        <!-- 캐릭터 정보 -->
+        <div class="section">
+            <div class="section-title">캐릭터 정보</div>
+            <div class="info-row">
+                <span class="lbl">레벨</span>
+                <span class="val" id="s-level">1</span>
+            </div>
+            <div class="info-row">
+                <span class="lbl">경험치</span>
+                <span class="val" id="s-exp">0 / 10</span>
+            </div>
+            <div class="info-row">
+                <span class="lbl">총 처치 수</span>
+                <span class="val" id="s-kills">0</span>
+            </div>
+            <button class="btn-full" onclick="openCharInfo()"
+                    style="background:#1f2d3d;color:#58a6ff;border:1px solid #1f6feb;margin-top:6px;margin-bottom:4px;">
+                📊 능력치 상세 보기
+            </button>
+            <button class="btn-full" onclick="openSettingsModal('basestat')"
+                    style="background:#1e2432;color:#d29922;border:1px solid #9e6a03;">
+                ⚙ 능력치 설정
+            </button>
+        </div>
+
+        <!-- 캐릭터 레벨 조절 -->
+        <div class="section">
+            <div class="section-title">캐릭터 레벨 조절</div>
+            <div class="level-row">
+                <button class="btn btn-red"  onclick="shiftLevel(-10)">-10</button>
+                <button class="btn btn-red"  onclick="shiftLevel(-1)">-1</button>
+                <input  class="level-input"  id="level-input" type="number" min="1" max="300" value="1">
+                <button class="btn btn-blue" onclick="shiftLevel(+1)">+1</button>
+                <button class="btn btn-blue" onclick="shiftLevel(+10)">+10</button>
+            </div>
+            <button class="btn-full btn-blue" onclick="applyLevelInput()"
+                    style="background:#1f6feb;color:#fff;border-color:#1f6feb;">
+                입력값으로 레벨 변경
+            </button>
+            <button class="btn-full btn-gray" onclick="hardReset()"
+                    style="background:#21262d;color:#8b949e;">
+                Lv.1 초기화 (현재 필드 유지)
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ================================================================
+     통합 능력치 설정 모달 (기본 스탯 / 레벨 능력치 / 제한값)
+================================================================ -->
+<div id="settings-overlay" class="limit-overlay">
+    <div class="limit-modal settings-modal">
+
+        <!-- 헤더 -->
+        <div class="limit-header">
+            <span class="limit-title">⚙ 능력치 설정</span>
+            <button class="limit-close" onclick="closeSettingsModal()">✕</button>
+        </div>
+
+        <!-- 상단 탭 바 -->
+        <div class="limit-tabs">
+            <button class="limit-tab" id="stab-btn-basestat" onclick="switchSettingsTab('basestat')">🧬 기본 스탯</button>
+            <button class="limit-tab" id="stab-btn-lvstat"   onclick="switchSettingsTab('lvstat')">📈 레벨 능력치</button>
+            <button class="limit-tab" id="stab-btn-limit"    onclick="switchSettingsTab('limit')">⚙ 제한값</button>
+        </div>
+
+        <!-- 패널 컨테이너 -->
+        <div class="settings-panels">
+
+            <!-- ① 기본 스탯 패널 -->
+            <div class="settings-panel" id="stab-basestat">
+                <div style="padding:10px 18px;font-size:15px;color:#8b949e;border-bottom:1px solid #21262d;flex-shrink:0;">
+                    기본값: 10 &nbsp;|&nbsp; 범위: 1 ~ 1000 &nbsp;|&nbsp;
+                    치환값 = 기본스탯 ÷ 계수1 × 계수2 &nbsp;|&nbsp; 슬라이더를 움직이면 치환 능력치가 실시간으로 갱신됩니다
+                </div>
+                <div class="settings-basestat-scroll" id="basestat-grid">
+                    <!-- JS로 채움 -->
+                </div>
+                <div class="limit-footer">
+                    <span id="basestat-msg" style="font-size:15px;color:#3fb950;flex:1;"></span>
+                    <button class="limit-btn-cancel" onclick="resetBaseStats()" style="color:#f85149;border-color:#f8514960;">초기화</button>
+                    <button class="limit-btn-apply" onclick="applyBaseStats()">적용</button>
+                    <button class="limit-btn-cancel" onclick="closeSettingsModal()">닫기</button>
+                </div>
+            </div>
+
+            <!-- ② 레벨 능력치 패널 -->
+            <div class="settings-panel" id="stab-lvstat">
+                <div class="lvstat-desc" style="flex-shrink:0;">
+                    캐릭터가 <b>1레벨일 때의 기준값</b>과 <b>레벨 1 증가마다 더해지는 증가량</b>을 설정합니다.<br>
+                    <span style="color:#6e7681">실제 능력치 = 기준값 + (현재레벨 - 1) × 레벨당 증가량</span>
+                </div>
+                <div class="lvstat-head" style="flex-shrink:0;">
+                    <span class="lvsh-stat">능력치</span>
+                    <span class="lvsh-val">1레벨 기준값</span>
+                    <span class="lvsh-val">레벨당 증가량</span>
+                    <span class="lvsh-del"></span>
+                </div>
+                <div id="lvstat-rows" class="lvstat-rows"></div>
+                <div class="lvstat-add-bar" style="flex-shrink:0;">
+                    <div class="lvstat-search-wrap">
+                        <input id="lvstat-search-input" class="lvstat-search-input"
+                               type="text" autocomplete="off" spellcheck="false"
+                               placeholder="능력치 검색 (한글 또는 영문)..."
+                               oninput="filterLvStatSearch()"
+                               onfocus="showLvStatDropdown()">
+                        <div id="lvstat-search-list" class="lvstat-search-list"></div>
+                    </div>
+                    <button class="lvstat-add-btn" onclick="addSelectedLvStat()">+ 추가</button>
+                </div>
+                <div class="limit-footer">
+                    <button class="limit-btn-cancel" onclick="resetLvStatConfig()" style="color:#f85149;border-color:#f8514960;">초기화</button>
+                    <div class="limit-apply-msg" id="lvstat-apply-msg"></div>
+                    <button class="limit-btn-cancel" onclick="closeSettingsModal()">취소</button>
+                    <button class="limit-btn-apply" onclick="saveLvStatConfig()">✔ 저장 · 적용</button>
+                </div>
+            </div>
+
+            <!-- ③ 능력치 제한값 패널 -->
+            <div class="settings-panel" id="stab-limit">
+                <!-- 서브탭 (향후 탭 추가 시 여기에 추가) -->
+                <div class="limit-tabs" style="flex-shrink:0;">
+                    <button class="limit-tab active" onclick="switchLimitTab('hit')" id="tab-hit">명중 / 회피</button>
+                </div>
+                <!-- 명중/회피 콘텐츠 -->
+                <div class="settings-limit-content active" id="ltab-hit">
+                    <p class="limit-desc">
+                        명중/회피 판정에 사용되는 최종 회피율(ResultAvoidanceRate)의 허용 범위를 설정합니다.<br>
+                        <span style="color:#8b949e">입력 범위: 0 ~ 10000 (10000 = 100%)</span>
+                    </p>
+                    <div class="limit-field">
+                        <div class="limit-field-header">
+                            <span class="limit-field-label">최소 회피율 <span class="limit-field-id">Config TID = 5</span></span>
+                            <span class="limit-field-desc">회피율의 하한선. 이 값보다 낮아지면 강제로 이 값으로 고정됩니다.</span>
+                        </div>
+                        <div class="limit-input-row">
+                            <input class="limit-input" id="min-avoid-input" type="number" min="0" max="10000" value="0"
+                                   oninput="onLimitInput('min-avoid')">
+                            <span class="limit-slash">/</span>
+                            <span class="limit-max-hint">10000</span>
+                            <span class="limit-eq">=</span>
+                            <span class="limit-pct" id="min-avoid-pct">0.00%</span>
+                        </div>
+                        <div class="limit-hint" id="min-avoid-hint"></div>
+                    </div>
+                    <div class="limit-field">
+                        <div class="limit-field-header">
+                            <span class="limit-field-label">최대 회피율 <span class="limit-field-id">Config TID = 4</span></span>
+                            <span class="limit-field-desc">회피율의 상한선. 이 값을 초과하면 강제로 이 값으로 고정됩니다.</span>
+                        </div>
+                        <div class="limit-input-row">
+                            <input class="limit-input" id="max-avoid-input" type="number" min="0" max="10000" value="7500"
+                                   oninput="onLimitInput('max-avoid')">
+                            <span class="limit-slash">/</span>
+                            <span class="limit-max-hint">10000</span>
+                            <span class="limit-eq">=</span>
+                            <span class="limit-pct" id="max-avoid-pct">75.00%</span>
+                        </div>
+                        <div class="limit-hint" id="max-avoid-hint"></div>
+                    </div>
+                </div>
+                <div class="limit-footer">
+                    <div class="limit-apply-msg" id="limit-apply-msg"></div>
+                    <button class="limit-btn-cancel" onclick="closeSettingsModal()">취소</button>
+                    <button class="limit-btn-apply" onclick="applyLimitSettings()">✔ 적용</button>
+                </div>
+            </div>
+
+        </div><!-- .settings-panels -->
+    </div>
+</div>
+
+<!-- ================================================================
+     몬스터 능력치 조회 팝업
+================================================================ -->
+<div id="moninfo-overlay" class="limit-overlay">
+    <div class="limit-modal mon-modal">
+
+        <div class="limit-header">
+            <span class="limit-title" style="color:#ff9966;">👾 몬스터 능력치 조회</span>
+            <button class="limit-close" onclick="closeMonsterInfo()">✕</button>
+        </div>
+
+        <!-- 레벨 입력 -->
+        <div class="mon-search-row">
+            <span class="mon-lv-label">조회 레벨</span>
+            <input id="moninfo-lv-input" class="mon-lv-input"
+                   type="number" min="1" max="1000000" value="1"
+                   oninput="renderMonsterInfo()">
+            <button class="btn" style="background:#1f2d3d;color:#ff9966;border:1px solid #cc3300;padding:4px 10px;border-radius:4px;font-size:15px;cursor:pointer;"
+                    onclick="setMonInfoToCurrentStage()">현재 스테이지</button>
+            <span class="mon-range-label">범위: 1 ~ 1,000,000</span>
+        </div>
+
+        <!-- 일반 / 보스 탭 -->
+        <div class="mon-tabs">
+            <button class="mon-tab active" id="montab-normal" onclick="switchMonTab('normal')">⚔ 일반 몬스터</button>
+            <button class="mon-tab boss-tab" id="montab-boss"   onclick="switchMonTab('boss')">💀 보스 몬스터</button>
+        </div>
+
+        <!-- 능력치 표시 영역 -->
+        <div class="mon-body" id="moninfo-body">
+            <!-- JS로 채워짐 -->
+        </div>
+
+    </div>
+</div>
+
+<!-- ================================================================
+     캐릭터 능력치 상세 팝업 (character_info.html을 iframe으로 표시)
+================================================================ -->
+<div id="charinfo-overlay" class="limit-overlay">
+    <div class="limit-modal charinfo-modal">
+        <div class="limit-header">
+            <span class="limit-title" style="color:#58a6ff;">📊 캐릭터 능력치 상세</span>
+            <button class="limit-close" onclick="closeCharInfo()">✕</button>
+        </div>
+        <div class="charinfo-frame-wrap">
+            <iframe id="charinfo-frame" src="character_info.html"
+                    frameborder="0" allowtransparency="true"></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
+     패치 노트 팝업
+================================================================ -->
+<div id="patchnote-overlay" class="limit-overlay">
+    <div class="limit-modal patchnote-modal">
+        <div class="limit-header">
+            <span class="limit-title" style="color:#ffd700;">📋 패치 노트 — Project 베르시온</span>
+            <button class="limit-close" onclick="closePatchNotes()">✕</button>
+        </div>
+        <div class="patchnote-body">
+
+            <!-- ── 2026-04-23 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-23</span>
+                <span class="pn-ver-time">17:45</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>패치 노트 팝업 추가 — 타이틀 화면 및 인게임 HUD 버튼으로 확인 가능</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>전투 로그 높이 localStorage 저장 — 재시작 후에도 크기 유지</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>능력치 설정(기본 스탯·치환·레벨 능력치)을 보너스가 아닌 기본값으로 처리 — 초록/노란 수치 표시 제거</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>치환 능력치 표시를 한 줄 2열 그리드로 변경</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>능력치 상세 — 치환 능력치 / 전체 능력치 탭 분리</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>게임 스타일 스크롤바 전역 적용</li>
+            </ul>
+
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-23</span>
+                <span class="pn-ver-time">10:20</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>캐릭터 능력치 상세를 별도 탭이 아닌 게임 내 팝업(iframe 모달)으로 전환</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>치환 능력치를 기본 스탯(STR/DEX/INT/AGI/CON/WIS/LUK)별 그룹으로 표시</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>치환 능력치 형식 변경 — 한글명(영문명) · 수치 한 줄 표시</li>
+                <li class="pn-item"><span class="pn-tag fix">수정</span>전투 로그 드래그 리사이즈 JS 완성 — 로그 영역이 사이드 패널을 넘지 않도록 제한</li>
+            </ul>
+
+            <!-- ── 2026-04-22 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-22</span>
+                <span class="pn-ver-time">21:30</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>게임 속도 ×100배, ×1000배 버튼 추가</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>전투 로그를 캔버스 하단으로 이동 — 사이드 패널 영역을 침범하지 않는 구조로 개선</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>전투 로그 상단에 드래그 리사이즈 핸들 추가 (CSS/HTML)</li>
+                <li class="pn-item"><span class="pn-tag gfx">그래픽</span>캐릭터를 기사(Knight) 캔버스 벡터 스프라이트로 교체</li>
+                <li class="pn-item"><span class="pn-tag gfx">그래픽</span>캐릭터 발광 테두리 추가 — 필드·몬스터·마을과 겹쳐도 식별 가능</li>
+                <li class="pn-item"><span class="pn-tag gfx">그래픽</span>캐릭터 반지름 확대 (14 → 18px), 일반 몬스터(13)보다 크고 보스(22)보다 작게 조정</li>
+                <li class="pn-item"><span class="pn-tag gfx">그래픽</span>보스 몬스터를 악마(Demon) 캔버스 벡터 스프라이트로 교체 — 박쥐 날개·뿔·송곳니·발톱 표현</li>
+            </ul>
+
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-22</span>
+                <span class="pn-ver-time">14:10</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>능력치 설정 팝업 3종 통합 — 기본 스탯 / 레벨 능력치 / 제한값을 탭으로 통합</li>
+                <li class="pn-item"><span class="pn-tag fix">수정</span>레벨 능력치 탭 초기 렌더링 버그 수정 — 저장된 능력치가 탭 진입 시 바로 표시되도록 수정</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>설정 팝업 크기 고정 — 탭 전환 시 모달 크기가 변하지 않도록 수정</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>모든 팝업 오버레이 배경 클릭으로 닫히지 않도록 변경 (버튼으로만 닫기)</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>단축키 전면 제거 — Space/ESC 게임 단축키 및 검색창 키보드 내비게이션 삭제</li>
+            </ul>
+
+            <!-- ── 2026-04-21 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-21</span>
+                <span class="pn-ver-time">15:55</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>몬스터 능력치 조회 팝업 추가 — 레벨 입력으로 몬스터 스탯 확인</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>기본 스탯 치환값 시스템 구현 — STR/DEX/INT/AGI/CON/WIS/LUK → 2차 스탯 자동 변환 (010_스탯_치환값.md 기준)</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>레벨별 능력치 성장 설정 시스템 — 레벨당 성장치 지정 및 능력치 검색 기능</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>능력치 제한값 설정 — 회피율 최소/최대 범위 조절</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>기본 스탯 설정 UI 추가 — STR/DEX/INT/AGI/CON/WIS/LUK 수치 직접 지정</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>캐릭터 능력치 상세 화면 초기 구현 — 전체 스탯 목록, 그룹별 분류, 검색 기능</li>
+            </ul>
+
+            <!-- ── 2026-04-20 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-20</span>
+                <span class="pn-ver-time">13:40</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>기본 전투 시스템 구현 — 오토배틀, 몬스터 자동 스폰 및 리스폰</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>마을 / 필드 구역 분리 — 마을에서 HP/MP 2배 속도 회복, 귀환 버튼</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>스테이지 시스템 구현 (1 ~ 1,000,000 스테이지)</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>레벨업 시스템 구현 (최대 300레벨, 경험치 곡선)</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>캐릭터 HP / MP 시스템 — 전투 소모 및 자동 회복</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>프로젝트 초기 설정 — CLAUDE.md 작성, 에이전트 역할 정의</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>능력치 계산 엔진(stats_calc.js) 기초 설계 — STAT_LIST, computeStats 구현</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>타이틀 화면 구현 — 별빛 파티클 애니메이션, 게임 스타트 버튼</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>상단 HUD — 레벨, 스테이지, 경험치 바, 게임 속도, 일시정지</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>사이드 패널 — 캐릭터 HP/MP 바, 능력치 요약, 설정 버튼</li>
+                <li class="pn-item"><span class="pn-tag gfx">그래픽</span>캔버스 2D 렌더링 — 마을 구역, 격자 배경, 몬스터 원형 표현</li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
+     게임 스크립트
+================================================================ -->
+<script src="stats_calc.js"></script>
+<script>
+// ────────────────────────────────────────────────
+// 상수 설정
+// ────────────────────────────────────────────────
+const MAX_LEVEL     = 300;    // 캐릭터 최대 레벨
+const MONSTER_COUNT = 15;     // 필드 몬스터 수
+const ATK_INTERVAL  = 500;    // 기본 공격 주기 (ms)
+const MOVE_SPEED    = 100;    // 캐릭터 이동 속도 (px/s)
+const ATK_RANGE     = 44;     // 공격 사거리 (px)
+const RESPAWN_DELAY = 5000;   // 몬스터 리스폰 대기 (ms)
+const WANDER_SPEED  = 22;     // 몬스터 배회 속도 (px/s)
+
+// ── 마을 구역 설정 (캔버스 좌상단 고정 크기)
+const TOWN_W = 200;   // 마을 구역 너비 (px)
+const TOWN_H = 180;   // 마을 구역 높이 (px)
+const GRID_G = 64;    // 격자 크기 (draw / drawTownZone 공유)
+
+// ────────────────────────────────────────────────
+// 캔버스
+// ────────────────────────────────────────────────
+const canvas = document.getElementById('gameCanvas');
+const ctx    = canvas.getContext('2d');
+
+function resizeCanvas() {
+    const wrap = document.getElementById('canvas-wrap');
+    canvas.width  = wrap.clientWidth;
+    canvas.height = wrap.clientHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// 전투 로그 높이 드래그 조절 + localStorage 저장
+(function() {
+    const handle  = document.getElementById('log-resize-handle');
+    const logEl   = document.getElementById('log-bottom');
+    const STORAGE = 'versione_log_height';
+    let dragging = false, startY = 0, startH = 0;
+    const MIN_H = 48;
+
+    // 저장된 높이 복원
+    const saved = parseInt(localStorage.getItem(STORAGE), 10);
+    if (!isNaN(saved) && saved >= MIN_H) {
+        logEl.style.height = saved + 'px';
+    }
+
+    handle.addEventListener('mousedown', function(e) {
+        dragging = true;
+        startY = e.clientY;
+        startH = logEl.offsetHeight;
+        handle.classList.add('dragging');
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
+    });
+    document.addEventListener('mousemove', function(e) {
+        if (!dragging) return;
+        const canvasCol = document.getElementById('canvas-col');
+        const MAX_H = Math.floor(canvasCol.clientHeight * 0.7);
+        const delta = startY - e.clientY; // 위로 드래그 → 높이 증가
+        const newH = Math.min(MAX_H, Math.max(MIN_H, startH + delta));
+        logEl.style.height = newH + 'px';
+        resizeCanvas();
+    });
+    document.addEventListener('mouseup', function() {
+        if (dragging) {
+            dragging = false;
+            handle.classList.remove('dragging');
+            document.body.style.userSelect = '';
+            // 드래그 완료 시 높이 저장
+            localStorage.setItem(STORAGE, logEl.offsetHeight);
+        }
+    });
+})();
+
+// ────────────────────────────────────────────────
+// 패치 노트 팝업
+// ────────────────────────────────────────────────
+let _patchNotePaused = false;
+function openPatchNotes() {
+    document.getElementById('patchnote-overlay').classList.add('open');
+    if (gameState === 'playing') { _patchNotePaused = true; gameState = 'paused'; }
+    else { _patchNotePaused = false; }
+}
+function closePatchNotes() {
+    document.getElementById('patchnote-overlay').classList.remove('open');
+    if (_patchNotePaused) { gameState = 'playing'; lastTime = performance.now(); }
+    _patchNotePaused = false;
+}
+
+// ────────────────────────────────────────────────
+// 게임 상태 변수
+// ────────────────────────────────────────────────
+// gameState: 'title' | 'playing' | 'paused'
+// inTown: true = 마을 체류 중 (전투 정지)
+let gameState    = 'title';
+let character    = {};
+let monsters     = [];
+let particles    = [];
+let totalKills   = 0;
+let gameSpeed    = 1;
+let lastTime     = 0;
+let logs         = [];
+let uiThrottle   = 0;
+
+// ── 스테이지 시스템
+let currentStage  = 1;          // 현재 스테이지 (1 ~ 1,000,000)
+let stageKills    = 0;          // 현재 스테이지에서 일반 몬스터 처치 수
+let bossSpawned   = false;      // 보스가 이미 등장했는지 여부
+let bossDefeated  = false;      // 보스가 처치됐는지 여부
+const MAX_STAGE   = 1000000;    // 최대 스테이지
+
+// 스테이지 레벨 계산 (스테이지 1 → 레벨 1)
+function stageLevel(stage) { return stage; }
+
+// 보스 등장에 필요한 처치 수 (스테이지 × 10)
+function bossRequiredKills(stage) { return stage * 10; }
+
+// ────────────────────────────────────────────────
+// 타이틀 → 게임 전환
+// ────────────────────────────────────────────────
+function startGame() {
+    const titleEl = document.getElementById('title-screen');
+    titleEl.style.opacity = '0';
+    // 페이드아웃(0.8s) 후 타이틀 숨기고 게임 시작
+    setTimeout(() => {
+        titleEl.style.display = 'none';
+        gameState = 'playing';
+        initGame();
+    }, 800);
+}
+
+// 타이틀 화면 데이터 최신화 — localStorage에 저장된 게임 설정을 메모리에 다시 불러옴
+// (게임 시작은 하지 않음 — 타이틀 화면 상태 유지)
+function refreshGameData() {
+    loadBaseStats();
+    loadLimitSettings();
+    loadLvStatConfig();
+    // 버튼 텍스트로 완료 피드백
+    const btn = document.getElementById('btn-refresh-data');
+    if (btn) {
+        const orig = btn.textContent;
+        btn.textContent = '✔ 최신화 완료';
+        btn.style.color = '#56d364';
+        setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 1500);
+    }
+}
+
+// ────────────────────────────────────────────────
+// 일시정지 / 재개
+// ────────────────────────────────────────────────
+function togglePause() {
+    if (gameState === 'playing')  { pauseGame(); return; }
+    if (gameState === 'paused')   { resumeGame(); }
+}
+
+// HP바 표시 On/Off 토글
+function toggleHPBars() {
+    showHPBars = !showHPBars;
+    const btn = document.getElementById('btn-hp-toggle');
+    if (showHPBars) {
+        btn.textContent = '♥ HP바 ON';
+        btn.classList.add('active');
+    } else {
+        btn.textContent = '♥ HP바 OFF';
+        btn.classList.remove('active');
+    }
+}
+
+function pauseGame() {
+    if (gameState !== 'playing') return;
+    gameState = 'paused';
+    document.getElementById('pause-overlay').style.display = 'flex';
+    document.getElementById('pause-info').textContent =
+        `Lv.${character.level} · 처치 ${totalKills}회`;
+    document.getElementById('btn-pause').textContent   = '▶ 재개';
+    document.getElementById('btn-pause').classList.add('paused');
+}
+
+function resumeGame() {
+    if (gameState !== 'paused') return;
+    gameState = 'playing';
+    document.getElementById('pause-overlay').style.display = 'none';
+    document.getElementById('btn-pause').textContent = '⏸ 일시정지';
+    document.getElementById('btn-pause').classList.remove('paused');
+    // 일시정지 동안 흐른 시간을 무시하기 위해 lastTime 리셋
+    lastTime = performance.now();
+}
+
+// ────────────────────────────────────────────────
+// 타이틀 화면으로 돌아가기 (처음부터 재시작)
+// 쿼리스트링에 타임스탬프를 붙여 브라우저 캐시를 무효화하고 파일을 강제 재로딩한다.
+// localStorage 데이터는 재로딩 후에도 그대로 유지된다.
+// ────────────────────────────────────────────────
+function goToTitle() {
+    location.href = location.pathname + '?_=' + Date.now();
+}
+
+// ────────────────────────────────────────────────
+// 현재 필드를 유지하며 Lv.1 초기화
+// ────────────────────────────────────────────────
+function hardReset() {
+    if (gameState === 'paused') resumeGame();
+    initGame();
+    addLog('필드 초기화 — Lv.1로 돌아갑니다.', 'info');
+    saveCharacterState(); // 즉시 저장 → character_info.html 반영
+}
+
+// ────────────────────────────────────────────────
+// 레벨에 따른 캐릭터 스탯 계산 (stats_calc.js의 computeStats와 동일 공식)
+// 별도 파일 없이 field_battle.html 내에서도 동작하도록 동일 공식을 내장
+// ────────────────────────────────────────────────
+// ─── 레벨 능력치 설정 (localStorage 영구 저장) ─────────────────────
+// 각 항목: { en: 'STR', base: 10, perLv: 2 }
+let LV_STAT_CONFIG = [];
+
+// 퍼센트 계열 en 키 판별
+function isStatPct(en) {
+    return /Rate$|Pct$|AmplifyRate$|WeakenRate$/.test(en);
+}
+
+// 레벨에 따른 LV_STAT_CONFIG 보너스 객체 반환
+function getLvStatBonuses(lv) {
+    const bonuses = {};
+    for (const row of LV_STAT_CONFIG) {
+        bonuses[row.en] = (bonuses[row.en] || 0) + row.base + (lv - 1) * row.perLv;
+    }
+    return bonuses;
+}
+
+// computeStats(stats_calc.js)에 레벨 보너스 + 기본 스탯 치환 보너스를 합산하여 반환
+function calcCharStats(lv) {
+    const lvBon  = getLvStatBonuses(lv);
+    const subBon = computeSubstitutedBonuses(BASE_STATS);
+    // 두 보너스를 병합
+    const totalBon = Object.assign({}, lvBon);
+    for (const [k, v] of Object.entries(subBon)) {
+        totalBon[k] = (totalBon[k] || 0) + v;
+    }
+    const s = computeStats(lv, totalBon);
+    return {
+        maxHP:         s.MaxHP,
+        maxMP:         s.MaxMP,
+        hpRegen:       s.HPRegen,
+        mpRegen:       s.MPRegen,
+        meleeMinAtk:   s.MeleeMinAttack,
+        meleeMaxAtk:   s.MeleeMaxAttack,
+        meleeDef:      s.MeleeDefense,
+        rangedDef:     s.RangedDefense,
+        meleeAccuracy: s.MeleeAccuracy,
+        meleeEvasion:  s.MeleeEvasion,
+        critRate:      s.CriticalRate,
+        critMul:       s.CritMultiplier,
+    };
+}
+
+// 몬스터 전투 스탯 계산
+function calcMonsterStats(lv) {
+    return {
+        maxHp:         lv * 3,
+        meleeMinAtk:   Math.floor(lv * 2 + 3),
+        meleeMaxAtk:   Math.floor(lv * 3 + 5),
+        meleeDef:      Math.floor(lv * 1.5), // 몬스터는 근거리 방어만 사용
+        meleeAccuracy: Math.floor(70 + lv / 4),   // 몬스터 명중
+        meleeEvasion:  Math.floor(lv / 6),         // 몬스터 회피
+        critRate:      Math.min(30, Math.floor(2 + lv / 20)),
+        critMul:       130,
+    };
+}
+
+// ── 명중/회피 판정 (기획서 ResultMeleeAvoidanceRate 공식)
+// 회피율 = (방어자 회피) - (공격자 명중), 범위 클램프 적용
+// Random(1~10000) <= 회피율 → 회피 성공(Miss), 초과 → 명중(Hit)
+// Config TID=5 / TID=4 — 기획자가 UI에서 실시간 변경 가능
+// 입력 범위: 0~10000 (10000분의 1 단위, 예: 7500 = 75%)
+// 내부 저장은 음수 포함 가능하지만, UI 입력은 0~10000만 허용
+let MIN_AVOIDANCE = 0;      // 최소 회피율 (기본 0 = 0%)
+let MAX_AVOIDANCE = 7500;   // 최대 회피율 (기본 7500 = 75%)
+let showHPBars = false;     // HP바 표시 여부 (기본: 숨김)
+let inTown     = false;     // 마을 체류 중 여부 (true = 전투 없음)
+
+// ─── 기본 스탯 (STR/DEX/INT/AGI/CON/WIS/LUK) ─────────────────────────────
+// 기본값 10, 범위 1~1000. localStorage('versione_base_stats')에 영구 저장.
+let BASE_STATS = { STR:10, DEX:10, INT:10, AGI:10, CON:10, WIS:10, LUK:10 };
+
+function loadBaseStats() {
+    try {
+        const raw = localStorage.getItem('versione_base_stats');
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            ['STR','DEX','INT','AGI','CON','WIS','LUK'].forEach(k => {
+                if (parsed[k] != null) BASE_STATS[k] = parsed[k];
+            });
+        }
+    } catch (_) {}
+}
+
+function saveBaseStats() {
+    localStorage.setItem('versione_base_stats', JSON.stringify(BASE_STATS));
+    // 캐릭터 상태도 함께 저장해 character_info.html이 최신값을 가져갈 수 있도록 함
+    saveCharacterState();
+}
+
+function judgeHit(attackerAcc, defenderEva) {
+    const raw  = defenderEva - attackerAcc;
+    const rate = Math.max(MIN_AVOIDANCE, Math.min(MAX_AVOIDANCE, raw));
+    const roll = Math.floor(Math.random() * 10000) + 1;
+    return roll > rate;   // true = 명중, false = 회피
+}
+
+// ────────────────────────────────────────────────
+// 게임 초기화
+// ────────────────────────────────────────────────
+function initGame() {
+    resizeCanvas();
+    totalKills   = 0;
+    particles    = [];
+    logs         = [];
+    currentStage = 1;
+    stageKills   = 0;
+    bossSpawned  = false;
+    bossDefeated = false;
+    // 게임 시작/재시작 시 항상 마을에서 출발
+    inTown = true;
+    updateTownUI();
+
+    const stats = calcCharStats(1);
+    character = {
+        x:          TOWN_W / 2,
+        y:          TOWN_H / 2 + 10,
+        level:      1,
+        exp:        0,
+        atkTimer:   0,
+        target:     null,
+        radius:     18,
+        hitFlash:   0,
+        levelFlash: 0,
+        // HP / MP 시스템 (실제 전투용)
+        maxHP:     stats.maxHP,
+        currentHP: stats.maxHP,
+        maxMP:     stats.maxMP,
+        currentMP: stats.maxMP,
+        regenTimer: 0,      // 자연 회복 타이머 (ms)
+    };
+
+    monsters = [];
+    const monLv = stageLevel(currentStage);
+    for (let i = 0; i < MONSTER_COUNT; i++) {
+        monsters.push(spawnMonster(monLv, false, false));
+    }
+
+    addLog('게임 시작 — 1스테이지 필드에 입장했습니다.', 'info');
+    refreshUI();
+}
+
+// 몬스터 객체 생성 (isBoss: 보스 몬스터 여부)
+function spawnMonster(level, avoidCenter = true, isBoss = false) {
+    let x, y, tries = 0;
+    do {
+        x = 40 + Math.random() * (canvas.width  - 80);
+        y = 40 + Math.random() * (canvas.height - 80);
+        tries++;
+    } while (
+        tries < 40 && (
+            // 마을 구역(좌상단 TOWN_W×TOWN_H) 내에 스폰 금지
+            (x < TOWN_W + 20 && y < TOWN_H + 20) ||
+            // 캐릭터 주변 회피 (avoidCenter 옵션)
+            (avoidCenter && Math.hypot(x - character.x, y - character.y) < 120)
+        )
+    );
+
+    const baseHp = calcMonsterStats(level).maxHp;
+    const maxHp  = isBoss ? baseHp * 10 : baseHp; // 보스는 HP 10배
+    return {
+        x, y, level,
+        isBoss,
+        maxHp,
+        hp:          maxHp,
+        isDead:      false,
+        respawnLeft: 0,
+        radius:      isBoss ? 22 : 13,   // 보스는 더 큰 반지름
+        wDx: Math.cos(Math.random() * Math.PI * 2),
+        wDy: Math.sin(Math.random() * Math.PI * 2),
+        wTimer: Math.random() * 3000,
+        hitFlash: 0,
+    };
+}
+
+// 레벨에 따른 몬스터 색상 (초록 → 노랑 → 주황 → 빨강 → 보라)
+function monsterColor(level) {
+    const t = (level - 1) / (MAX_LEVEL - 1);
+    let r, g, b;
+    if      (t < 0.25) { const s=t/0.25;        r=Math.round(s*255); g=200; b=50; }
+    else if (t < 0.5)  { const s=(t-0.25)/0.25; r=255; g=Math.round(200-s*150); b=50; }
+    else if (t < 0.75) { const s=(t-0.5)/0.25;  r=255; g=Math.round(50-s*50); b=Math.round(s*100); }
+    else               { const s=(t-0.75)/0.25;  r=255; g=0; b=Math.round(100+s*155); }
+    return `rgb(${r},${g},${b})`;
+}
+
+// ────────────────────────────────────────────────
+// 게임 로직 업데이트
+// ────────────────────────────────────────────────
+function update(rawDelta) {
+    const delta = rawDelta * gameSpeed;
+
+    // 마을 체류 중이면 타겟을 해제
+    if (inTown) {
+        character.target = null;
+    } else if (!character.target || character.target.isDead) {
+        character.target = findNearest();
+    }
+
+    character.hitFlash   = Math.max(0, character.hitFlash   - delta);
+    character.levelFlash = Math.max(0, character.levelFlash - delta);
+
+    // HP / MP 자연 회복 (1초마다 회복, 마을에서는 2배 속도)
+    character.regenTimer += delta;
+    const regenTick = inTown ? 500 : 1000; // 마을에서 회복 주기 절반 (2배 빠름)
+    if (character.regenTimer >= regenTick) {
+        character.regenTimer -= regenTick;
+        const s = calcCharStats(character.level);
+        character.currentHP = Math.min(character.maxHP, character.currentHP + s.hpRegen);
+        character.currentMP = Math.min(character.maxMP, character.currentMP + s.mpRegen);
+    }
+
+    // 캐릭터 이동·공격: 마을 체류 중에는 정지
+    if (!inTown && character.currentHP > 0 && character.target) {
+        const dx   = character.target.x - character.x;
+        const dy   = character.target.y - character.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist > ATK_RANGE) {
+            const spd = MOVE_SPEED * (delta / 1000);
+            character.x += (dx / dist) * spd;
+            character.y += (dy / dist) * spd;
+        } else {
+            character.atkTimer -= delta;
+            if (character.atkTimer <= 0) {
+                character.atkTimer = ATK_INTERVAL;
+                doAttack(character.target);
+            }
+        }
+    }
+
+    character.x = Math.max(character.radius, Math.min(canvas.width  - character.radius, character.x));
+    character.y = Math.max(character.radius, Math.min(canvas.height - character.radius, character.y));
+
+    for (const m of monsters) {
+        if (m.isDead) {
+            m.respawnLeft -= delta;
+            if (m.respawnLeft <= 0) reviveMonster(m);
+        } else {
+            m.hitFlash = Math.max(0, m.hitFlash - delta);
+            m.wTimer -= delta;
+            if (m.wTimer <= 0) {
+                m.wTimer = 2000 + Math.random() * 2000;
+                const a = Math.random() * Math.PI * 2;
+                m.wDx = Math.cos(a);
+                m.wDy = Math.sin(a);
+            }
+            // 타겟 당한 몬스터는 캐릭터에게 접근하며 반격
+            // 보스는 이동·반격 속도 1.5배
+            const bossSpeedMul = m.isBoss ? 1.5 : 1.0;
+            // 마을 체류 중이면 몬스터가 캐릭터를 추적·반격하지 않음
+            if (!inTown && character.target === m && character.currentHP > 0) {
+                const mdx  = character.x - m.x;
+                const mdy  = character.y - m.y;
+                const mdist = Math.hypot(mdx, mdy);
+                if (mdist > ATK_RANGE) {
+                    const mspd = WANDER_SPEED * 1.5 * bossSpeedMul * (delta / 1000);
+                    m.x += (mdx / mdist) * mspd;
+                    m.y += (mdy / mdist) * mspd;
+                } else {
+                    // 보스 반격 주기: 기본 800~1200ms → 보스 533~800ms (1.5배 빠름)
+                    const baseTimer = Math.round((800 + Math.random() * 400) / bossSpeedMul);
+                    if (!m.atkTimer) m.atkTimer = baseTimer;
+                    m.atkTimer -= delta;
+                    if (m.atkTimer <= 0) {
+                        m.atkTimer = baseTimer;
+                        monsterAttack(m);
+                    }
+                }
+            } else {
+                m.x += m.wDx * WANDER_SPEED * bossSpeedMul * (delta / 1000);
+                m.y += m.wDy * WANDER_SPEED * bossSpeedMul * (delta / 1000);
+            }
+            if (m.x < m.radius || m.x > canvas.width  - m.radius) {
+                m.wDx *= -1;
+                m.x = Math.max(m.radius, Math.min(canvas.width  - m.radius, m.x));
+            }
+            if (m.y < m.radius || m.y > canvas.height - m.radius) {
+                m.wDy *= -1;
+                m.y = Math.max(m.radius, Math.min(canvas.height - m.radius, m.y));
+            }
+            // 마을 구역(좌상단) 진입 방지: 경계에서 튕겨냄
+            if (m.x - m.radius < TOWN_W && m.y - m.radius < TOWN_H) {
+                const overX = TOWN_W - (m.x - m.radius);
+                const overY = TOWN_H - (m.y - m.radius);
+                if (overX < overY) {
+                    m.x = TOWN_W + m.radius;
+                    m.wDx = Math.abs(m.wDx); // 오른쪽으로 방향 전환
+                } else {
+                    m.y = TOWN_H + m.radius;
+                    m.wDy = Math.abs(m.wDy); // 아래로 방향 전환
+                }
+            }
+        }
+    }
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.y  += p.vy * (delta / 1000);
+        p.vy *= 0.94;
+        p.life -= delta;
+        if (p.life <= 0) particles.splice(i, 1);
+    }
+}
+
+function findNearest() {
+    let best = null, minD = Infinity;
+    for (const m of monsters) {
+        if (m.isDead) continue;
+        const d = Math.hypot(m.x - character.x, m.y - character.y);
+        if (d < minD) { minD = d; best = m; }
+    }
+    return best;
+}
+
+// 캐릭터 → 몬스터 공격
+function doAttack(m) {
+    const cStats = calcCharStats(character.level);
+    const mStats = calcMonsterStats(m.level);
+
+    // ── 명중 판정 (PVE: 공격자=PC, 방어자=Monster)
+    // ResultMeleeAvoidanceRate = 방어자 회피 - 공격자 명중
+    if (!judgeHit(cStats.meleeAccuracy, mStats.meleeEvasion)) {
+        // 회피 성공 (Miss)
+        m.hitFlash = 80;
+        particles.push({ x: m.x, y: m.y - m.radius - 4, text: 'MISS', color: '#8b949e', vy: -55, life: 700 });
+        addLog(`⚡ 공격 → Miss! (명중:${cStats.meleeAccuracy} / 몬스터 회피:${mStats.meleeEvasion})`, 'miss');
+        return;
+    }
+
+    // ── 치명타 판정
+    const isCrit = (Math.random() * 100) < cStats.critRate;
+
+    // ── 데미지 계산
+    const rawAtk  = cStats.meleeMinAtk + Math.floor(Math.random() * (cStats.meleeMaxAtk - cStats.meleeMinAtk + 1));
+    let   dmg     = Math.max(1, rawAtk - mStats.meleeDef);
+    if (isCrit) dmg = Math.floor(dmg * cStats.critMul / 100);
+
+    m.hp          -= dmg;
+    m.hitFlash     = 150;
+
+    const color = isCrit ? '#ffd700' : '#ff7675';
+    const label = isCrit ? `💥 ${dmg}!` : `-${dmg}`;
+    particles.push({ x: m.x + (Math.random() - 0.5) * 14, y: m.y - m.radius - 4, text: label, color, vy: -65, life: 750 });
+
+    if (isCrit)
+        addLog(`⚡ 크리티컬! → Lv.${m.level} 몬스터 ${dmg} 데미지 (공격:${rawAtk} 근거리방어:${mStats.meleeDef})`, 'crit');
+    else
+        addLog(`⚔ Lv.${m.level} 몬스터 ${dmg} 데미지 (공격:${rawAtk} 근거리방어:${mStats.meleeDef})`, 'normal');
+
+    if (m.hp <= 0) killMonster(m);
+}
+
+// 몬스터 → 캐릭터 반격
+function monsterAttack(m) {
+    const cStats = calcCharStats(character.level);
+    const mStats = calcMonsterStats(m.level);
+
+    // ── 명중 판정 (PVE: 공격자=Monster, 방어자=PC)
+    if (!judgeHit(mStats.meleeAccuracy, cStats.meleeEvasion)) {
+        particles.push({ x: character.x, y: character.y - character.radius - 4, text: 'MISS', color: '#58a6ff', vy: -50, life: 650 });
+        return;
+    }
+
+    // ── 치명타 판정
+    const isCrit = (Math.random() * 100) < mStats.critRate;
+
+    // ── 데미지 계산
+    const rawAtk = mStats.meleeMinAtk + Math.floor(Math.random() * (mStats.meleeMaxAtk - mStats.meleeMinAtk + 1));
+    let   dmg    = Math.max(1, rawAtk - cStats.meleeDef); // 몬스터는 근거리 공격
+    if (isCrit) dmg = Math.floor(dmg * mStats.critMul / 100);
+
+    character.currentHP -= dmg;
+    character.hitFlash   = 200;
+
+    const color = isCrit ? '#ff4444' : '#ff7675';
+    const label = isCrit ? `💥 -${dmg}!` : `-${dmg}`;
+    particles.push({ x: character.x + (Math.random() - 0.5) * 12, y: character.y - character.radius - 4, text: label, color, vy: -55, life: 700 });
+
+    if (isCrit)
+        addLog(`⚡ 몬스터 크리티컬! → 캐릭터 ${dmg} 피해`, 'damage');
+    else
+        addLog(`🩸 몬스터 반격 → 캐릭터 ${dmg} 피해 (HP: ${Math.max(0, character.currentHP)}/${character.maxHP})`, 'damage');
+
+    if (character.currentHP <= 0) {
+        character.currentHP = 0;
+        addLog('💀 캐릭터 사망! 3초 후 부활합니다...', 'kill');
+        // 부활: 3초 후 HP 완전 회복
+        setTimeout(() => {
+            character.currentHP = character.maxHP;
+            character.currentMP = character.maxMP;
+            character.target    = null;
+            addLog('✨ 부활했습니다!', 'levelup');
+            refreshUI();
+        }, 3000);
+    }
+    refreshUI();
+}
+
+function killMonster(m) {
+    m.isDead      = true;
+    m.respawnLeft = m.isBoss ? 0 : RESPAWN_DELAY; // 보스는 부활하지 않음
+    character.target = null;
+    totalKills++;
+    character.exp++;
+
+    const starCount = m.isBoss ? 12 : 5;
+    const starColor = m.isBoss ? '#ff4444' : '#f9ca24';
+    for (let i = 0; i < starCount; i++) {
+        particles.push({
+            x: m.x + (Math.random() - 0.5) * 20,
+            y: m.y,
+            text: m.isBoss ? '💀' : '★',
+            color: starColor,
+            vy: -80 + Math.random() * 40,
+            life: 700 + Math.random() * 400,
+        });
+    }
+
+    // ── 보스 처치 → 스테이지 상승
+    if (m.isBoss) {
+        bossDefeated = true;
+        addLog(`💀 보스 처치! [${currentStage}스테이지] 클리어!`, 'kill');
+        advanceStage();
+        refreshUI();
+        return;
+    }
+
+    // ── 일반 몬스터 처치
+    stageKills++;
+    const need = expNeeded(character.level);
+    addLog(`Lv.${m.level} 몬스터 처치 (${stageKills}/${bossRequiredKills(currentStage)}) → EXP ${character.exp}/${need}`, 'kill');
+
+    // 보스 등장 조건 확인
+    if (!bossSpawned && stageKills >= bossRequiredKills(currentStage)) {
+        spawnBossMonster();
+    }
+
+    // 레벨업 처리
+    while (character.exp >= expNeeded(character.level)) {
+        character.exp -= expNeeded(character.level);
+        character.level++;
+
+        if (character.level > MAX_LEVEL) {
+            character.level = 1;
+            character.exp   = 0;
+            addLog('🎊 MAX 레벨(300) 달성! 레벨이 1로 초기화됩니다.', 'reset');
+            character.levelFlash = 1200;
+            onLevelChanged(true);
+            break;
+        }
+
+        addLog(`⬆ 레벨 업! Lv.${character.level}  (다음 레벨: ${expNeeded(character.level)} EXP)`, 'levelup');
+        character.levelFlash = 600;
+        onLevelChanged(true); // 레벨업 = 완전 회복 + 스탯 즉시 재계산
+    }
+    refreshUI();
+}
+
+// 보스 몬스터 등장
+function spawnBossMonster() {
+    bossSpawned = true;
+    const monLv = stageLevel(currentStage);
+    const boss  = spawnMonster(monLv, true, true);
+    monsters.push(boss);
+    addLog(`🔥 보스 등장! [${currentStage}스테이지] Lv.${monLv} 보스 — HP ${boss.maxHp}`, 'kill');
+
+    // 보스 등장 화면 플래시
+    for (let i = 0; i < 8; i++) {
+        particles.push({
+            x: boss.x + (Math.random() - 0.5) * 40,
+            y: boss.y - 20,
+            text: '⚠',
+            color: '#ff4500',
+            vy: -60 + Math.random() * 30,
+            life: 1000 + Math.random() * 500,
+        });
+    }
+}
+
+// 스테이지 클리어 → 다음 스테이지로
+function advanceStage() {
+    if (currentStage >= MAX_STAGE) {
+        addLog('🏆 전체 스테이지 클리어! 최고 단계에 도달했습니다.', 'reset');
+        return;
+    }
+
+    currentStage++;
+    stageKills   = 0;
+    bossSpawned  = false;
+    bossDefeated = false;
+
+    addLog(`▶ ${currentStage}스테이지 시작! 몬스터 레벨: ${stageLevel(currentStage)}`, 'info');
+
+    // 기존 일반 몬스터들을 새 스테이지 레벨로 교체
+    const monLv = stageLevel(currentStage);
+    // 보스(isBoss)는 제거, 일반 몬스터만 새로 세팅
+    for (let i = monsters.length - 1; i >= 0; i--) {
+        if (monsters[i].isBoss) { monsters.splice(i, 1); }
+    }
+    // 살아있는 일반 몬스터 레벨 갱신
+    for (const m of monsters) {
+        if (!m.isDead) {
+            m.level  = monLv;
+            m.maxHp  = calcMonsterStats(monLv).maxHp;
+            m.hp     = m.maxHp;
+        }
+    }
+    // 죽은 몬스터도 레벨 업데이트
+    for (const m of monsters) {
+        if (m.isDead) {
+            m.level       = monLv;
+            m.maxHp       = calcMonsterStats(monLv).maxHp;
+            m.respawnLeft = Math.min(m.respawnLeft, RESPAWN_DELAY);
+        }
+    }
+}
+
+function upgradeLivingMonsters() {
+    // 몬스터 레벨은 스테이지 기준 — 캐릭터 레벨업 시에도 변경 없음
+}
+
+function resetAllMonsters() {
+    const monLv = stageLevel(currentStage);
+    // 보스는 제거
+    for (let i = monsters.length - 1; i >= 0; i--) {
+        if (monsters[i].isBoss) monsters.splice(i, 1);
+    }
+    for (const m of monsters) {
+        m.isDead = false; m.respawnLeft = 0;
+        m.level  = monLv;
+        m.maxHp  = calcMonsterStats(monLv).maxHp;
+        m.hp     = m.maxHp;
+        m.x = 40 + Math.random() * (canvas.width  - 80);
+        m.y = 40 + Math.random() * (canvas.height - 80);
+        m.hitFlash = 0;
+        const a = Math.random() * Math.PI * 2;
+        m.wDx = Math.cos(a); m.wDy = Math.sin(a);
+        m.wTimer = Math.random() * 3000;
+    }
+}
+
+function reviveMonster(m) {
+    // 보스 몬스터는 부활하지 않음 — 배열에서 제거
+    if (m.isBoss) {
+        const idx = monsters.indexOf(m);
+        if (idx !== -1) monsters.splice(idx, 1);
+        return;
+    }
+
+    let x, y, tries = 0;
+    do {
+        x = 40 + Math.random() * (canvas.width  - 80);
+        y = 40 + Math.random() * (canvas.height - 80);
+        tries++;
+    } while (Math.hypot(x - character.x, y - character.y) < 90 && tries < 30);
+
+    const monLv = stageLevel(currentStage);
+    m.x = x; m.y = y;
+    m.level       = monLv;
+    m.maxHp       = calcMonsterStats(monLv).maxHp;
+    m.hp          = m.maxHp;
+    m.isDead      = false;
+    m.respawnLeft = 0;
+    m.hitFlash    = 0;
+    const a = Math.random() * Math.PI * 2;
+    m.wDx = Math.cos(a); m.wDy = Math.sin(a);
+    m.wTimer = Math.random() * 3000;
+}
+
+function expNeeded(lv) { return lv * 10; }
+
+// ────────────────────────────────────────────────
+// 렌더링
+// ────────────────────────────────────────────────
+function draw() {
+    const W = canvas.width, H = canvas.height;
+
+    ctx.fillStyle = '#1a2a1a';
+    ctx.fillRect(0, 0, W, H);
+
+    // 격자
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += GRID_G) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (let y = 0; y < H; y += GRID_G) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    // ── 마을 구역 (좌상단 TOWN_W × TOWN_H)
+    drawTownZone(W, H);
+
+    // 레벨업 플래시
+    if (character.levelFlash > 0) {
+        const a = (character.levelFlash / 1200) * 0.25;
+        ctx.fillStyle = `rgba(255,215,0,${a})`;
+        ctx.fillRect(0, 0, W, H);
+    }
+
+    // 보스 등장 시 화면 붉은 경계선 효과 (맥동)
+    if (bossSpawned && !bossDefeated) {
+        const pulse = 0.04 + 0.03 * Math.sin(Date.now() / 400);
+        ctx.fillStyle = `rgba(180,0,0,${pulse})`;
+        ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = `rgba(255,50,0,${pulse * 4})`;
+        ctx.lineWidth = 6;
+        ctx.strokeRect(3, 3, W - 6, H - 6);
+    }
+
+    // 스테이지 정보 캔버스 오버레이 (우상단)
+    ctx.save();
+    ctx.fillStyle = bossSpawned && !bossDefeated ? 'rgba(255,80,0,0.85)' : 'rgba(0,0,0,0.55)';
+    ctx.font = 'bold 12px Arial';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText(
+        bossSpawned && !bossDefeated
+            ? `⚠ ${currentStage.toLocaleString()}스테이지 보스`
+            : `${currentStage.toLocaleString()}스테이지  ${stageKills}/${bossRequiredKills(currentStage)}킬`,
+        W - 8, 8
+    );
+    ctx.restore();
+
+    // 일시정지 중에도 마지막 프레임 표시 (정적으로 유지)
+    for (const m of monsters) drawMonster(m);
+    drawCharacter();
+
+    // 파티클
+    for (const p of particles) {
+        const a = Math.max(0, p.life / 700);
+        ctx.globalAlpha   = a;
+        ctx.fillStyle     = p.color;
+        ctx.font          = 'bold 13px Arial';
+        ctx.textAlign     = 'center';
+        ctx.textBaseline  = 'middle';
+        ctx.fillText(p.text, p.x, p.y);
+    }
+    ctx.globalAlpha = 1;
+}
+
+// 악마 스프라이트 — 보스 몬스터 전용 (뿔, 날개, 빛나는 눈, 송곳니)
+function drawDemonSprite(cx, cy, r, bodyColor) {
+    const isFlash  = bodyColor === '#ffffff';
+    const body     = isFlash ? '#ffffff' : '#7a0000';
+    const bodyDark = isFlash ? '#cccccc' : '#440000';
+    const hornCol  = isFlash ? '#ffffff' : '#cc3300';
+    const eyeCol   = isFlash ? '#ffffff' : '#ff5500';
+    const wingCol  = isFlash ? 'rgba(200,200,200,0.75)' : 'rgba(55,0,0,0.88)';
+    const wingLine = isFlash ? '#bbb' : '#550000';
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // 지면 그림자
+    ctx.fillStyle = 'rgba(80,0,0,0.32)';
+    ctx.beginPath();
+    ctx.ellipse(0, r*0.92, r*0.68, r*0.18, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // ── 날개 (몸통 뒤) ──
+    const drawWing = (s) => {
+        ctx.fillStyle = wingCol;
+        ctx.strokeStyle = isFlash ? '#999' : '#2a0000';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(s*r*0.28, -r*0.18);
+        ctx.quadraticCurveTo(s*r*1.28, -r*0.95, s*r*1.12, r*0.45);
+        ctx.quadraticCurveTo(s*r*0.85,  r*0.18,  s*r*0.28,  r*0.32);
+        ctx.closePath();
+        ctx.fill(); ctx.stroke();
+        // 날개 갈비뼈 선
+        ctx.strokeStyle = wingLine; ctx.lineWidth = 0.9;
+        ctx.beginPath();
+        ctx.moveTo(s*r*0.28,-r*0.08); ctx.quadraticCurveTo(s*r*1.05,-r*0.55,s*r*1.08,r*0.28);
+        ctx.moveTo(s*r*0.28, r*0.08); ctx.quadraticCurveTo(s*r*0.78,-r*0.28,s*r*1.0, r*0.38);
+        ctx.stroke();
+    };
+    drawWing(-1); drawWing(1);
+
+    // ── 몸통 ──
+    ctx.fillStyle = '#050000'; // 외곽 그림자
+    ctx.beginPath(); ctx.ellipse(0,r*0.18,r*0.46,r*0.62,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = body;
+    ctx.beginPath(); ctx.ellipse(0,r*0.18,r*0.43,r*0.59,0,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5; ctx.stroke();
+    // 몸통 근육선
+    ctx.strokeStyle = bodyDark; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0,-r*0.3); ctx.lineTo(0,r*0.6); ctx.stroke();
+
+    // ── 머리 ──
+    ctx.fillStyle = '#050000';
+    ctx.beginPath(); ctx.ellipse(0,-r*0.54,r*0.40,r*0.38,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = body;
+    ctx.beginPath(); ctx.ellipse(0,-r*0.53,r*0.37,r*0.36,0,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // ── 뿔 ──
+    ctx.strokeStyle = '#000'; ctx.lineWidth = 5.5; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-r*0.22,-r*0.80); ctx.quadraticCurveTo(-r*0.58,-r*1.18,-r*0.34,-r*1.32); ctx.stroke();
+    ctx.moveTo( r*0.22,-r*0.80); ctx.quadraticCurveTo( r*0.58,-r*1.18, r*0.34,-r*1.32); ctx.stroke();
+    ctx.strokeStyle = hornCol; ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.moveTo(-r*0.22,-r*0.80); ctx.quadraticCurveTo(-r*0.56,-r*1.16,-r*0.33,-r*1.30); ctx.stroke();
+    ctx.moveTo( r*0.22,-r*0.80); ctx.quadraticCurveTo( r*0.56,-r*1.16, r*0.33,-r*1.30); ctx.stroke();
+
+    // ── 눈 (발광) ──
+    ctx.save();
+    ctx.shadowColor = eyeCol; ctx.shadowBlur = 12;
+    ctx.fillStyle   = eyeCol;
+    ctx.beginPath(); ctx.ellipse(-r*0.15,-r*0.58,r*0.10,r*0.07,0,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse( r*0.15,-r*0.58,r*0.10,r*0.07,0,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = '#ff0000';
+    ctx.beginPath(); ctx.arc(-r*0.15,-r*0.58,r*0.05,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc( r*0.15,-r*0.58,r*0.05,0,Math.PI*2); ctx.fill();
+
+    // ── 송곳니 ──
+    ctx.fillStyle = isFlash ? '#ddd' : '#f4f0e0';
+    ctx.strokeStyle = '#555'; ctx.lineWidth = 0.6;
+    [[-0.10,-0.22],[ 0.02,-0.22]].forEach(([ox, bot]) => {
+        ctx.beginPath();
+        ctx.moveTo((ox-0.04)*r, -r*0.35);
+        ctx.lineTo((ox)*r,       r*bot);
+        ctx.lineTo((ox+0.04)*r, -r*0.35);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+    });
+
+    // ── 발톱 ──
+    ctx.fillStyle = isFlash ? '#ccc' : '#1a0000';
+    ctx.strokeStyle = '#000'; ctx.lineWidth = 0.8;
+    [-0.18,0,0.18].forEach(ox => {
+        ctx.beginPath();
+        ctx.moveTo(ox*r, r*0.68);
+        ctx.lineTo((ox-0.06)*r, r*0.84);
+        ctx.lineTo((ox+0.06)*r, r*0.84);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+    });
+
+    ctx.restore();
+}
+
+function drawMonster(m) {
+    if (m.isDead) {
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = '#555';
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#888';
+        ctx.font = 'bold 11px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const sec = Math.ceil(m.respawnLeft / 1000 / gameSpeed);
+        ctx.fillText(sec + 's', m.x, m.y);
+        return;
+    }
+
+    const isTarget = (character.target === m);
+
+    if (isTarget) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,100,0.9)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 3]);
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.radius + 7, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // 보스 외곽 발광 효과
+    if (m.isBoss) {
+        const pulse = 0.3 + 0.2 * Math.sin(Date.now() / 300); // 맥동 효과
+        ctx.save();
+        ctx.shadowColor = '#ff2200';
+        ctx.shadowBlur  = 18;
+        ctx.strokeStyle = `rgba(255,34,0,${pulse})`;
+        ctx.lineWidth   = 3;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.radius + 5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // 몬스터 본체 색상: 보스는 위험한 짙은 빨강 계열
+    let bodyColor;
+    if (m.hitFlash > 0) {
+        bodyColor = '#ffffff';
+    } else if (m.isBoss) {
+        bodyColor = '#cc0000'; // 보스: 짙은 빨강
+    } else {
+        bodyColor = monsterColor(m.level);
+    }
+
+    if (m.isBoss) {
+        // 보스: 악마 스프라이트
+        drawDemonSprite(m.x, m.y, m.radius, bodyColor);
+    } else {
+        // 일반 몬스터: 원형
+        ctx.fillStyle = bodyColor;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = isTarget ? '#ffff64' : 'rgba(0,0,0,0.6)';
+        ctx.lineWidth   = isTarget ? 2 : 1;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        ctx.font = 'bold 10px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('M', m.x, m.y);
+    }
+
+    // HP 바 (showHPBars가 true일 때만 표시)
+    if (showHPBars) {
+        const bW = m.isBoss ? 60 : 34, bH = m.isBoss ? 7 : 5;
+        // 보스는 뿔이 radius*1.3 위까지 올라오므로 HP바를 더 높이 배치
+        const bX = m.x - bW/2, bY = m.y - m.radius - (m.isBoss ? Math.round(m.radius*1.4) : 11);
+        const hpR = m.hp / m.maxHp;
+        ctx.fillStyle = m.isBoss ? '#330000' : '#222';
+        ctx.fillRect(bX, bY, bW, bH);
+        ctx.fillStyle = m.isBoss
+            ? (hpR > 0.5 ? '#ff6600' : hpR > 0.25 ? '#ff3300' : '#cc0000')
+            : (hpR > 0.5 ? '#3fb950' : hpR > 0.25 ? '#d29922' : '#f85149');
+        ctx.fillRect(bX, bY, bW * hpR, bH);
+        ctx.strokeStyle = m.isBoss ? '#660000' : '#111';
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(bX, bY, bW, bH);
+
+        ctx.fillStyle = m.isBoss ? '#ff9966' : '#ccc';
+        ctx.font = m.isBoss ? 'bold 9px Arial' : '9px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(m.isBoss ? `[BOSS] Lv.${m.level}` : `Lv.${m.level}`, m.x, bY - 2);
+        ctx.fillStyle = '#aaa';
+        ctx.font = '8px Arial';
+        ctx.textBaseline = 'top';
+        ctx.fillText(`${m.hp}/${m.maxHp}`, m.x, bY + bH + 1);
+    }
+}
+
+// ── 마을 구역 그리기
+function drawTownZone(W, H) {
+    ctx.save();
+
+    // ── 마을 바닥: 따뜻한 돌바닥 갈색 (필드 #1a2a1a 숲 초록과 명확히 대비)
+    ctx.fillStyle = '#2b1f10';
+    ctx.fillRect(0, 0, TOWN_W, TOWN_H);
+
+    // ── 돌 타일 패턴 (20×20 격자, 교차 행 오프셋으로 벽돌 느낌)
+    const TILE = 20;
+    ctx.strokeStyle = 'rgba(90,60,25,0.55)';
+    ctx.lineWidth = 0.8;
+    for (let row = 0; row * TILE < TOWN_H; row++) {
+        const offset = (row % 2 === 0) ? 0 : TILE / 2;
+        for (let col = -1; col * TILE + offset < TOWN_W + TILE; col++) {
+            const tx = col * TILE + offset;
+            const ty = row * TILE;
+            // 타일 내부를 약간 밝게
+            ctx.fillStyle = (row + col) % 2 === 0
+                ? 'rgba(180,120,55,0.07)'
+                : 'rgba(130,85,35,0.05)';
+            ctx.fillRect(tx, ty, TILE - 1, TILE - 1);
+            ctx.strokeRect(tx, ty, TILE - 1, TILE - 1);
+        }
+    }
+
+    // ── 마을 체류 시 따뜻한 황금빛 안전 오버레이 (맥동)
+    if (inTown) {
+        const pulse = 0.05 + 0.03 * Math.sin(Date.now() / 600);
+        ctx.fillStyle = `rgba(210,160,60,${pulse})`;
+        ctx.fillRect(0, 0, TOWN_W, TOWN_H);
+    }
+
+    // ── 경계선: 황금빛(체류) / 주황(대기)
+    const borderColor = inTown ? '#d4a017' : '#8a5a1a';
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth   = inTown ? 2.5 : 1.5;
+    ctx.strokeRect(1, 1, TOWN_W - 2, TOWN_H - 2);
+
+    // ── 마을 타이틀
+    ctx.fillStyle    = inTown ? '#ffd700' : '#c8832a';
+    ctx.font         = 'bold 13px Arial';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('🏠 마을', TOWN_W / 2, 8);
+
+    // ── 스테이지 귀환처 이름
+    ctx.fillStyle = `rgba(200,130,50,${inTown ? 0.9 : 0.6})`;
+    ctx.font      = '10px Arial';
+    ctx.fillText(`${currentStage.toLocaleString()}스테이지 귀환처`, TOWN_W / 2, 26);
+
+    // ── 안전 구역 표시 (중앙)
+    ctx.fillStyle    = inTown ? 'rgba(255,215,0,0.95)' : 'rgba(200,130,50,0.5)';
+    ctx.font         = inTown ? 'bold 11px Arial' : '10px Arial';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(inTown ? '🛡 안전 구역 — 전투 정지' : '안전 구역', TOWN_W / 2, TOWN_H / 2 + 10);
+
+    // ── 힌트 (마을 체류 시)
+    if (inTown) {
+        ctx.fillStyle = 'rgba(248,81,73,0.75)';
+        ctx.font      = '9px Arial';
+        ctx.fillText('사이드바 [전투 재개] 버튼으로 나가기', TOWN_W / 2, TOWN_H - 14);
+    }
+
+    // ── 필드와의 경계: 오른쪽·아래쪽에 그림자 효과
+    const grad = ctx.createLinearGradient(TOWN_W - 20, 0, TOWN_W, 0);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.45)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(TOWN_W - 20, 0, 20, TOWN_H);
+
+    const gradB = ctx.createLinearGradient(0, TOWN_H - 20, 0, TOWN_H);
+    gradB.addColorStop(0, 'rgba(0,0,0,0)');
+    gradB.addColorStop(1, 'rgba(0,0,0,0.45)');
+    ctx.fillStyle = gradB;
+    ctx.fillRect(0, TOWN_H - 20, TOWN_W, 20);
+
+    // ── 경계 강조선
+    ctx.strokeStyle = 'rgba(200,130,50,0.5)';
+    ctx.lineWidth   = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(TOWN_W, 0); ctx.lineTo(TOWN_W, TOWN_H);
+    ctx.moveTo(0, TOWN_H); ctx.lineTo(TOWN_W, TOWN_H);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.restore();
+}
+
+// 기사 스프라이트 — canvas 벡터로 그린 갑옷 기사
+// armorColor: 갑옷 주색 (플래시 상태 반영됨)
+function drawKnightSprite(cx, cy, r, armorColor) {
+    const outline = '#080808';          // 강한 다크 외곽선
+    const trim    = '#f0c030';          // 밝은 금장
+    const metal   = '#e8f4ff';          // 밝은 검날 은색
+    const visor   = 'rgba(5,10,22,0.95)'; // 바이저 슬릿
+    const grip    = '#7a5418';          // 손잡이
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // 지면 그림자
+    ctx.fillStyle = 'rgba(0,0,0,0.28)';
+    ctx.beginPath();
+    ctx.ellipse(0, r * 0.92, r * 0.68, r * 0.18, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ── 검 (몸통보다 먼저 그려 뒤에 위치) ──
+    ctx.save();
+    // 검날 외곽
+    ctx.strokeStyle = outline;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(r * 0.56, r * 0.52);
+    ctx.lineTo(r * 0.56, -r * 0.8);
+    ctx.stroke();
+    // 검날 색
+    ctx.strokeStyle = metal;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(r * 0.56, r * 0.52);
+    ctx.lineTo(r * 0.56, -r * 0.8);
+    ctx.stroke();
+    // 검 끝 (외곽 → 색)
+    ctx.fillStyle = outline;
+    ctx.beginPath();
+    ctx.moveTo(r*0.44,-r*0.73); ctx.lineTo(r*0.56,-r*1.02); ctx.lineTo(r*0.68,-r*0.73); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = metal;
+    ctx.beginPath();
+    ctx.moveTo(r*0.46,-r*0.74); ctx.lineTo(r*0.56,-r*1.0); ctx.lineTo(r*0.66,-r*0.74); ctx.closePath(); ctx.fill();
+    // 가드
+    ctx.fillStyle = outline;
+    ctx.fillRect(r*0.30, -r*0.06, r*0.52, r*0.13);
+    ctx.fillStyle = trim;
+    ctx.fillRect(r*0.32, -r*0.04, r*0.48, r*0.10);
+    // 손잡이
+    ctx.strokeStyle = outline; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(r*0.56,r*0.06); ctx.lineTo(r*0.56,r*0.42); ctx.stroke();
+    ctx.strokeStyle = grip; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(r*0.56,r*0.06); ctx.lineTo(r*0.56,r*0.42); ctx.stroke();
+    ctx.restore();
+
+    // ── 방패 (왼쪽) ── 외곽 먼저, 색 위에
+    ctx.beginPath();
+    ctx.moveTo(-r*0.88,-r*0.18); ctx.lineTo(-r*0.36,-r*0.18);
+    ctx.lineTo(-r*0.36,r*0.52);  ctx.lineTo(-r*0.62,r*0.72);
+    ctx.lineTo(-r*0.88,r*0.52);  ctx.closePath();
+    ctx.fillStyle = outline; ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-r*0.86,-r*0.16); ctx.lineTo(-r*0.38,-r*0.16);
+    ctx.lineTo(-r*0.38,r*0.50);  ctx.lineTo(-r*0.62,r*0.70);
+    ctx.lineTo(-r*0.86,r*0.50);  ctx.closePath();
+    ctx.fillStyle = armorColor; ctx.fill();
+    ctx.strokeStyle = trim; ctx.lineWidth = 1.2; ctx.stroke();
+    // 방패 십자 문양
+    ctx.strokeStyle = trim; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-r*0.62,r*0.04); ctx.lineTo(-r*0.62,r*0.50);
+    ctx.moveTo(-r*0.84,r*0.27); ctx.lineTo(-r*0.40,r*0.27);
+    ctx.stroke();
+
+    // ── 몸통 갑옷 ── 외곽 → 색
+    ctx.fillStyle = outline;
+    ctx.beginPath(); ctx.roundRect(-r*0.32,-r*0.28,r*0.66,r*0.90,4); ctx.fill();
+    ctx.fillStyle = armorColor;
+    ctx.beginPath(); ctx.roundRect(-r*0.30,-r*0.26,r*0.62,r*0.86,3); ctx.fill();
+    ctx.strokeStyle = trim; ctx.lineWidth = 1; ctx.stroke();
+    // 몸통 세로 선 장식
+    ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-r*0.08,-r*0.10); ctx.lineTo(-r*0.08,r*0.50);
+    ctx.moveTo( r*0.08,-r*0.10); ctx.lineTo( r*0.08,r*0.50);
+    ctx.stroke();
+
+    // ── 어깨 보호대 ──
+    const drawPauldron = (sx) => {
+        ctx.fillStyle = outline;
+        ctx.beginPath(); ctx.ellipse(sx*r*0.43,-r*0.28,r*0.21,r*0.13,sx*0.25,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle = armorColor;
+        ctx.beginPath(); ctx.ellipse(sx*r*0.42,-r*0.27,r*0.19,r*0.11,sx*0.25,0,Math.PI*2); ctx.fill();
+        ctx.strokeStyle = trim; ctx.lineWidth = 1; ctx.stroke();
+    };
+    drawPauldron(-1); drawPauldron(1);
+
+    // ── 투구 ── 외곽 → 색
+    ctx.fillStyle = outline;
+    ctx.beginPath();
+    ctx.arc(0,-r*0.54,r*0.45,Math.PI,0);
+    ctx.lineTo(r*0.45,-r*0.21); ctx.lineTo(-r*0.45,-r*0.21); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = armorColor;
+    ctx.beginPath();
+    ctx.arc(0,-r*0.54,r*0.43,Math.PI,0);
+    ctx.lineTo(r*0.43,-r*0.22); ctx.lineTo(-r*0.43,-r*0.22); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = trim; ctx.lineWidth = 1; ctx.stroke();
+    // 챙
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.fillRect(-r*0.43,-r*0.30,r*0.86,r*0.10);
+    // 바이저 슬릿
+    ctx.fillStyle = visor;
+    ctx.beginPath(); ctx.roundRect(-r*0.27,-r*0.57,r*0.20,r*0.09,2); ctx.fill();
+    ctx.beginPath(); ctx.roundRect( r*0.07,-r*0.57,r*0.20,r*0.09,2); ctx.fill();
+    // 투구 능선
+    ctx.strokeStyle = trim; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(0,-r*0.97); ctx.lineTo(0,-r*0.22); ctx.stroke();
+
+    ctx.restore();
+}
+
+function drawCharacter() {
+    const c = character;
+
+    // 공격 범위
+    ctx.strokeStyle = 'rgba(88,166,255,0.10)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, ATK_RANGE, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 타겟 연결선
+    if (c.target && !c.target.isDead) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,100,0.25)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 5]);
+        ctx.beginPath();
+        ctx.moveTo(c.x, c.y);
+        ctx.lineTo(c.target.x, c.target.y);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // 갑옷 주색 — 밝은 은백 계열로 어두운 필드 배경과 확실히 대비
+    const armorColor = c.hitFlash > 0   ? '#ffffff'
+                     : c.levelFlash > 0 ? '#ffd700'
+                     : inTown           ? `hsl(135,55%,${60 + 12 * Math.sin(Date.now() / 600)}%)`
+                     : '#c8e0f8';  // 밝은 은빛 강철
+
+    // 항상 표시되는 파란 기준 외곽 발광 (가시성 확보)
+    ctx.save();
+    ctx.shadowColor = '#4488ff';
+    ctx.shadowBlur  = 12;
+    ctx.strokeStyle = 'rgba(100,180,255,0.55)';
+    ctx.lineWidth   = 2.5;
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.radius + 6, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    // 마을 체류 / 레벨업 시 추가 발광
+    if (inTown || c.levelFlash > 0) {
+        ctx.save();
+        ctx.shadowColor = c.levelFlash > 0 ? '#ffd700' : '#3fb950';
+        ctx.shadowBlur  = 20;
+        ctx.strokeStyle = c.levelFlash > 0 ? 'rgba(255,215,0,0.8)' : 'rgba(63,185,80,0.7)';
+        ctx.lineWidth   = 3;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.radius + 7, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // 피격 시 빨간 강한 링
+    if (c.hitFlash > 0) {
+        ctx.save();
+        ctx.shadowColor = '#f85149';
+        ctx.shadowBlur  = 16;
+        ctx.strokeStyle = 'rgba(248,81,73,0.9)';
+        ctx.lineWidth   = 3;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.radius + 5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // 기사 스프라이트 그리기
+    drawKnightSprite(c.x, c.y, c.radius, armorColor);
+
+    // 레벨 텍스트 (투구 위)
+    ctx.fillStyle = c.levelFlash > 0 ? '#ffd700' : '#e6edf3';
+    ctx.font = 'bold 11px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(`Lv.${c.level}`, c.x, c.y - c.radius - 6);
+
+    // 캐릭터 HP 바 (showHPBars가 true일 때만 표시)
+    if (showHPBars) {
+        const bW = 50, bH = 5;
+        const bX = c.x - bW / 2;
+        const bY = c.y + c.radius + 10;
+        const hpR = Math.max(0, c.currentHP / c.maxHP);
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(bX, bY, bW, bH);
+        ctx.fillStyle = hpR > 0.5 ? '#3fb950' : hpR > 0.25 ? '#d29922' : '#f85149';
+        ctx.fillRect(bX, bY, bW * hpR, bH);
+        ctx.strokeStyle = '#111';
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(bX, bY, bW, bH);
+        ctx.fillStyle = '#aaa';
+        ctx.font = '8px Arial';
+        ctx.textBaseline = 'top';
+        ctx.fillText(`${Math.max(0, c.currentHP)}/${c.maxHP}`, c.x, bY + bH + 1);
+    }
+
+    // 사망 상태 표시
+    if (c.currentHP <= 0) {
+        ctx.fillStyle = 'rgba(248,81,73,0.8)';
+        ctx.font = 'bold 12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('💀 사망', c.x, c.y);
+    }
+}
+
+// ────────────────────────────────────────────────
+// UI 갱신
+// ────────────────────────────────────────────────
+function refreshUI() {
+    if (gameState === 'title') return;
+    const need   = expNeeded(character.level);
+    const expPct = Math.min(100, (character.exp / need) * 100).toFixed(1);
+
+    document.getElementById('h-level').textContent    = character.level;
+    document.getElementById('h-kills').textContent    = totalKills;
+    document.getElementById('h-exp-bar').style.width  = expPct + '%';
+    document.getElementById('h-exp-text').textContent = `${character.exp} / ${need}`;
+    document.getElementById('h-stage').textContent    = currentStage.toLocaleString();
+
+    document.getElementById('s-level').textContent    = character.level;
+    document.getElementById('s-exp').textContent      = `${character.exp} / ${need}`;
+    document.getElementById('s-kills').textContent    = totalKills;
+    document.getElementById('s-monlevel').textContent = stageLevel(currentStage);
+    document.getElementById('level-input').value      = character.level;
+
+    // 스테이지 정보 갱신
+    document.getElementById('s-stage').textContent       = currentStage.toLocaleString();
+    const bossNeed = bossRequiredKills(currentStage);
+    document.getElementById('s-stage-kills').textContent = `${stageKills} / ${bossNeed}`;
+    const bossEl = document.getElementById('s-boss-status');
+    if (bossDefeated) {
+        bossEl.textContent = '처치 완료 ✓'; bossEl.style.color = '#3fb950';
+    } else if (bossSpawned) {
+        bossEl.textContent = '⚠ 보스 등장!'; bossEl.style.color = '#ff4500';
+    } else {
+        bossEl.textContent = `대기 중 (${bossNeed - stageKills}킬 남음)`; bossEl.style.color = '#8b949e';
+    }
+
+    const alive = monsters.filter(m => !m.isDead).length;
+    document.getElementById('s-total').textContent = monsters.length;
+    document.getElementById('s-alive').textContent = alive;
+    document.getElementById('s-dead').textContent  = monsters.length - alive;
+
+    // 1초마다 캐릭터 상태 저장 (캐릭터 정보 창 실시간 반영용, HP/MP 포함)
+    if (!refreshUI._lastSave || Date.now() - refreshUI._lastSave > 1000) {
+        saveCharacterState();
+        refreshUI._lastSave = Date.now();
+    }
+}
+
+// ────────────────────────────────────────────────
+// 로그
+// ────────────────────────────────────────────────
+function addLog(msg, type = 'normal') {
+    const ts = new Date().toLocaleTimeString('ko-KR', { hour12: false });
+    logs.unshift({ msg, type, ts });
+    if (logs.length > 80) logs.pop();
+    const el = document.getElementById('log-list');
+    // flex-direction:column-reverse 이므로 배열 그대로 렌더 → 최신이 아래에 표시됨
+    el.innerHTML = logs.slice(0, 60).map(e =>
+        `<div class="log-entry ${e.type}">[${e.ts}] ${e.msg}</div>`
+    ).join('');
+}
+
+function clearLog() {
+    logs = [];
+    const el = document.getElementById('log-list');
+    if (el) el.innerHTML = '';
+}
+
+// ────────────────────────────────────────────────
+// UI 컨트롤
+// ────────────────────────────────────────────────
+function setSpeed(spd) {
+    gameSpeed = spd;
+    [1, 2, 5, 10, 50, 100, 1000].forEach(s => {
+        const btn = document.getElementById('spd-' + s);
+        if (btn) btn.classList.toggle('active', s === spd);
+    });
+}
+
+function shiftLevel(delta) {
+    const nv = Math.max(1, Math.min(MAX_LEVEL, character.level + delta));
+    applyLevel(nv);
+}
+
+function applyLevelInput() {
+    const v = parseInt(document.getElementById('level-input').value);
+    if (v >= 1 && v <= MAX_LEVEL) applyLevel(v);
+}
+
+// 레벨 변경 후 스탯 재계산 공통 함수
+// fullHeal=true: 레벨업처럼 완전 회복 / false: 수동 변경처럼 HP 비율 유지
+function onLevelChanged(fullHeal) {
+    const newStats = calcCharStats(character.level);
+    if (fullHeal) {
+        character.maxHP     = newStats.maxHP;
+        character.maxMP     = newStats.maxMP;
+        character.currentHP = newStats.maxHP;
+        character.currentMP = newStats.maxMP;
+    } else {
+        const hpRatio = character.maxHP > 0 ? character.currentHP / character.maxHP : 1;
+        const mpRatio = character.maxMP > 0 ? character.currentMP / character.maxMP : 1;
+        character.maxHP     = newStats.maxHP;
+        character.maxMP     = newStats.maxMP;
+        character.currentHP = Math.max(1, Math.round(character.maxHP * hpRatio));
+        character.currentMP = Math.round(character.maxMP * mpRatio);
+    }
+    saveCharacterState(); // 즉시 저장 → character_info.html 실시간 반영
+    refreshUI();
+}
+
+function applyLevel(newLv) {
+    const old = character.level;
+    character.level = newLv;
+    character.exp   = 0;
+    // 몬스터 레벨은 스테이지 기준이므로 캐릭터 레벨 변경과 무관
+    addLog(`레벨 수동 변경: Lv.${old} → Lv.${newLv} (EXP 초기화, 몬스터는 스테이지 ${currentStage} 유지)`, 'levelup');
+    onLevelChanged(false); // HP 비율 유지하며 스탯 즉시 재계산
+}
+
+// ────────────────────────────────────────────────
+// 능력치 제한값 설정 팝업 (Limit Settings Modal)
+// ────────────────────────────────────────────────
+
+// ────────────────────────────────────────────────
+// 몬스터 능력치 조회 팝업
+// ────────────────────────────────────────────────
+let _monInfoTab = 'normal'; // 현재 선택 탭: 'normal' | 'boss'
+
+function openMonsterInfo() {
+    // 현재 스테이지 레벨로 초기화
+    document.getElementById('moninfo-lv-input').value = stageLevel(currentStage);
+    _monInfoTab = 'normal';
+    document.getElementById('montab-normal').classList.add('active');
+    document.getElementById('montab-boss').classList.remove('active');
+    renderMonsterInfo();
+    document.getElementById('moninfo-overlay').classList.add('open');
+    // 게임 일시정지 없이 팝업만 표시
+    if (gameState === 'playing') {
+        gameState = 'paused';
+        _monInfoPaused = true;
+    } else {
+        _monInfoPaused = false;
+    }
+}
+let _monInfoPaused = false;
+
+function closeMonsterInfo() {
+    document.getElementById('moninfo-overlay').classList.remove('open');
+    if (_monInfoPaused) {
+        gameState = 'playing';
+        lastTime  = performance.now();
+        _monInfoPaused = false;
+    }
+}
+
+function setMonInfoToCurrentStage() {
+    document.getElementById('moninfo-lv-input').value = stageLevel(currentStage);
+    renderMonsterInfo();
+}
+
+function switchMonTab(tab) {
+    _monInfoTab = tab;
+    document.getElementById('montab-normal').classList.toggle('active', tab === 'normal');
+    document.getElementById('montab-boss').classList.toggle('active', tab === 'boss');
+    renderMonsterInfo();
+}
+
+function renderMonsterInfo() {
+    const raw = parseInt(document.getElementById('moninfo-lv-input').value, 10);
+    const lv  = isNaN(raw) || raw < 1 ? 1 : Math.min(raw, 1000000);
+    const isBoss = (_monInfoTab === 'boss');
+    const s   = calcMonsterStats(lv);
+
+    // 보스는 HP만 10배
+    const hp    = isBoss ? s.maxHp * 10 : s.maxHp;
+    const maxHpForBar = isBoss ? s.maxHp * 10 : s.maxHp; // 바 100% 기준
+    const hpPct = 100; // 항상 full (비교 없이 절댓값 표시)
+
+    // 현재 스테이지 몬스터와 같은 레벨인지 표시
+    const isCurrent = (lv === stageLevel(currentStage));
+    const badge = isCurrent ? '<span class="mon-current-badge">현재 스테이지</span>' : '';
+
+    const cls = isBoss ? 'boss' : 'normal';
+
+    // 회피율 계산 (기획서 공식 기준 % 표기)
+    const avoidVsAvgChar = Math.max(MIN_AVOIDANCE, Math.min(MAX_AVOIDANCE, s.meleeEvasion - 100));
+    const avoidPct = (avoidVsAvgChar / 100).toFixed(2);
+
+    const html = `
+        <div class="mon-hp-bar-wrap ${isBoss ? 'boss-wrap' : ''}">
+            <div class="mon-hp-label">
+                ${isBoss ? '💀 보스' : '⚔ 일반'} 몬스터 · Lv.${lv} ${badge}
+                ${isBoss ? '<span style="font-size:15px;color:#ff6666;margin-left:8px;">(HP × 10)</span>' : ''}
+            </div>
+            <div class="mon-hp-track">
+                <div class="mon-hp-fill ${isBoss ? 'boss-fill' : ''}" style="width:100%"></div>
+            </div>
+            <div class="mon-hp-text">HP ${hp.toLocaleString()}</div>
+        </div>
+
+        <div class="mon-section-title">기본 능력치</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
+                <span class="mon-stat-lbl">최대 HP</span>
+                <span class="mon-stat-val ${isBoss ? 'boss-val' : 'highlight'}">${hp.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
+                <span class="mon-stat-lbl">근거리 방어</span>
+                <span class="mon-stat-val">${s.meleeDef.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
+                <span class="mon-stat-lbl">최소 공격력</span>
+                <span class="mon-stat-val">${s.meleeMinAtk.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
+                <span class="mon-stat-lbl">최대 공격력</span>
+                <span class="mon-stat-val">${s.meleeMaxAtk.toLocaleString()}</span>
+            </div>
+        </div>
+
+        <div class="mon-section-title">명중 / 회피</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
+                <span class="mon-stat-lbl">명중 (Accuracy)</span>
+                <span class="mon-stat-val">${s.meleeAccuracy}</span>
+            </div>
+            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
+                <span class="mon-stat-lbl">회피 (Evasion)</span>
+                <span class="mon-stat-val">${s.meleeEvasion}</span>
+            </div>
+        </div>
+
+        <div class="mon-section-title">치명타</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
+                <span class="mon-stat-lbl">치명타율</span>
+                <span class="mon-stat-val">${s.critRate}%</span>
+            </div>
+            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
+                <span class="mon-stat-lbl">치명타 배율</span>
+                <span class="mon-stat-val">${s.critMul}%</span>
+            </div>
+        </div>
+
+        ${isBoss ? `
+        <div class="mon-section-title">보스 전용 정보</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row boss-row">
+                <span class="mon-stat-lbl">이동 속도 배율</span>
+                <span class="mon-stat-val boss-val">× 1.5 (일반 대비)</span>
+            </div>
+            <div class="mon-stat-row boss-row">
+                <span class="mon-stat-lbl">반격 속도 배율</span>
+                <span class="mon-stat-val boss-val">× 1.5 (일반 대비)</span>
+            </div>
+            <div class="mon-stat-row boss-row">
+                <span class="mon-stat-lbl">보스 등장 조건</span>
+                <span class="mon-stat-val">일반 ${bossRequiredKills(currentStage)}킬</span>
+            </div>
+            <div class="mon-stat-row boss-row">
+                <span class="mon-stat-lbl">부활 여부</span>
+                <span class="mon-stat-val boss-val">없음 (1회 등장)</span>
+            </div>
+        </div>` : `
+        <div class="mon-section-title">필드 정보</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row">
+                <span class="mon-stat-lbl">리스폰 대기</span>
+                <span class="mon-stat-val">${(RESPAWN_DELAY / 1000).toFixed(1)}초</span>
+            </div>
+            <div class="mon-stat-row">
+                <span class="mon-stat-lbl">동시 등장 수</span>
+                <span class="mon-stat-val">${MONSTER_COUNT}마리</span>
+            </div>
+        </div>`}
+
+        <p class="mon-compare-note">※ 능력치 제한값 설정(회피율 한계 등)은 별도 설정 참조</p>
+    `;
+
+    document.getElementById('moninfo-body').innerHTML = html;
+}
+
+// 10000분의 1 단위 값 → % 문자열 변환
+function limitToPct(val) {
+    return (val / 100).toFixed(2) + '%';
+}
+
+// 제한값 패널 내 서브탭 전환 (명중/회피 등)
+function switchLimitTab(tabId) {
+    // 제한값 패널 내 서브탭만 전환 (상위 탭과 분리)
+    const panel = document.getElementById('stab-limit');
+    panel.querySelectorAll('.limit-tab').forEach(t => t.classList.remove('active'));
+    panel.querySelectorAll('.settings-limit-content').forEach(c => c.classList.remove('active'));
+    const tabBtn = document.getElementById('tab-' + tabId);
+    if (tabBtn) tabBtn.classList.add('active');
+    const content = document.getElementById('ltab-' + tabId);
+    if (content) content.classList.add('active');
+}
+
+// 입력값 변경 시 퍼센트 미리보기 + 유효성 검사
+function onLimitInput(fieldId) {
+    const inputEl = document.getElementById(fieldId + '-input');
+    const pctEl   = document.getElementById(fieldId + '-pct');
+    const hintEl  = document.getElementById(fieldId + '-hint');
+
+    const raw = parseInt(inputEl.value);
+    const ok  = !isNaN(raw) && raw >= 0 && raw <= 10000;
+
+    if (ok) {
+        inputEl.classList.remove('invalid');
+        pctEl.textContent  = limitToPct(raw);
+        hintEl.textContent = '';
+
+        // 최소/최대 교차 검증 (명중/회피 탭)
+        if (fieldId === 'min-avoid' || fieldId === 'max-avoid') {
+            const minV = parseInt(document.getElementById('min-avoid-input').value);
+            const maxV = parseInt(document.getElementById('max-avoid-input').value);
+            if (!isNaN(minV) && !isNaN(maxV) && minV > maxV) {
+                hintEl.textContent = '⚠ 최소값이 최대값보다 큽니다';
+            }
+        }
+    } else {
+        inputEl.classList.add('invalid');
+        pctEl.textContent  = '—';
+        hintEl.textContent = '0 ~ 10000 범위로 입력하세요';
+    }
+    document.getElementById('limit-apply-msg').textContent = '';
+}
+
+// "적용" 버튼: 각 탭의 값을 모두 검증 후 게임 변수에 반영
+function applyLimitSettings() {
+    const msgEl  = document.getElementById('limit-apply-msg');
+    const minRaw = parseInt(document.getElementById('min-avoid-input').value);
+    const maxRaw = parseInt(document.getElementById('max-avoid-input').value);
+
+    // 유효성 검사
+    if (isNaN(minRaw) || minRaw < 0 || minRaw > 10000) {
+        msgEl.style.color = '#f85149';
+        msgEl.textContent = '최소 회피율 값이 올바르지 않습니다 (0~10000)';
+        return;
+    }
+    if (isNaN(maxRaw) || maxRaw < 0 || maxRaw > 10000) {
+        msgEl.style.color = '#f85149';
+        msgEl.textContent = '최대 회피율 값이 올바르지 않습니다 (0~10000)';
+        return;
+    }
+    if (minRaw > maxRaw) {
+        msgEl.style.color = '#f85149';
+        msgEl.textContent = '최소 회피율이 최대 회피율보다 클 수 없습니다';
+        return;
+    }
+
+    // 게임 변수에 반영
+    MIN_AVOIDANCE = minRaw;
+    MAX_AVOIDANCE = maxRaw;
+
+    // localStorage에 영구 저장
+    saveLimitSettings();
+
+    msgEl.style.color = '#3fb950';
+    msgEl.textContent = `✔ 적용 및 저장됨`;
+    addLog(`⚙ 회피율 범위 설정 → 최소: ${minRaw} (${limitToPct(minRaw)}) / 최대: ${maxRaw} (${limitToPct(maxRaw)})`, 'info');
+
+    // 1.2초 후 팝업 자동 닫기
+    setTimeout(() => closeLimitSettings(), 1200);
+}
+
+// 제한값 설정을 localStorage에 저장
+function saveLimitSettings() {
+    localStorage.setItem('versione_limit_settings', JSON.stringify({
+        minAvoidance: MIN_AVOIDANCE,
+        maxAvoidance: MAX_AVOIDANCE,
+    }));
+}
+
+// localStorage에서 제한값 설정 불러오기
+function loadLimitSettings() {
+    try {
+        const raw = localStorage.getItem('versione_limit_settings');
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (typeof data.minAvoidance === 'number') MIN_AVOIDANCE = data.minAvoidance;
+        if (typeof data.maxAvoidance === 'number') MAX_AVOIDANCE = data.maxAvoidance;
+    } catch (e) {
+        // 저장 데이터가 손상된 경우 기본값 유지
+    }
+}
+
+// 페이지 로드 시: 저장된 설정 복원 + 첫 번째 탭 활성화
+window.addEventListener('DOMContentLoaded', () => {
+    loadBaseStats();
+    loadLimitSettings();
+    loadLvStatConfig();
+    buildLvStatSelect();
+    switchLimitTab('hit');
+});
+
+// ────────────────────────────────────────────────
+// 레벨 능력치 설정 팝업
+// ────────────────────────────────────────────────
+
+// localStorage 저장/불러오기
+function saveLvStatConfig() {
+    // 팝업 내 현재 입력값을 LV_STAT_CONFIG에 반영
+    const rows = document.querySelectorAll('#lvstat-rows .lvstat-row');
+    const cfg  = [];
+    let hasErr = false;
+    rows.forEach(row => {
+        const en    = row.dataset.en;
+        const baseEl  = row.querySelector('.lvstat-base');
+        const perLvEl = row.querySelector('.lvstat-perlv');
+        const base  = parseFloat(baseEl.value);
+        const perLv = parseFloat(perLvEl.value);
+        if (isNaN(base) || isNaN(perLv)) { hasErr = true; return; }
+        cfg.push({ en, base, perLv });
+    });
+    if (hasErr) {
+        showLvStatMsg('입력값에 오류가 있습니다. 숫자를 확인해 주세요.', '#f85149');
+        return;
+    }
+    LV_STAT_CONFIG = cfg;
+    localStorage.setItem('versione_lv_stat_config', JSON.stringify(LV_STAT_CONFIG));
+    applyLvStatToCharacter();   // 캐릭터에 즉시 반영
+    showLvStatMsg('✔ 저장 완료 — 캐릭터에 즉시 반영되었습니다.', '#3fb950');
+    setTimeout(() => closeLvStatSettings(), 1200);
+}
+
+// 변경된 LV_STAT_CONFIG를 현재 살아있는 캐릭터에 즉시 적용
+function applyLvStatToCharacter() {
+    if (gameState === 'title' || !character || !character.level) return;
+    const newStats = calcCharStats(character.level);
+    // HP/MP는 현재 비율을 유지하면서 최대값만 재계산
+    const hpRatio = character.maxHP > 0 ? character.currentHP / character.maxHP : 1;
+    const mpRatio = character.maxMP > 0 ? character.currentMP / character.maxMP : 1;
+    character.maxHP    = newStats.maxHP;
+    character.maxMP    = newStats.maxMP;
+    character.currentHP = Math.max(1, Math.round(character.maxHP * hpRatio));
+    character.currentMP = Math.round(character.maxMP * mpRatio);
+    refreshUI();
+}
+
+function loadLvStatConfig() {
+    try {
+        const raw = localStorage.getItem('versione_lv_stat_config');
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (Array.isArray(data)) LV_STAT_CONFIG = data;
+    } catch (e) {}
+}
+
+function resetLvStatConfig() {
+    if (!confirm('레벨 능력치 설정을 모두 초기화하시겠습니까?')) return;
+    LV_STAT_CONFIG = [];
+    localStorage.removeItem('versione_lv_stat_config');
+    renderLvStatRows();
+    showLvStatMsg('초기화되었습니다.', '#8b949e');
+}
+
+// 능력치 선택 <select> 빌드 (그룹별 optgroup)
+// buildLvStatSelect — 검색 UI는 STAT_LIST를 직접 참조하므로 별도 빌드 불필요 (함수 유지)
+function buildLvStatSelect() { /* 검색 방식으로 교체, 호환성을 위해 빈 함수 유지 */ }
+
+// 행 목록 렌더링
+function renderLvStatRows() {
+    const container = document.getElementById('lvstat-rows');
+    if (!container) return;
+    if (LV_STAT_CONFIG.length === 0) {
+        container.innerHTML = '<div class="lvstat-empty">추가된 능력치가 없습니다.<br>아래에서 능력치를 선택하여 추가하세요.</div>';
+        return;
+    }
+    container.innerHTML = '';
+    LV_STAT_CONFIG.forEach((row, idx) => {
+        const stat   = (typeof STAT_LIST !== 'undefined' ? STAT_LIST : []).find(s => s.en === row.en);
+        const kr     = stat ? stat.kr : row.en;
+        const isPct  = isStatPct(row.en);
+        const pctTip = isPct ? `<span class="lvstat-pct" id="lvsp-base-${idx}"></span>` : '';
+        const pctTip2 = isPct ? `<span class="lvstat-pct" id="lvsp-perlv-${idx}"></span>` : '';
+
+        const div = document.createElement('div');
+        div.className  = 'lvstat-row';
+        div.dataset.en = row.en;
+        div.innerHTML  = `
+            <div class="lvstat-name">
+                <span class="lvstat-name-kr">${kr}</span>
+                <span class="lvstat-name-en">${row.en}</span>
+            </div>
+            <div class="lvstat-field">
+                <input class="lvstat-input lvstat-base" type="number" step="any" value="${row.base}"
+                    oninput="onLvStatInput(this, 'base-${idx}', ${isPct})">
+                ${pctTip}
+            </div>
+            <div class="lvstat-field">
+                <input class="lvstat-input lvstat-perlv" type="number" step="any" value="${row.perLv}"
+                    oninput="onLvStatInput(this, 'perlv-${idx}', ${isPct})">
+                ${pctTip2}
+            </div>
+            <button class="lvstat-del" onclick="removeLvStatRow(${idx})" title="삭제">✕</button>
+        `;
+        container.appendChild(div);
+        // 퍼센트 초기값 표시
+        if (isPct) {
+            updateLvStatPct(`base-${idx}`,  row.base);
+            updateLvStatPct(`perlv-${idx}`, row.perLv);
+        }
+    });
+}
+
+function onLvStatInput(inputEl, id, isPct) {
+    if (isPct) updateLvStatPct(id, parseFloat(inputEl.value));
+}
+function updateLvStatPct(id, val) {
+    const el = document.getElementById('lvsp-' + id);
+    if (!el) return;
+    // 퍼센트 스탯: 원시값/100 = 표시 퍼센트 (10000 단위, 예: 1500 → 15.00%)
+    el.textContent = isNaN(val) ? '—' : (val / 100).toFixed(2) + '%';
+}
+
+// ── 검색 상태 변수
+let _lvSearchSelected = null;   // { en, kr } 현재 선택된 능력치
+
+// 검색어 하이라이트 (일치 부분을 노란색으로)
+function hlText(text, query) {
+    if (!query) return text;
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx < 0) return text;
+    return text.slice(0, idx)
+        + `<span class="lvstat-si-match">${text.slice(idx, idx + query.length)}</span>`
+        + text.slice(idx + query.length);
+}
+
+// 드롭다운 닫기
+function hideLvStatDropdown() {
+    const list = document.getElementById('lvstat-search-list');
+    if (list) list.classList.remove('open');
+}
+
+// 드롭다운 열기 (현재 검색어 기준으로 필터 후 표시)
+function showLvStatDropdown() {
+    filterLvStatSearch();
+}
+
+// 검색 필터링 및 드롭다운 렌더
+function filterLvStatSearch() {
+    const input = document.getElementById('lvstat-search-input');
+    const list  = document.getElementById('lvstat-search-list');
+    if (!input || !list || typeof STAT_LIST === 'undefined') return;
+
+    const q = input.value.trim();
+
+    // 검색어가 비면 선택 해제
+    if (q === '') {
+        _lvSearchSelected = null;
+        input.classList.remove('has-selection');
+    }
+
+    // 필터링: kr 또는 en에 검색어 포함
+    const matched = q === ''
+        ? STAT_LIST.slice(0, 80)        // 검색어 없으면 처음 80개 미리보기
+        : STAT_LIST.filter(s =>
+            s.kr.includes(q) || s.en.toLowerCase().includes(q.toLowerCase())
+          ).slice(0, 100);
+
+    if (matched.length === 0) {
+        list.innerHTML = '<div class="lvstat-search-empty">검색 결과가 없습니다.</div>';
+        list.classList.add('open');
+        return;
+    }
+
+    // 그룹별로 묶어서 렌더
+    const groups = {};
+    matched.forEach(s => {
+        const g = (s.group || '기타').replace(/^\d+_/, '');
+        if (!groups[g]) groups[g] = [];
+        groups[g].push(s);
+    });
+
+    list.innerHTML = '';
+    let allItems = [];
+
+    Object.keys(groups).forEach(g => {
+        const gDiv = document.createElement('div');
+        gDiv.className   = 'lvstat-search-group';
+        gDiv.textContent = g;
+        list.appendChild(gDiv);
+
+        groups[g].forEach(s => {
+            const item = document.createElement('div');
+            item.className   = 'lvstat-search-item';
+            item.dataset.en  = s.en;
+            item.dataset.kr  = s.kr;
+            item.innerHTML   = `
+                <span class="lvstat-si-kr">${hlText(s.kr, q)}</span>
+                <span class="lvstat-si-en">${hlText(s.en, q)}</span>
+            `;
+            item.addEventListener('mousedown', e => {
+                e.preventDefault();   // blur 방지
+                selectLvStatItem(s.en, s.kr);
+            });
+            list.appendChild(item);
+            allItems.push(item);
+        });
+    });
+
+    list._allItems = allItems;
+    list.classList.add('open');
+}
+
+// 항목 선택 (마우스 클릭 또는 Enter)
+function selectLvStatItem(en, kr) {
+    _lvSearchSelected = { en, kr };
+    const input = document.getElementById('lvstat-search-input');
+    if (input) {
+        input.value = `${kr}  (${en})`;
+        input.classList.add('has-selection');
+    }
+    hideLvStatDropdown();
+}
+
+// 검색창 외부 클릭 시 드롭다운 닫기
+document.addEventListener('click', e => {
+    const wrap = document.querySelector('.lvstat-search-wrap');
+    if (wrap && !wrap.contains(e.target)) hideLvStatDropdown();
+});
+
+// "+ 추가" 버튼
+function addSelectedLvStat() {
+    if (!_lvSearchSelected) {
+        showLvStatMsg('추가할 능력치를 검색하여 선택해 주세요.', '#d29922');
+        return;
+    }
+    LV_STAT_CONFIG.push({ en: _lvSearchSelected.en, base: 0, perLv: 0 });
+    // 입력창 초기화
+    const input = document.getElementById('lvstat-search-input');
+    if (input) { input.value = ''; input.classList.remove('has-selection'); }
+    _lvSearchSelected = null;
+    renderLvStatRows();
+    const rows = document.getElementById('lvstat-rows');
+    if (rows) rows.scrollTop = rows.scrollHeight;
+}
+
+// 행 삭제
+function removeLvStatRow(idx) {
+    LV_STAT_CONFIG.splice(idx, 1);
+    renderLvStatRows();
+}
+
+// 팝업 열기/닫기
+// ────────────────────────────────────────────────
+// 기본 스탯 설정 팝업 (STR / DEX / INT / AGI / CON / WIS / LUK)
+// ────────────────────────────────────────────────
+const BASE_STAT_DEFS = [
+    { key:'STR', label:'힘 (STR)',     desc:'근거리 공격, 명중, 치명타' },
+    { key:'DEX', label:'민첩 (DEX)',   desc:'원거리 공격, 명중, 치명타' },
+    { key:'INT', label:'지능 (INT)',   desc:'마법 공격, 명중, 치명타, MP' },
+    { key:'AGI', label:'순발 (AGI)',   desc:'공격속도, 원거리 방어/회피' },
+    { key:'CON', label:'건강 (CON)',   desc:'최대 HP, 근거리 방어/회피' },
+    { key:'WIS', label:'지혜 (WIS)',   desc:'최대 MP, 마법 방어/회피' },
+    { key:'LUK', label:'행운 (LUK)',   desc:'치명타, 드랍률, 상태이상 저항' },
+];
+
+// ────────────────────────────────────────────────
+// 통합 능력치 설정 모달 (기본 스탯 / 레벨 능력치 / 제한값)
+// ────────────────────────────────────────────────
+let _currentSettingsTab = 'basestat';
+
+function openSettingsModal(tab) {
+    tab = tab || _currentSettingsTab || 'basestat';
+    switchSettingsTab(tab);  // 탭 전환 + 해당 패널 데이터 렌더링
+    document.getElementById('settings-overlay').classList.add('open');
+    if (gameState === 'playing') gameState = 'paused';
+}
+
+function closeSettingsModal() {
+    hideLvStatDropdown();
+    document.getElementById('settings-overlay').classList.remove('open');
+    if (gameState === 'paused') { gameState = 'playing'; lastTime = performance.now(); }
+}
+
+function switchSettingsTab(tab) {
+    _currentSettingsTab = tab;
+    ['basestat','lvstat','limit'].forEach(t => {
+        document.getElementById('stab-btn-' + t).classList.toggle('active', t === tab);
+        document.getElementById('stab-' + t).classList.toggle('active', t === tab);
+    });
+    // 탭 전환 시에도 각 패널 데이터를 최신 상태로 렌더링
+    if (tab === 'basestat') {
+        renderBaseStatGrid();
+        document.getElementById('basestat-msg').textContent = '';
+    } else if (tab === 'lvstat') {
+        renderLvStatRows();
+        const input = document.getElementById('lvstat-search-input');
+        if (input) { input.value = ''; input.classList.remove('has-selection'); }
+        _lvSearchSelected = null;
+        hideLvStatDropdown();
+        document.getElementById('lvstat-apply-msg').textContent = '';
+    } else if (tab === 'limit') {
+        document.getElementById('min-avoid-input').value = MIN_AVOIDANCE;
+        document.getElementById('max-avoid-input').value = MAX_AVOIDANCE;
+        document.getElementById('min-avoid-pct').textContent = limitToPct(MIN_AVOIDANCE);
+        document.getElementById('max-avoid-pct').textContent = limitToPct(MAX_AVOIDANCE);
+        document.getElementById('min-avoid-hint').textContent = '';
+        document.getElementById('max-avoid-hint').textContent = '';
+        document.getElementById('limit-apply-msg').textContent = '';
+    }
+}
+
+// 하위 호환성 — 기존 호출이 남아있을 경우를 위한 위임 함수
+function openBaseStatSettings()  { openSettingsModal('basestat'); }
+function openLvStatSettings()    { openSettingsModal('lvstat');   }
+function openLimitSettings()     { openSettingsModal('limit');    }
+function closeBaseStatSettings() { closeSettingsModal(); }
+function closeLvStatSettings()   { closeSettingsModal(); }
+function closeLimitSettings()    { closeSettingsModal(); }
+
+// 기본 스탯 하나에 대해 치환 능력치 목록을 계산하여 반환
+// 010_스탯_치환값 문서 순서 그대로 각 항목을 개별 행으로 반환 (병합·정렬 없음)
+function computeSubstitutionPreview(statKey, val, krMap) {
+    const entries  = (typeof BASE_STAT_SUBSTITUTION !== 'undefined' && BASE_STAT_SUBSTITUTION[statKey]) || [];
+    const substKr  = (typeof SUBST_KR_MAP  !== 'undefined') ? SUBST_KR_MAP  : {};
+    const pctStats = (typeof SUBST_PCT_STATS !== 'undefined') ? SUBST_PCT_STATS : new Set();
+    return entries.map(({ key, c1, c2, label }) => ({
+        key,
+        label: label || (krMap && krMap[key]) || substKr[key] || key,
+        val:   Math.floor(val / c1 * c2),
+        isPct: pctStats.has(key),
+    }));
+}
+
+// #bs-preview-{key} 영역을 현재 슬라이더 값으로 재렌더링
+function updateBaseStatPreview(key) {
+    const v  = parseInt(document.getElementById('bs-num-'+key).value) || 10;
+    const el = document.getElementById('bs-preview-'+key);
+    if (!el) return;
+    const krMap = {};
+    if (typeof STAT_LIST !== 'undefined') STAT_LIST.forEach(s => { krMap[s.en] = s.kr; });
+    const preview = computeSubstitutionPreview(key, v, krMap);
+    el.innerHTML  = preview.map(p =>
+        `<div class="bsp-row"><span class="bsp-name">${p.label}(${p.key})</span><span class="bsp-val">${p.isPct ? '+' + (p.val/100).toFixed(2) + '%' : '+' + p.val}</span></div>`
+    ).join('');
+}
+
+function renderBaseStatGrid() {
+    const krMap = {};
+    if (typeof STAT_LIST !== 'undefined') STAT_LIST.forEach(s => { krMap[s.en] = s.kr; });
+    const grid = document.getElementById('basestat-grid');
+    grid.innerHTML = BASE_STAT_DEFS.map(d => {
+        const preview    = computeSubstitutionPreview(d.key, BASE_STATS[d.key], krMap);
+        const previewHtml = preview.map(p =>
+            `<div class="bsp-row"><span class="bsp-name">${p.label}(${p.key})</span><span class="bsp-val">${p.isPct ? '+' + (p.val/100).toFixed(2) + '%' : '+' + p.val}</span></div>`
+        ).join('');
+        return `
+        <div class="bsc-card">
+            <div class="bsc-left">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <span style="font-weight:700;color:#c9d1d9;">${d.label}</span>
+                    <span style="font-size:15px;color:#8b949e;">${d.desc}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <input type="range" min="1" max="1000"
+                           value="${BASE_STATS[d.key]}"
+                           id="bs-range-${d.key}"
+                           style="flex:1;accent-color:#3fb950;"
+                           oninput="syncBaseStatInput('${d.key}')">
+                    <input type="number" min="1" max="1000"
+                           value="${BASE_STATS[d.key]}"
+                           id="bs-num-${d.key}"
+                           style="width:60px;background:#0d1117;border:1px solid #30363d;color:#c9d1d9;
+                                  border-radius:4px;padding:3px 6px;text-align:center;font-size:15px;"
+                           oninput="syncBaseStatRange('${d.key}')">
+                </div>
+            </div>
+            <div class="bsc-right">
+                <div class="bsp-title">▸ 치환 능력치 (현재값 기준)</div>
+                <div class="bsp-grid" id="bs-preview-${d.key}">${previewHtml}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function syncBaseStatInput(key) {
+    const v = parseInt(document.getElementById('bs-range-'+key).value) || 10;
+    document.getElementById('bs-num-'+key).value = v;
+    updateBaseStatPreview(key);
+}
+function syncBaseStatRange(key) {
+    let v = parseInt(document.getElementById('bs-num-'+key).value) || 10;
+    v = Math.max(1, Math.min(1000, v));
+    document.getElementById('bs-num-'+key).value = v;
+    document.getElementById('bs-range-'+key).value = v;
+    updateBaseStatPreview(key);
+}
+
+function applyBaseStats() {
+    BASE_STAT_DEFS.forEach(d => {
+        const v = parseInt(document.getElementById('bs-num-'+d.key).value) || 10;
+        BASE_STATS[d.key] = Math.max(1, Math.min(1000, v));
+    });
+    saveBaseStats();
+    // 전투 스탯 즉시 재계산 → HP/MP 상한 변경 반영
+    const s = calcCharStats(character.level);
+    character.maxHP = s.maxHP;
+    character.maxMP = s.maxMP;
+    if (character.currentHP > character.maxHP) character.currentHP = character.maxHP;
+    if (character.currentMP > character.maxMP) character.currentMP = character.maxMP;
+    refreshUI();
+    const msg = document.getElementById('basestat-msg');
+    msg.style.color = '#3fb950';
+    msg.textContent = '✔ 기본 스탯이 적용되었습니다.';
+    setTimeout(() => { if (msg) msg.textContent = ''; }, 2500);
+}
+
+function resetBaseStats() {
+    BASE_STAT_DEFS.forEach(d => { BASE_STATS[d.key] = 10; });
+    saveBaseStats();
+    renderBaseStatGrid();
+    const s = calcCharStats(character.level);
+    character.maxHP = s.maxHP;
+    character.maxMP = s.maxMP;
+    if (character.currentHP > character.maxHP) character.currentHP = character.maxHP;
+    if (character.currentMP > character.maxMP) character.currentMP = character.maxMP;
+    refreshUI();
+    const msg = document.getElementById('basestat-msg');
+    msg.style.color = '#d29922';
+    msg.textContent = '↺ 기본값(10)으로 초기화했습니다.';
+    setTimeout(() => { if (msg) msg.textContent = ''; }, 2500);
+}
+
+function showLvStatMsg(msg, color) {
+    const el = document.getElementById('lvstat-apply-msg');
+    if (!el) return;
+    el.style.color   = color || '#3fb950';
+    el.textContent   = msg;
+}
+
+// ────────────────────────────────────────────────
+// 캐릭터 데이터를 localStorage에 저장 (캐릭터 정보 창과 공유)
+// ────────────────────────────────────────────────
+function saveCharacterState() {
+    if (gameState === 'title') return;
+    localStorage.setItem('versione_char', JSON.stringify({
+        level:      character.level,
+        exp:        character.exp,
+        totalKills: totalKills,
+        currentHP:  character.currentHP,
+        maxHP:      character.maxHP,
+        currentMP:  character.currentMP,
+        maxMP:      character.maxMP,
+        savedAt:    Date.now(),
+    }));
+    // 기본 스탯도 함께 동기화 (character_info.html이 최신 값 읽을 수 있도록)
+    localStorage.setItem('versione_base_stats', JSON.stringify(BASE_STATS));
+}
+
+// ────────────────────────────────────────────────
+// 마을 귀환 / 전투 재개
+// ────────────────────────────────────────────────
+
+// 사이드바의 귀환·재개 버튼 표시 상태를 inTown에 맞춰 업데이트
+function updateTownUI() {
+    const btnReturn = document.getElementById('btn-return-town');
+    const btnResume = document.getElementById('btn-resume-combat');
+    const statusTxt = document.getElementById('town-status-txt');
+    if (!btnReturn) return;
+    if (inTown) {
+        btnReturn.style.display = 'none';
+        btnResume.style.display = '';
+        statusTxt.textContent   = '🏠 마을 체류 중 (안전)';
+        statusTxt.style.color   = '#3fb950';
+    } else {
+        btnReturn.style.display = '';
+        btnResume.style.display = 'none';
+        statusTxt.textContent   = '⚔ 전투 중';
+        statusTxt.style.color   = '#8b949e';
+    }
+}
+
+// 마을 귀환: 캐릭터를 마을 구역 중앙으로 이동, 전투 차단
+function returnToTown() {
+    if (gameState === 'title') return;
+    inTown = true;
+    character.target   = null;
+    character.atkTimer = 10000; // 공격 타이머 초기화
+    // 마을 중앙으로 순간이동
+    character.x = TOWN_W / 2;
+    character.y = TOWN_H / 2 + 10;
+    updateTownUI();
+    addLog('🏠 마을로 귀환했습니다. HP/MP가 2배 속도로 회복됩니다.', 'info');
+    saveCharacterState();
+}
+
+// 전투 재개: 마을 경계 바로 오른쪽에 캐릭터를 배치, 전투 허용
+function resumeCombat() {
+    if (gameState === 'title') return;
+    inTown = false;
+    character.atkTimer = ATK_INTERVAL;
+    // 마을 경계 오른쪽으로 순간이동
+    character.x = TOWN_W + 50;
+    character.y = TOWN_H / 2;
+    updateTownUI();
+    addLog('⚔ 전투 구역으로 진입합니다.', 'info');
+}
+
+// 캐릭터 능력치 상세 팝업 열기 (게임 내 iframe 모달)
+let _charInfoPaused = false;
+function openCharInfo() {
+    saveCharacterState();
+    // iframe src 재로드하여 최신 localStorage 반영
+    const frame = document.getElementById('charinfo-frame');
+    frame.src = 'character_info.html';
+    document.getElementById('charinfo-overlay').classList.add('open');
+    if (gameState === 'playing') { _charInfoPaused = true; gameState = 'paused'; }
+    else { _charInfoPaused = false; }
+}
+function closeCharInfo() {
+    document.getElementById('charinfo-overlay').classList.remove('open');
+    if (_charInfoPaused) { gameState = 'playing'; lastTime = performance.now(); }
+    _charInfoPaused = false;
+}
+
+
+// ────────────────────────────────────────────────
+// 메인 루프
+// ────────────────────────────────────────────────
+function loop(ts) {
+    const rawDelta = Math.min(ts - lastTime, 100); // 최대 100ms 캡
+    lastTime = ts;
+
+    if (gameState === 'playing') {
+        update(rawDelta);
+        draw();
+        uiThrottle += rawDelta;
+        if (uiThrottle >= 50) {
+            refreshUI();
+            uiThrottle = 0;
+        }
+    }
+    // 일시정지 / 타이틀 중에는 루프만 유지하고 업데이트는 하지 않음
+    requestAnimationFrame(loop);
+}
+
+// ────────────────────────────────────────────────
+// 시작 (타이틀 화면부터)
+// ────────────────────────────────────────────────
+requestAnimationFrame(ts => {
+    lastTime = ts;
+    requestAnimationFrame(loop);
+});
+</script>
+</body>
+</html>
