@@ -479,7 +479,7 @@ body {
 
 .stat-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     padding: 5px 8px;
     border-radius: 4px;
     gap: 7px;
@@ -491,6 +491,7 @@ body {
     width: 6px; height: 6px;
     border-radius: 50%;
     flex-shrink: 0;
+    margin-top: 6px; /* 첫 줄 텍스트 중앙에 맞춤 */
 }
 .dot-기타 { background: var(--green); }
 .dot-공격 { background: var(--red); }
@@ -498,10 +499,10 @@ body {
 .dot-특수 { background: var(--purple); }
 
 .stat-names { flex: 1; min-width: 0; }
-.stat-kr { font-size: 15px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stat-kr { font-size: 15px; color: var(--text); white-space: normal; word-break: keep-all; }
 .stat-en { font-size: 15px; color: var(--dim); }
 
-.stat-vals { text-align: right; flex-shrink: 0; min-width: 68px; }
+.stat-vals { text-align: right; flex-shrink: 0; min-width: 68px; padding-top: 1px; }
 .stat-base { font-size: 15px; font-weight: 600; color: var(--text); }
 .stat-bonus-lbl { font-size: 15px; color: var(--green); min-height: 18px; }
 .stat-total-lbl { font-size: 15px; font-weight: 700; color: var(--gold); }
@@ -667,6 +668,7 @@ body {
     <div class="main-panel-page" id="mtab-stat">
         <div class="tab-bar">
             <button class="tab-btn on" id="tab-전체"  onclick="setTab('전체')">전체<span class="tab-cnt" id="cnt-전체">0</span></button>
+            <button class="tab-btn"    id="tab-활성"  onclick="setTab('활성')">활성<span class="tab-cnt" id="cnt-활성">0</span></button>
             <button class="tab-btn"    id="tab-기타"  onclick="setTab('기타')">기타<span class="tab-cnt" id="cnt-기타">0</span></button>
             <button class="tab-btn"    id="tab-공격"  onclick="setTab('공격')">공격<span class="tab-cnt" id="cnt-공격">0</span></button>
             <button class="tab-btn"    id="tab-방어"  onclick="setTab('방어')">방어<span class="tab-cnt" id="cnt-방어">0</span></button>
@@ -745,7 +747,7 @@ function mergedBonuses() {
 
 // ── 게임 기본값 출처 판별 ──────────────────────────────────────────
 // bonusReg 키가 '__'로 시작하면 "게임 기본값"으로 분류한다.
-// 현재: __lv_stat_config__, __base_stats_sub__
+// 현재: __lv_stat_config__  (기본 스탯 치환은 computeStats 내부에서 처리)
 // 앞으로 능력치 설정에 새 항목이 추가될 때도 키를 '__...__' 형식으로 만들면
 // 자동으로 기본값으로 처리된다.
 function isGameDefault(sourceId) {
@@ -802,18 +804,40 @@ function syncNow() {
             }
         } catch (_) { delete bonusReg['__lv_stat_config__']; }
 
-        // ── 기본 스탯 치환 반영 (versione_base_stats)
+        // ── 현재 클래스 및 기본 스탯 로드 (클래스별 독립 저장)
         try {
-            const bsRaw = localStorage.getItem('versione_base_stats');
-            if (bsRaw) {
-                currentBaseStats = JSON.parse(bsRaw);
-            } else {
-                currentBaseStats = { STR:10, DEX:10, INT:10, AGI:10, CON:10, WIS:10, LUK:10 };
+            const classId = d.classId || localStorage.getItem('versione_current_class') || 'knight';
+            const classKey = 'versione_class_stats_' + classId;
+            const bsRaw = localStorage.getItem(classKey)
+                       || localStorage.getItem('versione_base_stats');
+            currentBaseStats = bsRaw
+                ? JSON.parse(bsRaw)
+                : { STR:10, DEX:10, INT:10, AGI:10, CON:10, WIS:10, LUK:10 };
+            // 헤더에 클래스 뱃지 표시
+            const CLASS_LABELS = {
+                knight:'나이트', warrior:'워리어', assassin:'어쌔신',
+                archer:'아처',   cleric:'클레릭',  sorcerer:'소서러'
+            };
+            const CLASS_COLORS = {
+                knight:'#c8e0f8', warrior:'#e84040', assassin:'#b060ee',
+                archer:'#56c774', cleric:'#f5d062',  sorcerer:'#7090e8'
+            };
+            let classBadge = document.getElementById('hdr-class-badge');
+            if (!classBadge) {
+                classBadge = document.createElement('div');
+                classBadge.id = 'hdr-class-badge';
+                classBadge.style.cssText = 'font-size:15px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid currentColor;margin-left:2px;';
+                const hdr = document.getElementById('header');
+                const lvBadge = document.getElementById('hdr-lv');
+                hdr.insertBefore(classBadge, lvBadge.nextSibling);
             }
-            bonusReg['__base_stats_sub__'] = computeSubstitutedBonuses(currentBaseStats);
+            const clr = CLASS_COLORS[classId] || '#c8e0f8';
+            classBadge.textContent = CLASS_LABELS[classId] || classId;
+            classBadge.style.color = clr;
+            classBadge.style.borderColor = clr + '80';
+            classBadge.style.background = clr + '18';
         } catch (_) {
             currentBaseStats = { STR:10, DEX:10, INT:10, AGI:10, CON:10, WIS:10, LUK:10 };
-            delete bonusReg['__base_stats_sub__'];
         }
 
         const age = Math.round((Date.now() - (d.savedAt || Date.now())) / 1000);
@@ -839,7 +863,9 @@ function updateSyncStatus(ok) {
 function renderAll() {
     const lv  = currentLevel;
     const bon = mergedBonuses();
-    currentStats = computeStats(lv, bon);
+    // bonuses = 레벨 능력치(__lv_stat_config__) + 외부 보너스
+    // 치환 보너스(baseStats → 2차 스탯)는 computeStats 내부에서 자동 합산
+    currentStats = computeStats(bon, currentBaseStats);
 
     // 헤더 레벨 뱃지
     document.getElementById('hdr-lv').textContent = `Lv. ${lv}`;
@@ -869,6 +895,16 @@ function renderAll() {
         const el = document.getElementById('cnt-' + k);
         if (el) el.textContent = STAT_LIST.filter(s => s.kind === k).length;
     });
+    // 활성 탭: 현재 수치가 0 초과인 능력치 수
+    const extBon = externalBonuses();
+    const activeCnt = STAT_LIST.filter(s => {
+        if (!kinds.includes(s.kind)) return false;
+        const computedVal = currentStats[s.en];
+        const val = (computedVal !== undefined) ? computedVal : (extBon[s.en] || 0);
+        return val > 0;
+    }).length;
+    const elActive = document.getElementById('cnt-활성');
+    if (elActive) elActive.textContent = activeCnt;
 
     // 기본 스탯 카드 (최우선)
     renderBaseStatCards();
@@ -900,11 +936,19 @@ function renderBaseStatCards() {
     const grid = document.getElementById('base-stat-grid');
     if (!grid) return;
     grid.innerHTML = BASE_STAT_CARD_DEFS.map(d => {
-        const val = currentBaseStats[d.key] || 10;
+        // 실효값: computeStats 결과(설정 + 레벨 보너스 + AllStat 증폭 반영)
+        const effective = (currentStats[d.key] !== undefined)
+            ? currentStats[d.key]
+            : (currentBaseStats[d.key] || 10);
+        const setting = currentBaseStats[d.key] || 10;
+        // 레벨 보너스 등으로 실효값이 설정값과 다르면 설정값을 부가 표시
+        const subText = (effective !== setting)
+            ? `${d.desc} · 설정 ${setting}`
+            : d.desc;
         return `<div class="bs-card">
             <div class="bs-card-name">${d.label} (${d.abbr})</div>
-            <div class="bs-card-val">${val}</div>
-            <div class="bs-card-sub">${d.desc}</div>
+            <div class="bs-card-val">${effective.toLocaleString()}</div>
+            <div class="bs-card-sub">${subText}</div>
         </div>`;
     }).join('');
 }
@@ -1038,7 +1082,16 @@ function renderList() {
     const kinds   = ['기타','공격','방어','특수'];
 
     let list = STAT_LIST.filter(s => kinds.includes(s.kind));
-    if (currentTab !== '전체') list = list.filter(s => s.kind === currentTab);
+    if (currentTab === '활성') {
+        // 현재 수치가 0 초과인 능력치만 표시
+        list = list.filter(s => {
+            const computedVal = currentStats[s.en];
+            const val = (computedVal !== undefined) ? computedVal : (bon[s.en] || 0);
+            return val > 0;
+        });
+    } else if (currentTab !== '전체') {
+        list = list.filter(s => s.kind === currentTab);
+    }
     if (search) {
         list = list.filter(s =>
             s.kr.toLowerCase().includes(search) ||

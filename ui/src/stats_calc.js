@@ -407,102 +407,157 @@ const STAT_LIST=[
 ];
 
 // ─── 스탯 계산 함수 ────────────────────────────────────────────────────────────
-function computeStats(lv, bonuses) {
-    bonuses = bonuses || {};
-    function B(en) { return bonuses[en] || 0; }
+// bonuses  : 레벨 능력치(getLvStatBonuses) + 외부 보너스(장비·버프 등) 합산 객체
+// baseStats: 기본 스탯 7종 { STR, DEX, INT, AGI, CON, WIS, LUK }
+// ─ 3단계 계산 흐름 ─
+//   1단계 기본 합산: baseStats 치환값(computeSubstitutedBonuses) + bonuses 합산
+//   2단계 증폭 적용: × (1 + AmplifyRate / 10000)
+//   3단계 약화 적용: × (1 - WeakenRate / 10000)  ← 현재 게임에서 미구현(값 0 유지)
+function computeStats(bonuses, baseStats) {
+    bonuses   = bonuses   || {};
+    baseStats = baseStats || {};
 
-    // 퍼센트 증폭 계수: 10000 단위 (10000 = 100%), computeStats 내부에서는 /10000 으로 비율 변환
-    const STR = (10 + B('STR') + B('AllStat')) * (1 + B('STRAmplifyRate') / 10000);
-    const DEX = (10 + B('DEX') + B('AllStat')) * (1 + B('DEXAmplifyRate') / 10000);
-    const INT = (10 + B('INT') + B('AllStat')) * (1 + B('INTAmplifyRate') / 10000);
-    const CON = (10 + B('CON') + B('AllStat')) * (1 + B('CONAmplifyRate') / 10000);
-    const LUK = (10 + B('LUK') + B('AllStat')) * (1 + B('LUKAmplifyRate') / 10000);
+    // 1단계: 기본 스탯 실효값 계산 (설정값 + 레벨 보너스 + AllStat 보너스)
+    // 치환 공식은 실효 기본 스탯 기준으로 계산해야 레벨 능력치·AllStat이 2차 스탯에 반영됨
+    // 예: STR 설정=10, 레벨 보너스=490 → 실효 STR=500 → PVEMeleeMinAttack 치환도 500 기준
+    const allStatBonus = bonuses['AllStat'] || 0;
+    const totalBaseStats = {};
+    for (const stat of ['STR','DEX','INT','AGI','CON','WIS','LUK']) {
+        totalBaseStats[stat] = (baseStats[stat] || 0) + (bonuses[stat] || 0) + allStatBonus;
+    }
+    const subBon = computeSubstitutedBonuses(totalBaseStats);
+    // 통합 조회: 레벨/외부 보너스 + 치환 보너스
+    function B(en) { return (bonuses[en] || 0) + (subBon[en] || 0); }
 
-    const MaxHP = Math.floor((100 + B('MaxHealthPoint')) * (1 + B('MaxHealthPointAmplifyRate') / 10000));
-    const MaxMP = Math.floor((50  + B('MaxManaPoint'))   * (1 + B('MaxManaPointAmplifyRate')   / 10000));
+    // ── 기본 스탯 7종 (baseStats 설정값 + 레벨 보너스 + 2단계 증폭) ─────────
+    const STR = Math.floor(((baseStats.STR || 0) + B('STR') + B('AllStat'))
+        * (1 + B('STRAmplifyRate') / 10000 + B('AllStatAmplifyRate') / 10000));
+    const DEX = Math.floor(((baseStats.DEX || 0) + B('DEX') + B('AllStat'))
+        * (1 + B('DEXAmplifyRate') / 10000 + B('AllStatAmplifyRate') / 10000));
+    const INT = Math.floor(((baseStats.INT || 0) + B('INT') + B('AllStat'))
+        * (1 + B('INTAmplifyRate') / 10000 + B('AllStatAmplifyRate') / 10000));
+    const AGI = Math.floor(((baseStats.AGI || 0) + B('AGI') + B('AllStat'))
+        * (1 + B('AGIAmplifyRate') / 10000 + B('AllStatAmplifyRate') / 10000));
+    const CON = Math.floor(((baseStats.CON || 0) + B('CON') + B('AllStat'))
+        * (1 + B('CONAmplifyRate') / 10000 + B('AllStatAmplifyRate') / 10000));
+    const WIS = Math.floor(((baseStats.WIS || 0) + B('WIS') + B('AllStat'))
+        * (1 + B('WISAmplifyRate') / 10000 + B('AllStatAmplifyRate') / 10000));
+    const LUK = Math.floor(((baseStats.LUK || 0) + B('LUK') + B('AllStat'))
+        * (1 + B('LUKAmplifyRate') / 10000 + B('AllStatAmplifyRate') / 10000));
 
-    const MeleeMinAttack  = Math.floor(B('MeleeMinAttack')  * (1 + B('MeleeAttackPct')  / 10000));
-    const MeleeMaxAttack  = Math.floor(B('MeleeMaxAttack')  * (1 + B('MeleeAttackPct')  / 10000));
-    const RangedMinAttack = Math.floor(B('RangedMinAttack') * (1 + B('RangedAttackPct') / 10000));
-    const RangedMaxAttack = Math.floor(B('RangedMaxAttack') * (1 + B('RangedAttackPct') / 10000));
-    const MagicMinAttack  = Math.floor(B('MagicMinAttack')  * (1 + B('MagicAttackPct')  / 10000));
-    const MagicMaxAttack  = Math.floor(B('MagicMaxAttack')  * (1 + B('MagicAttackPct')  / 10000));
-    // 근거리 방어력: 보너스만 (STAT_OPTIONS id=34: PhysicalDefense)
-    const MeleeDefense  = Math.floor(B('PhysicalDefense') * (1 + B('PhysicalDefensePct')  / 10000));
-    // 원거리 방어력: AGI 치환 보너스만 (STAT_OPTIONS id=769: RangedDefense)
-    const RangedDefense = Math.floor(B('RangedDefense')   * (1 + B('RangedDefenseAmplifyRate') / 10000));
-    // 마법 방어력: 보너스만 (WIS 치환)
-    const MagicDefense  = Math.floor(B('MagicDefense')    * (1 + B('MagicDefensePct')    / 10000));
+    // ── HP / MP (증폭 반영) ─────────────────────────────────────────────────
+    const MaxHP = Math.floor(B('MaxHealthPoint') * (1 + B('MaxHealthPointAmplifyRate') / 10000));
+    const MaxMP = Math.floor(B('MaxManaPoint')   * (1 + B('MaxManaPointAmplifyRate')   / 10000));
 
-    const Accuracy         = Math.floor(85 + B('Accuracy'));
-    const MeleeAccuracy    = Math.floor(85 + B('PVEMeleeAccuracy'));
-    const RangedAccuracy   = Math.floor(85 + B('PVERangedAccuracy'));
-    const MagicAccuracy    = Math.floor(85 + B('PVEMagicAccuracy'));
-    const Evasion          = Math.floor(B('Evasion'));
-    const MeleeEvasion     = Math.floor(B('MeleeEvasion'));
-    const RangedEvasion    = Math.floor(B('RangedEvasion'));
-    const MagicEvasion     = Math.floor(B('MagicEvasion'));
-    // 치명타·치명타 공격력: 10000 단위 원시값을 /100 으로 변환하여 퍼센트 포인트로 사용
-    const CriticalRate     = Math.min(100, Math.floor(5 + B('PVECritical')      / 100));
-    const MeleeCritRate    = Math.min(100, Math.floor(5 + B('PVEMeleeCritical') / 100));
-    const RangedCritRate   = Math.min(100, Math.floor(5 + B('PVERangedCritical')/ 100));
-    const MagicCritRate    = Math.min(100, Math.floor(5 + B('PVEMagicCritical') / 100));
-    const CritMultiplier   = 150 + Math.floor(B('PVEAtCriticalAttack') / 100);
+    // ── 공격력 (증폭 반영) ──────────────────────────────────────────────────
+    // 일반 키(MeleeMinAttack) + PVE 전용 키(PVEMeleeMinAttack, STR 치환 대상)를 합산 후 증폭
+    // PVEMeleeMinAttack 등은 BASE_STAT_SUBSTITUTION에서 기본 스탯이 치환하는 실제 공격력 키
+    const MeleeMinAttack  = Math.floor((B('MeleeMinAttack')  + B('PVEMeleeMinAttack'))  * (1 + B('MeleeAttackPct')  / 10000));
+    const MeleeMaxAttack  = Math.floor((B('MeleeMaxAttack')  + B('PVEMeleeMaxAttack'))  * (1 + B('MeleeAttackPct')  / 10000));
+    const RangedMinAttack = Math.floor((B('RangedMinAttack') + B('PVERangedMinAttack')) * (1 + B('RangedAttackPct') / 10000));
+    const RangedMaxAttack = Math.floor((B('RangedMaxAttack') + B('PVERangedMaxAttack')) * (1 + B('RangedAttackPct') / 10000));
+    const MagicMinAttack  = Math.floor((B('MagicMinAttack')  + B('PVEMagicMinAttack'))  * (1 + B('MagicAttackPct')  / 10000));
+    const MagicMaxAttack  = Math.floor((B('MagicMaxAttack')  + B('PVEMagicMaxAttack'))  * (1 + B('MagicAttackPct')  / 10000));
+
+    // ── 방어력 (증폭 반영) ──────────────────────────────────────────────────
+    const MeleeDefense  = Math.floor(B('PhysicalDefense') * (1 + B('PhysicalDefenseAmplifyRate') / 10000));
+    const RangedDefense = Math.floor(B('RangedDefense')   * (1 + B('RangedDefenseAmplifyRate')   / 10000));
+    const MagicDefense  = Math.floor(B('MagicDefense')    * (1 + B('MagicDefenseAmplifyRate')    / 10000));
+
+    // ── 명중 / 회피 ─────────────────────────────────────────────────────────
+    const Accuracy       = Math.floor(B('Accuracy'));
+    const MeleeAccuracy  = Math.floor(B('PVEMeleeAccuracy'));
+    const RangedAccuracy = Math.floor(B('PVERangedAccuracy'));
+    const MagicAccuracy  = Math.floor(B('PVEMagicAccuracy'));
+    const Evasion        = Math.floor(B('Evasion'));
+    const MeleeEvasion   = Math.floor(B('MeleeEvasion'));
+    const RangedEvasion  = Math.floor(B('RangedEvasion'));
+    const MagicEvasion   = Math.floor(B('MagicEvasion'));
+
+    // ── 치명타율 (원시값 / 100 → 자연 퍼센트 0~100, 전투 계산용) ────────────
+    // PVECritical(공통 PVE 치명타) + 공격 유형별 치명타를 합산
+    // 예: 근거리 전투 → PVECritical(공통) + PVEMeleeCritical(STR 치환 대상) 합산
+    const CriticalRate   = Math.min(100, B('PVECritical') / 100);
+    const MeleeCritRate  = Math.min(100, (B('PVECritical') + B('PVEMeleeCritical'))  / 100);
+    const RangedCritRate = Math.min(100, (B('PVECritical') + B('PVERangedCritical')) / 100);
+    const MagicCritRate  = Math.min(100, (B('PVECritical') + B('PVEMagicCritical'))  / 100);
+
+    // ── 치명타 추가 공격력 (절대값 — 치명타 발생 시 MaxAtk에 직접 더해지는 고정 수치) ──
+    // PVEAtCriticalAttack(공통) + 공격 유형별 AtCritical 합산, 퍼센트 변환 없음
+    const CritMeleeAtk  = B('PVEAtCriticalAttack') + B('PVEAtCriticalMeleeAttack');
+    const CritRangedAtk = B('PVEAtCriticalAttack') + B('PVEAtCriticalRangedAttack');
+    const CritMagicAtk  = B('PVEAtCriticalAttack') + B('PVEAtCriticalMagicAttack');
     const CriticalResist   = B('CriticalResist');
     const MeleeCritResist  = B('MeleeCriticalResist');
     const RangedCritResist = B('RangedCriticalResist');
     const MagicCritResist  = B('MagicCriticalResist');
-    const MoveSpeed        = Math.min(300, 100 + B('MoveSpeed'));
-    const AttackSpeed      = Math.min(200, 100 + B('AttackSpeed'));
-    const HPRegen          = Math.floor(B('HealthRegenPoint'));
-    const MPRegen          = Math.floor(B('ManaRegenPoint'));
-    const PotionRecovery   = 100 + Math.floor(B('PotionRecoveryRate') / 100);
-    const SkillDamageReduction = B('SkillDamageReduction');
-    const EXPBonus         = B('EXPBonus');
-    const ItemDropBonus    = B('ItemDropBonus');
-    const CoolTimeRate     = B('CoolTimeRate');
-    const BossExtraAtk     = B('BossMonsterExtraAttack');
-    const EliteExtraAtk    = B('EliteMonsterExtraAttack');
 
-    return {
-        AllStat:B('AllStat'), STR:Math.floor(STR), DEX:Math.floor(DEX),
-        INT:Math.floor(INT), CON:Math.floor(CON), LUK:Math.floor(LUK),
-        AGI:B('AGI'), WIS:B('WIS'),
+    // ── 속도 / 회복 / 기타 ──────────────────────────────────────────────────
+    // 상한값 하드코딩 제거 — 기획자가 LV_STAT_CONFIG로 원하는 값을 직접 설정
+    const MoveSpeed   = Math.floor(B('MoveSpeed'));
+    const AttackSpeed = Math.floor(B('AttackSpeed'));
+    const HPRegen        = Math.floor(B('HealthRegenPoint'));
+    const MPRegen        = Math.floor(B('ManaRegenPoint'));
+    const PotionRecovery = Math.floor(B('PotionRecoveryRate') / 100);
+    const SkillDamageReduction = B('SkillDamageReduction');
+    const EXPBonus       = B('EXPBonus');
+    const ItemDropBonus  = B('ItemDropBonus');
+    const CoolTimeRate   = B('CoolTimeRate');
+    const BossExtraAtk   = B('BossMonsterExtraAttack');
+    const EliteExtraAtk  = B('EliteMonsterExtraAttack');
+
+    // ── 결과 객체 구성 ────────────────────────────────────────────────────────
+    // 1단계: BASE_STAT_SUBSTITUTION 치환 대상 스탯 전체를 원시값으로 추가
+    // renderKeyCards 등에서 currentStats[e.key] 조회 시 정확한 값을 반환하기 위함
+    const result = {};
+    if (typeof BASE_STAT_SUBSTITUTION !== 'undefined') {
+        for (const entries of Object.values(BASE_STAT_SUBSTITUTION)) {
+            for (const e of entries) {
+                if (!(e.key in result)) result[e.key] = B(e.key);
+            }
+        }
+    }
+
+    // 2단계: 명시적 계산값 추가 — 증폭/변환이 적용된 값으로 덮어씀
+    Object.assign(result, {
+        AllStat: B('AllStat'),
+        STR, DEX, INT, AGI, CON, WIS, LUK,
         MaxHP, MaxMP, MoveSpeed, AttackSpeed, HPRegen, MPRegen, PotionRecovery,
         MeleeMinAttack, MeleeMaxAttack, RangedMinAttack, RangedMaxAttack,
         MagicMinAttack, MagicMaxAttack,
         Accuracy, MeleeAccuracy, RangedAccuracy, MagicAccuracy,
         CriticalRate, MeleeCritRate, RangedCritRate, MagicCritRate,
-        CritMultiplier, CriticalResist, MeleeCritResist, RangedCritResist, MagicCritResist,
+        CritMeleeAtk, CritRangedAtk, CritMagicAtk,
+        CriticalResist, MeleeCritResist, RangedCritResist, MagicCritResist,
         MeleeDefense, RangedDefense, MagicDefense,
         Evasion, MeleeEvasion, RangedEvasion, MagicEvasion,
         SkillDamageReduction, EXPBonus, ItemDropBonus, CoolTimeRate,
         BossExtraAtk, EliteExtraAtk,
-        // 저항 계열 (기본 스탯 치환으로 추가)
-        StunResist:     B('StunResist'),
-        ParalysisResist:B('ParalysisResist'),
-        SilenceResist:  B('SilenceResist'),
-        HoldResist:     B('HoldResist'),
-        SlowResist:     B('SlowResist'),
-        ProvokeResist:  B('ProvokeResist'),
-        // 치명타 피해 감소 계열
+        // 저항 계열
+        StunResist:      B('StunResist'),
+        ParalysisResist: B('ParalysisResist'),
+        SilenceResist:   B('SilenceResist'),
+        HoldResist:      B('HoldResist'),
+        SlowResist:      B('SlowResist'),
+        ProvokeResist:   B('ProvokeResist'),
+        // 치명타 피해 감소
         MeleeCriticalDamageReduction:  B('MeleeCriticalDamageReduction'),
         RangedCriticalDamageReduction: B('RangedCriticalDamageReduction'),
         MagicCriticalDamageReduction:  B('MagicCriticalDamageReduction'),
-        // 방어력 관통 (STAT_OPTIONS 정식 키 사용)
+        // 방어력 관통
         PVETargetMeleeDefense:  B('PVETargetMeleeDefense'),
         PVETargetRangedDefense: B('PVETargetRangedDefense'),
         PVETargetMagicDefense:  B('PVETargetMagicDefense'),
-        // 보스 추가 방어력
+        // 보스 추가 방어/공격
         EliteMonsterExtraDefense:             B('EliteMonsterExtraDefense'),
         BossMonsterExtraDefense:              B('BossMonsterExtraDefense'),
         WorldBossMonsterExtraDefense:         B('WorldBossMonsterExtraDefense'),
         StrongPointBossMonsterExtraDefense:   B('StrongPointBossMonsterExtraDefense'),
-        // 스킬 피해 감소 계열
-        MeleeSkillDamageReduction: B('MeleeSkillDamageReduction'),
+        // 스킬 피해 감소
+        MeleeSkillDamageReduction:  B('MeleeSkillDamageReduction'),
         RangedSkillDamageReduction: B('RangedSkillDamageReduction'),
-        MagicSkillDamageReduction: B('MagicSkillDamageReduction'),
-        // 스킬 공격력 (기본 스탯 치환으로 추가)
+        MagicSkillDamageReduction:  B('MagicSkillDamageReduction'),
+        // 스킬 공격력
         MeleeSkillMinAttack:  B('MeleeSkillMinAttack'),
         MeleeSkillMaxAttack:  B('MeleeSkillMaxAttack'),
         RangedSkillMinAttack: B('RangedSkillMinAttack'),
@@ -510,29 +565,28 @@ function computeStats(lv, bonuses) {
         MagicSkillMinAttack:  B('MagicSkillMinAttack'),
         MagicSkillMaxAttack:  B('MagicSkillMaxAttack'),
         // 월드/거점 보스 추가 공격력
-        WorldBossMonsterExtraAttack:        B('WorldBossMonsterExtraAttack'),
-        StrongPointBossMonsterExtraAttack:  B('StrongPointBossMonsterExtraAttack'),
-        // ── STAT_LIST en 키 정렬용 별칭 (character_info.html 스탯 목록 표시용) ──
-        MaxHealthPoint:          MaxHP,
-        MaxManaPoint:            MaxMP,
-        HealthRegenPoint:        HPRegen,
-        ManaRegenPoint:          MPRegen,
-        PotionRecoveryRate:      PotionRecovery,
-        PhysicalDefense:         MeleeDefense,
-        PVECritical:             CriticalRate,
-        PVEMeleeCritical:        MeleeCritRate,
-        PVERangedCritical:       RangedCritRate,
-        PVEMagicCritical:        MagicCritRate,
-        PVEAtCriticalAttack:     CritMultiplier,
-        MeleeCriticalResist:     MeleeCritResist,
-        RangedCriticalResist:    RangedCritResist,
-        MagicCriticalResist:     MagicCritResist,
-        PVEMeleeAccuracy:        MeleeAccuracy,
-        PVERangedAccuracy:       RangedAccuracy,
-        PVEMagicAccuracy:        MagicAccuracy,
+        WorldBossMonsterExtraAttack:       B('WorldBossMonsterExtraAttack'),
+        StrongPointBossMonsterExtraAttack: B('StrongPointBossMonsterExtraAttack'),
+        // ── STAT_LIST 별칭 (character_info.html 스탯 목록 표시용) ──
+        // 증폭 적용값 또는 변환값으로 덮어씀
+        MaxHealthPoint:       MaxHP,
+        MaxManaPoint:         MaxMP,
+        HealthRegenPoint:     HPRegen,
+        ManaRegenPoint:       MPRegen,
+        PotionRecoveryRate:   PotionRecovery,
+        PhysicalDefense:      MeleeDefense,
+        PVEAtCriticalAttack:  B('PVEAtCriticalAttack'),
+        MeleeCriticalResist:  MeleeCritResist,
+        RangedCriticalResist: RangedCritResist,
+        MagicCriticalResist:  MagicCritResist,
+        PVEMeleeAccuracy:     MeleeAccuracy,
+        PVERangedAccuracy:    RangedAccuracy,
+        PVEMagicAccuracy:     MagicAccuracy,
         BossMonsterExtraAttack:  BossExtraAtk,
         EliteMonsterExtraAttack: EliteExtraAtk,
-    };
+    });
+
+    return result;
 }
 
 // ─── 기본 스탯 치환 테이블 ────────────────────────────────────────────────────
@@ -738,6 +792,7 @@ const SUBST_PCT_STATS = new Set([
     'PVEMagicCritical', 'PVPMagicCritical',
     'PVESkillExtraCritical',
     'PVENormalRangedExtraCritical', 'PVPNormalRangedExtraCritical',
+    // AtCriticalAttack 계열은 절대값(추가 공격력)이므로 퍼센트 표기 제외
     // 저항 계열
     'StunResist', 'ParalysisResist', 'SilenceResist',
     'HoldResist', 'SlowResist', 'ProvokeResist',
@@ -761,12 +816,8 @@ const SUBST_PCT_STATS = new Set([
 const RAW_PCT_STAT_KEYS = SUBST_PCT_STATS;  // SUBST_PCT_STATS 와 동일 집합
 
 // computeStats 가 0~100(%) 자연 단위로 이미 변환한 스탯 (나누기 없이 직접 % 표기)
+// ※ 치명타율 계열(PVECritical 등)은 이제 원시값(RAW_PCT_STAT_KEYS)으로 반환 — 여기서 제외
 const COMPUTED_PCT_STAT_KEYS = new Set([
-    'PVECritical','PVPCritical',
-    'PVEMeleeCritical','PVPMeleeCritical',
-    'PVERangedCritical','PVPRangedCritical',
-    'PVEMagicCritical','PVPMagicCritical',
-    'CritMultiplier','PVEAtCriticalAttack',
     'PotionRecoveryRate',
 ]);
 
@@ -787,7 +838,7 @@ function fmtStatDisplay(en, val) {
 function computeSubstitutedBonuses(baseStats) {
     const bonus = {};
     for (const [stat, entries] of Object.entries(BASE_STAT_SUBSTITUTION)) {
-        const val = (baseStats && baseStats[stat] != null) ? baseStats[stat] : 10;
+        const val = (baseStats && baseStats[stat] != null) ? baseStats[stat] : 0;
         for (const { key, c1, c2 } of entries) {
             bonus[key] = (bonus[key] || 0) + Math.floor(val / c1 * c2);
         }
