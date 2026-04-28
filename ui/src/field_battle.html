@@ -1811,7 +1811,8 @@ body {
                     <button class="lvstat-add-btn" onclick="addSelectedLvStat()">+ 추가</button>
                 </div>
                 <div class="limit-footer">
-                    <button class="limit-btn-cancel" onclick="resetLvStatConfig()" style="color:#f85149;border-color:#f8514960;">초기화</button>
+                    <button class="limit-btn-cancel" onclick="saveLvStatDefault()" style="color:#58a6ff;">Default 변경 저장</button>
+                    <button class="limit-btn-cancel" onclick="restoreLvStatDefault()" style="color:#e3b341;">Default 복원</button>
                     <div class="limit-apply-msg" id="lvstat-apply-msg"></div>
                     <button class="limit-btn-cancel" onclick="closeSettingsModal()">취소</button>
                     <button class="limit-btn-apply" onclick="saveLvStatConfig()">✔ 저장 · 적용</button>
@@ -2145,6 +2146,8 @@ body {
                 </div>
 
                 <div class="limit-footer">
+                    <button class="limit-btn-cancel" onclick="saveLimitDefault()" style="color:#58a6ff;">Default 변경 저장</button>
+                    <button class="limit-btn-cancel" onclick="restoreLimitDefault()" style="color:#e3b341;">Default 복원</button>
                     <div class="limit-apply-msg" id="limit-apply-msg"></div>
                     <button class="limit-btn-cancel" onclick="closeSettingsModal()">취소</button>
                     <button class="limit-btn-apply" onclick="applyLimitSettings()">✔ 적용</button>
@@ -2242,8 +2245,9 @@ body {
                 </div>
                 <!-- 스탯 패널 하단 버튼 -->
                 <div class="class-stat-footer">
+                    <button class="limit-btn-cancel" onclick="saveAllClassDefault()" style="color:#58a6ff;">Default 변경 저장</button>
+                    <button class="limit-btn-cancel" onclick="restoreClassDefault()" style="color:#e3b341;">Default 복원</button>
                     <span id="cbs-msg" style="font-size:15px;color:#3fb950;flex:1;"></span>
-                    <button class="limit-btn-cancel" onclick="resetClassModalStats()" style="color:#e3b341;">초기화</button>
                     <button class="limit-btn-apply" id="cbs-apply-btn" onclick="applyClassModalStats()">적용</button>
                 </div>
             </div>
@@ -2273,9 +2277,39 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">75건</span>
+                <span class="pn-month-count">78건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-28 22:02 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-28</span>
+                <span class="pn-ver-time">22:02</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>클래스 모달 [적용] 후 자동 닫기 — 적용 완료 시 성공 메시지를 700ms 표시한 뒤 모달이 자동으로 닫히도록 변경</li>
+            </ul>
+
+            <!-- ── 2026-04-28 22:00 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-28</span>
+                <span class="pn-ver-time">22:00</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>Default 버튼 UI 조정 — 클래스 모달·레벨 능력치·제한값 Footer에서 [초기화] 버튼 제거. "Default 저장" 버튼명을 "Default 변경 저장"으로 변경. [Default 변경 저장] / [Default 복원] 버튼을 Footer의 [적용] 반대편 끝(왼쪽)으로 이동</li>
+            </ul>
+
+            <!-- ── 2026-04-28 21:48 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-28</span>
+                <span class="pn-ver-time">21:48</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>Default 세팅 저장·복원 기능 추가 — 클래스 모달·레벨 능력치·제한값 각 UI 하단에 [Default 저장] / [Default 복원] 버튼 추가. [Default 저장]: 현재 설정 상태를 스냅샷으로 저장(localStorage 키 versione_default_class_all / versione_default_lvstat / versione_default_limit). [Default 복원]: 저장된 스냅샷으로 즉시 복원. 클래스 Default는 전체 6개 클래스의 스탯·공격타입·사거리를 일괄 저장·복원</li>
+            </ul>
 
             <!-- ── 2026-04-28 20:59 ── -->
             <div class="pn-ver">
@@ -3594,15 +3628,10 @@ function applyClassModalStats() {
     });
 
     const cbsMsg = document.getElementById('cbs-msg');
-    if (cbsMsg) {
-        cbsMsg.textContent = `✔ ${def.label} 기본 스탯이 저장되었습니다.`;
-        setTimeout(() => { if (cbsMsg) cbsMsg.textContent = ''; }, 2500);
-    }
-    const selMsg = document.getElementById('class-select-msg');
-    if (selMsg && isNewClass) {
-        selMsg.textContent = `✔ ${def.label} 클래스로 변경되었습니다.`;
-        setTimeout(() => { if (selMsg) selMsg.textContent = ''; }, 2500);
-    }
+    if (cbsMsg) cbsMsg.textContent = `✔ ${def.label} 기본 스탯이 저장되었습니다.`;
+
+    // 적용 완료 후 700ms 뒤 자동으로 모달 닫기
+    setTimeout(() => closeClassModal(), 700);
 }
 
 // [초기화] 버튼 — 선택된 클래스의 defaultStats 으로 슬라이더 초기화
@@ -6814,6 +6843,99 @@ function showLvStatMsg(msg, color) {
     if (!el) return;
     el.style.color   = color || '#3fb950';
     el.textContent   = msg;
+}
+
+// ─── Default 세팅 저장·복원 ─────────────────────────────────────────────────
+// localStorage 키: versione_default_class_all / versione_default_lvstat / versione_default_limit
+
+// 클래스 모달: 모든 클래스의 현재 세팅(스탯·공격타입·사거리)을 Default로 스냅샷 저장
+function saveAllClassDefault() {
+    const snap = {};
+    Object.keys(CLASS_DEFS).forEach(classId => {
+        snap[classId] = {
+            stats:    loadClassBaseStats(classId),
+            atkType:  loadClassAtkType(classId),
+            atkRange: loadClassAtkRange(classId),
+        };
+    });
+    localStorage.setItem('versione_default_class_all', JSON.stringify(snap));
+    const el = document.getElementById('cbs-msg');
+    if (el) { el.style.color = '#58a6ff'; el.textContent = '✔ 전체 클래스 Default 저장 완료'; }
+}
+
+// 클래스 모달: 모든 클래스를 Default로 복원 후 현재 표시 패널 새로 고침
+function restoreClassDefault() {
+    const raw = localStorage.getItem('versione_default_class_all');
+    const el  = document.getElementById('cbs-msg');
+    if (!raw) {
+        if (el) { el.style.color = '#f85149'; el.textContent = '저장된 Default가 없습니다.'; }
+        return;
+    }
+    const snap = JSON.parse(raw);
+    Object.keys(snap).forEach(classId => {
+        if (!CLASS_DEFS[classId]) return;
+        const d = snap[classId];
+        if (d.stats)    saveClassBaseStats(classId, d.stats);
+        if (d.atkType)  saveClassAtkType(classId, d.atkType.normalAtkType, d.atkType.skillAtkType);
+        if (d.atkRange) saveClassAtkRange(classId, d.atkRange.normalAtkRange, d.atkRange.skillAtkRange);
+    });
+    renderClassStatPanel(_cbsTargetClass || currentClass);
+    if (el) { el.style.color = '#e3b341'; el.textContent = '✔ 모든 클래스 Default로 복원되었습니다.'; }
+}
+
+// 레벨 능력치: 현재 LV_STAT_CONFIG를 Default로 스냅샷 저장
+function saveLvStatDefault() {
+    localStorage.setItem('versione_default_lvstat', JSON.stringify(LV_STAT_CONFIG));
+    showLvStatMsg('✔ 레벨 능력치 Default 저장 완료', '#58a6ff');
+}
+
+// 레벨 능력치: Default로 복원하고 UI·캐릭터에 즉시 반영
+function restoreLvStatDefault() {
+    const raw = localStorage.getItem('versione_default_lvstat');
+    if (!raw) { showLvStatMsg('저장된 Default가 없습니다.', '#f85149'); return; }
+    LV_STAT_CONFIG = JSON.parse(raw);
+    localStorage.setItem('versione_lv_stat_config', JSON.stringify(LV_STAT_CONFIG));
+    renderLvStatRows();
+    applyLvStatToCharacter();
+    showLvStatMsg('✔ Default로 복원되었습니다.', '#e3b341');
+}
+
+// 제한값: 현재 게임 변수 상태를 Default로 스냅샷 저장
+function saveLimitDefault() {
+    localStorage.setItem('versione_default_limit', JSON.stringify({
+        minAvoidance:          MIN_AVOIDANCE,
+        maxAvoidance:          MAX_AVOIDANCE,
+        attackSpeedCorrection: ATTACK_SPEED_CORRECTION,
+        critMinLimit:          CRIT_MIN_LIMIT,
+        critMaxLimit:          CRIT_MAX_LIMIT,
+        defCorrVal:            DEF_CORR_VAL,
+        defDecRate:            DEF_DEC_RATE,
+        min1stPhys:            MIN_1ST_DEC_PHYS,  max1stPhys:  MAX_1ST_DEC_PHYS,
+        min1stRange:           MIN_1ST_DEC_RANGE, max1stRange: MAX_1ST_DEC_RANGE,
+        min1stMagic:           MIN_1ST_DEC_MAGIC, max1stMagic: MAX_1ST_DEC_MAGIC,
+        min3rdMelee:           MIN_3RD_DEC_MELEE, max3rdMelee: MAX_3RD_DEC_MELEE,
+        min3rdRange:           MIN_3RD_DEC_RANGE, max3rdRange: MAX_3RD_DEC_RANGE,
+        min3rdMagic:           MIN_3RD_DEC_MAGIC, max3rdMagic: MAX_3RD_DEC_MAGIC,
+        minCritDmgDec:         MIN_CRIT_DMG_DEC,  maxCritDmgDec:  MAX_CRIT_DMG_DEC,  critDmgDecCorr:  CRIT_DMG_DEC_CORR,
+        minSkillDmgDec:        MIN_SKILL_DMG_DEC, maxSkillDmgDec: MAX_SKILL_DMG_DEC, skillDmgDecCorr: SKILL_DMG_DEC_CORR,
+        minDamageCorrRate:     MIN_DAMAGE_CORR_RATE,
+    }));
+    const msgEl = document.getElementById('limit-apply-msg');
+    if (msgEl) { msgEl.style.color = '#58a6ff'; msgEl.textContent = '✔ 제한값 Default 저장 완료'; }
+}
+
+// 제한값: Default로 복원 후 게임 변수·UI에 반영
+function restoreLimitDefault() {
+    const raw   = localStorage.getItem('versione_default_limit');
+    const msgEl = document.getElementById('limit-apply-msg');
+    if (!raw) {
+        if (msgEl) { msgEl.style.color = '#f85149'; msgEl.textContent = '저장된 Default가 없습니다.'; }
+        return;
+    }
+    localStorage.setItem('versione_limit_settings', raw);
+    loadLimitSettings();
+    syncLimitSettingsUI();
+    if (msgEl) { msgEl.style.color = '#e3b341'; msgEl.textContent = '✔ Default로 복원되었습니다.'; }
 }
 
 // ────────────────────────────────────────────────
