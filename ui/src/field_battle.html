@@ -2277,9 +2277,19 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">78건</span>
+                <span class="pn-month-count">79건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-29 09:48 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">09:48</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>Default 팩토리 초기화 — 배포 사이트 최초 접속 시 versione_default_* 키가 없으면 자동 생성. 클래스는 CLASS_DEFS 초깃값, 레벨 능력치는 저장된 설정, 제한값은 게임 변수 초깃값 기준. 기존 사용자의 Default 세팅에는 영향 없음 (ensureFactoryDefaults 함수, DOMContentLoaded 시 실행)</li>
+            </ul>
 
             <!-- ── 2026-04-28 22:02 ── -->
             <div class="pn-ver">
@@ -6403,6 +6413,7 @@ window.addEventListener('DOMContentLoaded', () => {
     loadBaseStats();
     loadLimitSettings();
     loadLvStatConfig();
+    ensureFactoryDefaults(); // versione_default_* 키 없으면 팩토리값으로 자동 초기화
     buildLvStatSelect();
     switchLimitTab('hit');
 });
@@ -6843,6 +6854,54 @@ function showLvStatMsg(msg, color) {
     if (!el) return;
     el.style.color   = color || '#3fb950';
     el.textContent   = msg;
+}
+
+// ─── 팩토리 Default 초기화 ───────────────────────────────────────────────────
+// versione_default_* 키가 없을 때만 현재 게임 변수 기준으로 자동 초기화.
+// DOMContentLoaded에서 loadLimitSettings / loadLvStatConfig 실행 후 호출해야 정확함.
+// ① 기존 사용자: versione_default_* 가 이미 존재하면 아무것도 덮어쓰지 않음
+// ② 신규 사용자: 코드에 정의된 팩토리값(CLASS_DEFS + 게임 변수 초깃값)으로 자동 세팅
+function ensureFactoryDefaults() {
+    // 클래스 Default — CLASS_DEFS의 defaultStats / normalAtkType / AtkRange 기준
+    if (!localStorage.getItem('versione_default_class_all')) {
+        const snap = {};
+        Object.keys(CLASS_DEFS).forEach(classId => {
+            const def = CLASS_DEFS[classId];
+            snap[classId] = {
+                stats:    { ...def.defaultStats },
+                atkType:  { normalAtkType: def.normalAtkType,  skillAtkType:  def.skillAtkType  },
+                atkRange: { normalAtkRange: def.normalAtkRange, skillAtkRange: def.skillAtkRange },
+            };
+        });
+        localStorage.setItem('versione_default_class_all', JSON.stringify(snap));
+    }
+
+    // 레벨 능력치 Default — loadLvStatConfig 이후의 LV_STAT_CONFIG 기준
+    if (!localStorage.getItem('versione_default_lvstat')) {
+        localStorage.setItem('versione_default_lvstat', JSON.stringify(LV_STAT_CONFIG));
+    }
+
+    // 제한값 Default — loadLimitSettings 이후의 게임 변수 기준
+    if (!localStorage.getItem('versione_default_limit')) {
+        localStorage.setItem('versione_default_limit', JSON.stringify({
+            minAvoidance:          MIN_AVOIDANCE,
+            maxAvoidance:          MAX_AVOIDANCE,
+            attackSpeedCorrection: ATTACK_SPEED_CORRECTION,
+            critMinLimit:          CRIT_MIN_LIMIT,
+            critMaxLimit:          CRIT_MAX_LIMIT,
+            defCorrVal:            DEF_CORR_VAL,
+            defDecRate:            DEF_DEC_RATE,
+            min1stPhys:            MIN_1ST_DEC_PHYS,  max1stPhys:  MAX_1ST_DEC_PHYS,
+            min1stRange:           MIN_1ST_DEC_RANGE, max1stRange: MAX_1ST_DEC_RANGE,
+            min1stMagic:           MIN_1ST_DEC_MAGIC, max1stMagic: MAX_1ST_DEC_MAGIC,
+            min3rdMelee:           MIN_3RD_DEC_MELEE, max3rdMelee: MAX_3RD_DEC_MELEE,
+            min3rdRange:           MIN_3RD_DEC_RANGE, max3rdRange: MAX_3RD_DEC_RANGE,
+            min3rdMagic:           MIN_3RD_DEC_MAGIC, max3rdMagic: MAX_3RD_DEC_MAGIC,
+            minCritDmgDec:         MIN_CRIT_DMG_DEC,  maxCritDmgDec:  MAX_CRIT_DMG_DEC,  critDmgDecCorr:  CRIT_DMG_DEC_CORR,
+            minSkillDmgDec:        MIN_SKILL_DMG_DEC, maxSkillDmgDec: MAX_SKILL_DMG_DEC, skillDmgDecCorr: SKILL_DMG_DEC_CORR,
+            minDamageCorrRate:     MIN_DAMAGE_CORR_RATE,
+        }));
+    }
 }
 
 // ─── Default 세팅 저장·복원 ─────────────────────────────────────────────────
