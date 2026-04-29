@@ -1032,7 +1032,7 @@ body {
 
 /* ── 몬스터 능력치 팝업 ── */
 .mon-modal {
-    width: 560px;
+    width: 860px;
 }
 .mon-header-bar {
     display: flex;
@@ -1111,7 +1111,8 @@ body {
 }
 .mon-stat-row.boss-row { border-color: #440000; background: #1a0000; }
 .mon-stat-lbl { font-size: 15px; color: #8b949e; }
-.mon-stat-val { font-size: 15px; font-weight: bold; color: #e6edf3; }
+.mon-stat-en  { font-size: 15px; color: #484f58; margin-left: 5px; }
+.mon-stat-val { font-size: 15px; font-weight: bold; color: #e6edf3; white-space: nowrap; }
 .mon-stat-val.highlight { color: #ff9966; }
 .mon-stat-val.boss-val  { color: #ff4444; }
 .mon-hp-bar-wrap {
@@ -2317,9 +2318,29 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">87건</span>
+                <span class="pn-month-count">89건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-29 15:21 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">15:21</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>몬스터 능력치 조회 팝업 개선 — (1) 모달 가로폭 560px → 860px 확대. (2) 전 능력치 항목에 영문명 병기(한국어 옆 회색 텍스트로 표시). (3) 퍼센트 표기 대상 능력치를 캐릭터 스탯과 동일 규칙으로 통일 — 회피(MeleeEvasion 등), 치명타 피해 감소(MeleeCritDmgReduc 등), 스킬 피해 감소, PVP 받는 피해 감소, CC 저항(StunResist 등) 6종을 10000 단위 원시값/100 방식으로 % 변환 표시</li>
+            </ul>
+
+            <!-- ── 2026-04-29 15:09 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">15:09</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 능력치 시스템 57종으로 전면 교체 — 기존 레벨 비례 단순 수식(HP = 레벨×20/200, 공격·방어 4종)을 폐기하고, 나이트 클래스 레벨 1 기준 전투 능력치에서 자동 산출되는 57종 PVP 스탯 체계로 교체. 일반 HP는 평균 공격력 기준 5초 생존, 보스 HP는 60초 생존 기준으로 초기화. 일반 몬스터 공격속도 2000·이동속도 480, 보스 3000·550 고정(레벨 무관). 스테이지 전환(nextStage)·전체 초기화(resetAllMonsters)·부활(reviveMonster) 시 HP·속도도 calcMonsterStats 기반으로 갱신되도록 수정. 몬스터 정보 패널(renderMonsterInfo)을 57종 전 항목 표시로 전면 재작성</li>
+            </ul>
 
             <!-- ── 2026-04-29 12:12 ── -->
             <div class="pn-ver">
@@ -3029,62 +3050,139 @@ function calcCharStats(lv) {
     };
 }
 
-// 몬스터 전투 스탯 계산
-// 몬스터 레벨별 능력치 보너스 — computeStats가 요구하는 키 형식으로 기존 수치를 그대로 매핑
-// (기존 임의 공식을 동일한 계산 결과가 나오도록 대응 bonus 키로 변환)
-function getMonsterStatBonuses(lv) {
-    return {
-        // HP: MaxHealthPoint 직접 보너스
-        MaxHealthPoint:   lv * 3,
-        // 공격력: MeleeMinAttack / MeleeMaxAttack 직접 보너스 (PVEMeleeMinAttack에 합산됨)
-        MeleeMinAttack:   Math.floor(lv * 2 + 3),
-        MeleeMaxAttack:   Math.floor(lv * 3 + 5),
-        // 방어력: computeStats는 PhysicalDefense 키를 MeleeDefense로 계산함
-        PhysicalDefense:  Math.floor(lv * 1.5),
-        // 명중: computeStats는 PVEMeleeAccuracy 키를 MeleeAccuracy로 계산함
-        PVEMeleeAccuracy: Math.floor(70 + lv / 4),
-        // 회피: MeleeEvasion 직접 보너스 (10000 단위 스케일)
-        MeleeEvasion:     Math.floor(lv / 6),
-        // 치명타율: PVECritical (10000 단위). MeleyCritRate = min(100, PVECritical / 100)
-        // 기존 critRate = min(30, 2 + lv/20) → PVECritical = min(3000, floor((2 + lv/20) * 100))
-        PVECritical:      Math.min(3000, Math.floor((2 + lv / 20) * 100)),
-        // 치명타 추가 공격력 (절대값): 치명타 시 MeleeMaxAtk에 더해지는 고정 수치
-        // MeleeMaxAtk = lv*3+5 기준, 레벨비례 추가 공격 (약 50% 추가 효과)
-        PVEAtCriticalAttack: Math.floor(lv * 3 + 5),
+// ─── 몬스터 능력치 시스템 (57종) ─────────────────────────────────────────────
+// 레벨 1 기준 능력치 캐시 — buildMonsterBaseStats()로 게임 시작 시 초기화
+let MONSTER_BASE_LV1 = null;
+
+// knight 클래스 Default 스탯 기반으로 레벨 1 몬스터 기준 능력치 계산
+// 치환 공식: Math.floor(statVal / c1 * c2) — BASE_STAT_SUBSTITUTION 동일 방식
+function buildMonsterBaseStats() {
+    const bs  = loadClassBaseStats('knight');
+    const STR = bs.STR || 16, DEX = bs.DEX || 12, INT = bs.INT || 8;
+    const AGI = bs.AGI || 14, CON = bs.CON || 20, WIS = bs.WIS || 8, LUK = bs.LUK || 9;
+    const S   = (v, c1, c2) => Math.floor(v / c1 * c2);
+
+    // HP 역산: 캐릭터 레벨 1 평균 공격력 × 공격 횟수/초 × 목표 전투 시간
+    const avgAtk   = (S(STR, 1, 1) + S(STR, 1, 3)) / 2;   // (PVEMeleeMin + PVEMeleeMax) / 2
+    const corr     = ATTACK_SPEED_CORRECTION || 2000;
+    const atkIntMs = Math.max(100, Math.round(1000 / (2000 / corr))); // knight 기본 atkSpeed=2000
+    const aps      = 1000 / atkIntMs;
+
+    MONSTER_BASE_LV1 = {
+        normalHP: Math.max(1, Math.round(5  * avgAtk * aps)), // 일반: 5초 전투 분량
+        bossHP:   Math.max(1, Math.round(60 * avgAtk * aps)), // 보스: 60초 전투 분량
+        // ── PVP 최소/최대 공격력
+        pvpMeleeMinAtk:  S(STR, 4, 1), pvpMeleeMaxAtk:  S(STR, 2, 1),
+        pvpRangedMinAtk: S(DEX, 4, 1), pvpRangedMaxAtk: S(DEX, 2, 1),
+        pvpMagicMinAtk:  S(INT, 4, 1), pvpMagicMaxAtk:  S(INT, 2, 1),
+        // ── PVP 치명타 공격력
+        pvpCritMeleeAtk: S(STR, 4, 1), pvpCritRangedAtk: S(DEX, 4, 1), pvpCritMagicAtk: S(INT, 4, 1),
+        // ── PVP 치명타율 (10000 단위 raw → /100 → 0~100 자연 퍼센트로 저장)
+        pvpMeleeCritRate:  (S(STR, 1, 1) + S(LUK, 1, 1)) / 100,
+        pvpRangedCritRate: (S(DEX, 1, 1) + S(LUK, 1, 1)) / 100,
+        pvpMagicCritRate:  (S(INT, 1, 1) + S(LUK, 1, 1)) / 100,
+        // ── 치명타 저항 (0~100 자연 퍼센트)
+        meleeCritResist:  (S(CON, 2, 3) + S(LUK, 2, 3)) / 100,
+        rangedCritResist: (S(AGI, 2, 3) + S(LUK, 2, 3)) / 100,
+        magicCritResist:  (S(WIS, 2, 3) + S(LUK, 2, 3)) / 100,
+        // ── PVP 명중 (10000 단위)
+        pvpMeleeAccuracy: S(STR, 1, 1), pvpRangedAccuracy: S(DEX, 1, 1), pvpMagicAccuracy: S(INT, 1, 1),
+        // ── 회피 (10000 단위)
+        meleeEvasion: S(CON, 1, 2), rangedEvasion: S(AGI, 1, 2), magicEvasion: S(WIS, 1, 2),
+        // ── PVP 방어력 관통 (raw값, 방어력에서 직접 차감)
+        pvpMeleeDefPen: S(STR, 1, 3), pvpRangedDefPen: S(DEX, 1, 3), pvpMagicDefPen: S(INT, 1, 3),
+        // ── 방어력
+        meleeDef: S(CON, 1, 10), rangedDef: S(AGI, 1, 10), magicDef: S(WIS, 1, 10),
+        // ── PVP 치명타 피해 감소 무시 (10000 단위, 공격 시 상대방 치명타 감소 무력화)
+        pvpMeleeCritDmgDecIgnore: 0, pvpRangedCritDmgDecIgnore: 0, pvpMagicCritDmgDecIgnore: 0,
+        // ── 치명타 피해 감소 (10000 단위)
+        meleeCritDmgReduc: S(CON, 2, 3), rangedCritDmgReduc: S(AGI, 2, 3), magicCritDmgReduc: S(WIS, 2, 3),
+        // ── PVP 스킬 피해 감소 무시 (10000 단위)
+        pvpMeleeSkillDmgDecIgnore: 0, pvpRangedSkillDmgDecIgnore: 0, pvpMagicSkillDmgDecIgnore: 0,
+        // ── 스킬 피해 감소 (10000 단위)
+        meleeSkillDmgReduc: S(CON, 2, 3), rangedSkillDmgReduc: S(AGI, 2, 3), magicSkillDmgReduc: S(WIS, 2, 3),
+        // ── PVP 받는 피해 감소 (10000 단위, 몬스터가 받는 피해 경감)
+        pvpMeleeDmgReduc: 0, pvpRangedDmgReduc: 0, pvpMagicDmgReduc: 0,
+        // ── CC 적중 (10000 단위)
+        stunHit: 0, paralysisHit: 0, silenceHit: 0, holdHit: 0, slowHit: 0, provokeHit: 0,
+        // ── CC 저항 (10000 단위)
+        stunResist:      S(CON, 2, 3) + S(LUK, 2, 3),
+        paralysisResist: S(CON, 2, 3) + S(LUK, 2, 3),
+        silenceResist:   S(WIS, 2, 3) + S(LUK, 2, 3),
+        holdResist:      S(AGI, 2, 3) + S(LUK, 2, 3),
+        slowResist:      S(AGI, 2, 3) + S(LUK, 2, 3),
+        provokeResist:   S(WIS, 2, 3) + S(LUK, 2, 3),
     };
 }
 
-// 몬스터용 기본 7스탯 — 몬스터는 기본 스탯 치환 없이 능력치 직접 지정 방식 사용
-const MONSTER_BASE_STATS = { STR: 0, DEX: 0, INT: 0, AGI: 0, CON: 0, WIS: 0, LUK: 0 };
+// 몬스터 능력치 계산 — 레벨·보스 여부에 따른 스케일링 적용
+// 공격속도·이동속도는 레벨 스케일 없음 (설계 의도: 절대 레벨에 의해 상승 금지)
+function calcMonsterStats(lv, isBoss = false) {
+    if (!MONSTER_BASE_LV1) buildMonsterBaseStats();
+    const b    = MONSTER_BASE_LV1;
+    const mult = 1 + (lv - 1) * 0.1;                          // 레벨 배율: lv1=1.0, lv2=1.1…
+    const SC   = (base) => Math.floor(base * mult);            // 정수 스케일
+    const SP   = (base) => Math.min(95, base * mult);          // 퍼센트 스케일 (95% 상한)
 
-// 몬스터 능력치 계산 — computeStats 파이프라인 통과 (캐릭터와 동일한 구조)
-// 반환 필드명은 calcCharStats와 완전히 동일하게 유지
-function calcMonsterStats(lv) {
-    const s = computeStats(getMonsterStatBonuses(lv), MONSTER_BASE_STATS);
     return {
-        maxHP:         s.MaxHP,
-        maxMP:         s.MaxMP,
-        hpRegen:       s.HPRegen,
-        mpRegen:       s.MPRegen,
-        meleeMinAtk:   s.MeleeMinAttack,
-        meleeMaxAtk:   s.MeleeMaxAttack,
-        meleeDef:      s.MeleeDefense,
-        rangedDef:     s.RangedDefense,
-        magicDef:      s.MagicDefense,
-        meleeAccuracy: s.MeleeAccuracy,
-        meleeEvasion:  s.MeleeEvasion,
-        critRate:       s.MeleeCritRate,
-        critMeleeAtk:   s.CritMeleeAtk,  // 근거리 치명타 추가 공격력 (절대값)
-        critResist:     s.MeleeCritResist / 100,
-        meleeCritDmgReduc: s.MeleeCriticalDamageReduction, // 치명타 피해 감소율 (10000 단위, 방어자 적용)
-        rangedEvasion:      s.RangedEvasion,
-        magicEvasion:       s.MagicEvasion,
-        rangedCritResist:   s.RangedCritResist / 100,
-        magicCritResist:    s.MagicCritResist / 100,
-        rangedCritDmgReduc: s.RangedCriticalDamageReduction,
-        magicCritDmgReduc:  s.MagicCriticalDamageReduction,
-        attackSpeed:       s.AttackSpeed,
-        moveSpeed:         s.MoveSpeed,
+        maxHP:                    Math.max(1, Math.floor((isBoss ? b.bossHP : b.normalHP) * mult)),
+        pvpMeleeMinAtk:           SC(b.pvpMeleeMinAtk),
+        pvpMeleeMaxAtk:           SC(b.pvpMeleeMaxAtk),
+        pvpRangedMinAtk:          SC(b.pvpRangedMinAtk),
+        pvpRangedMaxAtk:          SC(b.pvpRangedMaxAtk),
+        pvpMagicMinAtk:           SC(b.pvpMagicMinAtk),
+        pvpMagicMaxAtk:           SC(b.pvpMagicMaxAtk),
+        pvpCritMeleeAtk:          SC(b.pvpCritMeleeAtk),
+        pvpCritRangedAtk:         SC(b.pvpCritRangedAtk),
+        pvpCritMagicAtk:          SC(b.pvpCritMagicAtk),
+        pvpMeleeCritRate:         SP(b.pvpMeleeCritRate),
+        pvpRangedCritRate:        SP(b.pvpRangedCritRate),
+        pvpMagicCritRate:         SP(b.pvpMagicCritRate),
+        meleeCritResist:          SP(b.meleeCritResist),
+        rangedCritResist:         SP(b.rangedCritResist),
+        magicCritResist:          SP(b.magicCritResist),
+        pvpMeleeAccuracy:         SC(b.pvpMeleeAccuracy),
+        pvpRangedAccuracy:        SC(b.pvpRangedAccuracy),
+        pvpMagicAccuracy:         SC(b.pvpMagicAccuracy),
+        meleeEvasion:             SC(b.meleeEvasion),
+        rangedEvasion:            SC(b.rangedEvasion),
+        magicEvasion:             SC(b.magicEvasion),
+        pvpMeleeDefPen:           SC(b.pvpMeleeDefPen),
+        pvpRangedDefPen:          SC(b.pvpRangedDefPen),
+        pvpMagicDefPen:           SC(b.pvpMagicDefPen),
+        meleeDef:                 SC(b.meleeDef),
+        rangedDef:                SC(b.rangedDef),
+        magicDef:                 SC(b.magicDef),
+        pvpMeleeCritDmgDecIgnore: SC(b.pvpMeleeCritDmgDecIgnore),
+        pvpRangedCritDmgDecIgnore:SC(b.pvpRangedCritDmgDecIgnore),
+        pvpMagicCritDmgDecIgnore: SC(b.pvpMagicCritDmgDecIgnore),
+        meleeCritDmgReduc:        SC(b.meleeCritDmgReduc),
+        rangedCritDmgReduc:       SC(b.rangedCritDmgReduc),
+        magicCritDmgReduc:        SC(b.magicCritDmgReduc),
+        pvpMeleeSkillDmgDecIgnore:SC(b.pvpMeleeSkillDmgDecIgnore),
+        pvpRangedSkillDmgDecIgnore:SC(b.pvpRangedSkillDmgDecIgnore),
+        pvpMagicSkillDmgDecIgnore:SC(b.pvpMagicSkillDmgDecIgnore),
+        meleeSkillDmgReduc:       SC(b.meleeSkillDmgReduc),
+        rangedSkillDmgReduc:      SC(b.rangedSkillDmgReduc),
+        magicSkillDmgReduc:       SC(b.magicSkillDmgReduc),
+        pvpMeleeDmgReduc:         SC(b.pvpMeleeDmgReduc),
+        pvpRangedDmgReduc:        SC(b.pvpRangedDmgReduc),
+        pvpMagicDmgReduc:         SC(b.pvpMagicDmgReduc),
+        stunHit:                  SC(b.stunHit),
+        paralysisHit:             SC(b.paralysisHit),
+        silenceHit:               SC(b.silenceHit),
+        holdHit:                  SC(b.holdHit),
+        slowHit:                  SC(b.slowHit),
+        provokeHit:               SC(b.provokeHit),
+        stunResist:               SC(b.stunResist),
+        paralysisResist:          SC(b.paralysisResist),
+        silenceResist:            SC(b.silenceResist),
+        holdResist:               SC(b.holdResist),
+        slowResist:               SC(b.slowResist),
+        provokeResist:            SC(b.provokeResist),
+        // 속도 — 레벨 스케일 없음 (고정값)
+        attackSpeed: isBoss ? 3000 : 2000,
+        moveSpeed:   isBoss ? 550  : 480,
     };
 }
 
@@ -3094,7 +3192,7 @@ function getAtkBundle(cStats, mStats, type) {
     if (type === 'ranged') return {
         minAtk:       cStats.rangedMinAtk   || 0,
         maxAtk:       cStats.rangedMaxAtk   || 0,
-        critAtk:      cStats.critRangedAtk  || 0, // 원거리 치명타 추가 공격력 (절대값)
+        critAtk:      cStats.critRangedAtk  || 0,
         accuracy:     cStats.rangedAccuracy || 0,
         critRate:     cStats.rangedCritRate || 0,
         defAll:       Math.max(0, (mStats.rangedDef || 0) - (cStats.defPenetrationRanged || 0)),
@@ -3102,13 +3200,14 @@ function getAtkBundle(cStats, mStats, type) {
         min1st:       MIN_1ST_DEC_RANGE,
         max1st:       MAX_1ST_DEC_RANGE,
         critResist:   mStats.rangedCritResist || 0,
-        evasion:      mStats.rangedEvasion   || 0,
+        evasion:      mStats.rangedEvasion    || 0,
+        dmgReduc:     mStats.pvpRangedDmgReduc || 0, // 몬스터 원거리 피해 감소
         typeLabel:    '원거리',
     };
     if (type === 'magic') return {
         minAtk:       cStats.magicMinAtk   || 0,
         maxAtk:       cStats.magicMaxAtk   || 0,
-        critAtk:      cStats.critMagicAtk  || 0, // 마법 치명타 추가 공격력 (절대값)
+        critAtk:      cStats.critMagicAtk  || 0,
         accuracy:     cStats.magicAccuracy || 0,
         critRate:     cStats.magicCritRate || 0,
         defAll:       Math.max(0, (mStats.magicDef || 0) - (cStats.defPenetrationMagic || 0)),
@@ -3116,22 +3215,24 @@ function getAtkBundle(cStats, mStats, type) {
         min1st:       MIN_1ST_DEC_MAGIC,
         max1st:       MAX_1ST_DEC_MAGIC,
         critResist:   mStats.magicCritResist || 0,
-        evasion:      mStats.magicEvasion   || 0,
+        evasion:      mStats.magicEvasion    || 0,
+        dmgReduc:     mStats.pvpMagicDmgReduc || 0, // 몬스터 마법 피해 감소
         typeLabel:    '마법',
     };
     // 기본: melee (근거리)
     return {
         minAtk:       cStats.meleeMinAtk   || 0,
         maxAtk:       cStats.meleeMaxAtk   || 0,
-        critAtk:      cStats.critMeleeAtk  || 0, // 근거리 치명타 추가 공격력 (절대값)
+        critAtk:      cStats.critMeleeAtk  || 0,
         accuracy:     cStats.meleeAccuracy || 0,
         critRate:     cStats.critRate      || 0,
         defAll:       Math.max(0, (mStats.meleeDef || 0) - (cStats.defPenetrationMelee || 0)),
         defCritReduc: mStats.meleeCritDmgReduc || 0,
         min1st:       MIN_1ST_DEC_PHYS,
         max1st:       MAX_1ST_DEC_PHYS,
-        critResist:   mStats.critResist    || 0,
-        evasion:      mStats.meleeEvasion  || 0,
+        critResist:   mStats.meleeCritResist || 0, // 구 critResist → meleeCritResist로 변경
+        evasion:      mStats.meleeEvasion    || 0,
+        dmgReduc:     mStats.pvpMeleeDmgReduc || 0, // 몬스터 근거리 피해 감소
         typeLabel:    '근거리',
     };
 }
@@ -4003,6 +4104,7 @@ function initGame() {
     loadCurrentClass();
     loadBaseStats();
     updateClassBadge();
+    buildMonsterBaseStats(); // 몬스터 레벨 1 기준 능력치 (knight Default 기반) 재계산
 
     resizeCanvas();
     totalKills   = 0;
@@ -4070,7 +4172,10 @@ function spawnMonster(level, avoidCenter = true, isBoss = false) {
         )
     );
 
-    const maxHP  = isBoss ? level * 200 : level * 20; // 보스=레벨×200, 일반=레벨×20
+    const mStats    = calcMonsterStats(level, isBoss);
+    const maxHP     = mStats.maxHP;
+    const corr      = ATTACK_SPEED_CORRECTION || 2000;
+    const atkSpeedMs = Math.max(100, Math.round(1000 / (mStats.attackSpeed / corr)));
     return {
         x, y, level,
         isBoss,
@@ -4078,11 +4183,13 @@ function spawnMonster(level, avoidCenter = true, isBoss = false) {
         hp:          maxHP,
         isDead:      false,
         respawnLeft: 0,
-        radius:      isBoss ? 22 : 13,   // 보스는 더 큰 반지름
+        radius:      isBoss ? 22 : 13,
         wDx: Math.cos(Math.random() * Math.PI * 2),
         wDy: Math.sin(Math.random() * Math.PI * 2),
         wTimer: Math.random() * 3000,
         hitFlash: 0,
+        atkSpeedMs,              // 공격 주기 (ms) — 레벨 무관 고정
+        moveSpeedPx: mStats.moveSpeed, // 이동 속도 (px/s) — 레벨 무관 고정
     };
 }
 
@@ -4167,30 +4274,30 @@ function update(rawDelta) {
                 m.wDy = Math.sin(a);
             }
             // 타겟 당한 몬스터는 캐릭터에게 접근하며 반격
-            // 보스는 이동·반격 속도 1.5배
-            const bossSpeedMul = m.isBoss ? 1.5 : 1.0;
+            // 이동·공격 속도는 spawnMonster()에서 저장된 개별 값 사용 (레벨 무관 고정)
+            const mSpeedPx  = m.moveSpeedPx || 480; // 이동 속도 (px/s)
+            const mAtkMs    = m.atkSpeedMs   || 1000; // 공격 주기 (ms)
             // 마을 체류 중이면 몬스터가 캐릭터를 추적·반격하지 않음
             if (!inTown && character.target === m && character.currentHP > 0) {
                 const mdx  = character.x - m.x;
                 const mdy  = character.y - m.y;
                 const mdist = Math.hypot(mdx, mdy);
                 if (mdist > ATK_RANGE) {
-                    const mspd = WANDER_SPEED * 1.5 * bossSpeedMul * (delta / 1000);
+                    const mspd = mSpeedPx * (delta / 1000);
                     m.x += (mdx / mdist) * mspd;
                     m.y += (mdy / mdist) * mspd;
                 } else {
-                    // 보스 반격 주기: 기본 800~1200ms → 보스 533~800ms (1.5배 빠름)
-                    const baseTimer = Math.round((800 + Math.random() * 400) / bossSpeedMul);
-                    if (!m.atkTimer) m.atkTimer = baseTimer;
+                    if (!m.atkTimer) m.atkTimer = mAtkMs;
                     m.atkTimer -= delta;
                     if (m.atkTimer <= 0) {
-                        m.atkTimer = baseTimer;
+                        m.atkTimer = mAtkMs;
                         monsterAttack(m);
                     }
                 }
             } else {
-                m.x += m.wDx * WANDER_SPEED * bossSpeedMul * (delta / 1000);
-                m.y += m.wDy * WANDER_SPEED * bossSpeedMul * (delta / 1000);
+                const wSpd = (mSpeedPx * 0.1) * (delta / 1000); // 배회 속도 = 이동 속도의 10%
+                m.x += m.wDx * wSpd;
+                m.y += m.wDy * wSpd;
             }
             if (m.x < m.radius || m.x > canvas.width  - m.radius) {
                 m.wDx *= -1;
@@ -4468,7 +4575,7 @@ function findNearest() {
 // 캐릭터 → 몬스터 공격
 function doAttack(m) {
     const cStats  = calcCharStats(character.level);
-    const mStats  = calcMonsterStats(m.level);
+    const mStats  = calcMonsterStats(m.level, m.isBoss);
     const atkType = character.normalAtkType || 'melee'; // 평타 공격 타입
     const b       = getAtkBundle(cStats, mStats, atkType); // 타입별 스탯 묶음
 
@@ -4488,6 +4595,10 @@ function doAttack(m) {
         let dmg = baseAtk;
         const rate1st = calc1stDamageDecreaseRate(b.defAll, b.min1st, b.max1st);
         dmg = Math.floor(dmg * (1 - rate1st / 10000));
+        // 몬스터 받는 피해 감소 (pvpMeleeDmgReduc 등)
+        if (b.dmgReduc > 0) {
+            dmg = Math.floor(dmg * (1 - Math.min(9000, b.dmgReduc) / 10000));
+        }
         if (isCrit) {
             const critReduc = Math.min(MAX_CRIT_DMG_DEC, Math.max(MIN_CRIT_DMG_DEC,
                 CRIT_DMG_DEC_CORR > 0 ? Math.floor(b.defCritReduc / CRIT_DMG_DEC_CORR) : 0));
@@ -4555,39 +4666,37 @@ function doAttack(m) {
 // 몬스터 → 캐릭터 반격
 function monsterAttack(m) {
     const cStats = calcCharStats(character.level);
-    const mStats = calcMonsterStats(m.level);
+    const mStats = calcMonsterStats(m.level, m.isBoss);
 
-    // ── 명중 판정 (PVE: 공격자=Monster, 방어자=PC)
-    if (!judgeHit(mStats.meleeAccuracy, cStats.meleeEvasion)) {
+    // ── 명중 판정 (공격자=Monster PVP 명중 vs 방어자=PC 근거리 회피)
+    if (!judgeHit(mStats.pvpMeleeAccuracy, cStats.meleeEvasion)) {
         particles.push({ x: character.x, y: character.y - character.radius - 4, text: 'MISS', color: '#58a6ff', vy: -50, life: 650 });
         return;
     }
 
-    // ── 치명타 판정 (기획서 101_전투_치명타, NormalMelee PVE)
-    const resultCritRate = calcCritRate(mStats.critRate, cStats.critResist);
+    // ── 치명타 판정 (몬스터 PVP 근거리 치명타율 vs 캐릭터 근거리 치명타 저항)
+    const resultCritRate = calcCritRate(mStats.pvpMeleeCritRate, cStats.critResist);
     const isCrit = (Math.floor(Math.random() * 10000) + 1) <= resultCritRate;
 
-    // ── 대미지 계산 (기획서 102_전투_대미지 NormalMelee PVE, AbilityType=1) ─────
-    // 1단계: 기본 공격력 (치명타 성공 = MaxAtk + AtCriticalAtk(절대값), 실패 = Random(Min~Max))
+    // ── 대미지 계산 ──────────────────────────────────────────────────────────
+    // 1단계: 기본 공격력 (치명타 = PVP 최대 공격력 + 치명타 공격력, 일반 = Random(Min~Max))
     let baseAtk;
     if (isCrit) {
-        // 치명타: MeleeMaxAtk + 치명타 추가 공격력(절대값)
-        baseAtk = mStats.meleeMaxAtk + (mStats.critMeleeAtk || 0);
+        baseAtk = mStats.pvpMeleeMaxAtk + (mStats.pvpCritMeleeAtk || 0);
     } else {
-        baseAtk = mStats.meleeMinAtk + Math.floor(Math.random() * (mStats.meleeMaxAtk - mStats.meleeMinAtk + 1));
+        baseAtk = mStats.pvpMeleeMinAtk + Math.floor(Math.random() * (mStats.pvpMeleeMaxAtk - mStats.pvpMeleeMinAtk + 1));
     }
 
-    // 2단계: DamageBaseApliyPer = 10000 (×1), 3단계: 추가 고정 공격력 없음
-
-    // 4단계: 1차 대미지 감소 — 캐릭터 근거리 방어력 기반 (몬스터는 관통 없음)
-    const defAll  = Math.max(0, cStats.meleeDef);
+    // 4단계: 1차 대미지 감소 — 캐릭터 근거리 방어력 - 몬스터 방어력 관통
+    const defAll  = Math.max(0, cStats.meleeDef - (mStats.pvpMeleeDefPen || 0));
     const rate1st = calc1stDamageDecreaseRate(defAll, MIN_1ST_DEC_PHYS, MAX_1ST_DEC_PHYS);
     let dmg = Math.floor(baseAtk * (1 - rate1st / 10000));
 
-    // 5단계: 치명타 대미지 감소율 (치명타 성공 시에만)
+    // 5단계: 치명타 대미지 감소율 (치명타 성공 시에만, 몬스터의 무시값 적용)
     if (isCrit) {
+        const effectiveCritReduc = Math.max(0, cStats.meleeCritDmgReduc - (mStats.pvpMeleeCritDmgDecIgnore || 0));
         const critReduc = Math.min(MAX_CRIT_DMG_DEC, Math.max(MIN_CRIT_DMG_DEC,
-            CRIT_DMG_DEC_CORR > 0 ? Math.floor(cStats.meleeCritDmgReduc / CRIT_DMG_DEC_CORR) : 0));
+            CRIT_DMG_DEC_CORR > 0 ? Math.floor(effectiveCritReduc / CRIT_DMG_DEC_CORR) : 0));
         dmg = Math.floor(dmg * (1 - critReduc / 10000));
     }
 
@@ -4740,19 +4849,23 @@ function advanceStage() {
     for (let i = monsters.length - 1; i >= 0; i--) {
         if (monsters[i].isBoss) { monsters.splice(i, 1); }
     }
-    // 살아있는 일반 몬스터 레벨·HP 갱신
+    // 살아있는 일반 몬스터 레벨·HP·속도 갱신
+    const _nxtMSt  = calcMonsterStats(monLv, false);
+    const _nxtCorr = ATTACK_SPEED_CORRECTION || 2000;
     for (const m of monsters) {
         if (!m.isDead) {
-            m.level = monLv;
-            m.maxHP = monLv * 20;
-            m.hp    = m.maxHP;
+            m.level       = monLv;
+            m.maxHP       = _nxtMSt.maxHP;
+            m.hp          = m.maxHP;
+            m.atkSpeedMs  = Math.max(100, Math.round(1000 / (_nxtMSt.attackSpeed / _nxtCorr)));
+            m.moveSpeedPx = _nxtMSt.moveSpeed;
         }
     }
     // 죽은 몬스터도 레벨 업데이트
     for (const m of monsters) {
         if (m.isDead) {
             m.level       = monLv;
-            m.maxHP       = monLv * 20;
+            m.maxHP       = _nxtMSt.maxHP;
             m.respawnLeft = Math.min(m.respawnLeft, RESPAWN_DELAY);
         }
     }
@@ -4768,11 +4881,15 @@ function resetAllMonsters() {
     for (let i = monsters.length - 1; i >= 0; i--) {
         if (monsters[i].isBoss) monsters.splice(i, 1);
     }
+    const _rstMSt  = calcMonsterStats(monLv, false);
+    const _rstCorr = ATTACK_SPEED_CORRECTION || 2000;
     for (const m of monsters) {
         m.isDead = false; m.respawnLeft = 0;
-        m.level  = monLv;
-        m.maxHP  = monLv * 20; // 일반 몬스터 HP = 레벨 × 20
-        m.hp     = m.maxHP;
+        m.level       = monLv;
+        m.maxHP       = _rstMSt.maxHP;
+        m.hp          = m.maxHP;
+        m.atkSpeedMs  = Math.max(100, Math.round(1000 / (_rstMSt.attackSpeed / _rstCorr)));
+        m.moveSpeedPx = _rstMSt.moveSpeed;
         m.x = 40 + Math.random() * (canvas.width  - 80);
         m.y = 40 + Math.random() * (canvas.height - 80);
         m.hitFlash = 0;
@@ -4797,11 +4914,15 @@ function reviveMonster(m) {
         tries++;
     } while (Math.hypot(x - character.x, y - character.y) < 90 && tries < 30);
 
-    const monLv = stageLevel(currentStage);
+    const monLv   = stageLevel(currentStage);
+    const _rvMSt  = calcMonsterStats(monLv, false);
+    const _rvCorr = ATTACK_SPEED_CORRECTION || 2000;
     m.x = x; m.y = y;
     m.level       = monLv;
-    m.maxHP       = monLv * 20; // 일반 몬스터 HP = 레벨 × 20
+    m.maxHP       = _rvMSt.maxHP;
     m.hp          = m.maxHP;
+    m.atkSpeedMs  = Math.max(100, Math.round(1000 / (_rvMSt.attackSpeed / _rvCorr)));
+    m.moveSpeedPx = _rvMSt.moveSpeed;
     m.isDead      = false;
     m.respawnLeft = 0;
     m.hitFlash    = 0;
@@ -6115,31 +6236,31 @@ function switchMonTab(tab) {
 }
 
 function renderMonsterInfo() {
-    const raw = parseInt(document.getElementById('moninfo-lv-input').value, 10);
-    const lv  = isNaN(raw) || raw < 1 ? 1 : Math.min(raw, 1000000);
+    const raw    = parseInt(document.getElementById('moninfo-lv-input').value, 10);
+    const lv     = isNaN(raw) || raw < 1 ? 1 : Math.min(raw, 1000000);
     const isBoss = (_monInfoTab === 'boss');
-    const s   = calcMonsterStats(lv);
+    const s      = calcMonsterStats(lv, isBoss);
 
-    // HP 공식: 일반=레벨×20, 보스=레벨×200
-    const hp    = isBoss ? lv * 200 : lv * 20;
-    const maxHpForBar = hp; // 바 100% 기준
-    const hpPct = 100; // 항상 full (비교 없이 절댓값 표시)
-
-    // 현재 스테이지 몬스터와 같은 레벨인지 표시
+    const hp        = s.maxHP;
     const isCurrent = (lv === stageLevel(currentStage));
-    const badge = isCurrent ? '<span class="mon-current-badge">현재 스테이지</span>' : '';
+    const badge     = isCurrent ? '<span class="mon-current-badge">현재 스테이지</span>' : '';
+    const bRow      = isBoss ? 'boss-row' : '';
+    const bVal      = isBoss ? 'boss-val' : '';
 
-    const cls = isBoss ? 'boss' : 'normal';
+    // 공격 간격(ms) → 초 변환
+    const corr   = ATTACK_SPEED_CORRECTION || 2000;
+    const atkMs  = Math.max(100, Math.round(1000 / (s.attackSpeed / corr)));
+    const atkSec = (atkMs / 1000).toFixed(2);
 
-    // 회피율 계산 (기획서 공식 기준 % 표기)
-    const avoidVsAvgChar = Math.max(MIN_AVOIDANCE, Math.min(MAX_AVOIDANCE, s.meleeEvasion - 100));
-    const avoidPct = (avoidVsAvgChar / 100).toFixed(2);
+    // 영문명 서브라벨 헬퍼
+    const en = nm => `<span class="mon-stat-en">${nm}</span>`;
+    // 10000 단위 → % 변환 헬퍼 (캐릭터 스탯과 동일 표기)
+    const pct = v => (v / 100).toFixed(2) + '%';
 
     const html = `
         <div class="mon-hp-bar-wrap ${isBoss ? 'boss-wrap' : ''}">
             <div class="mon-hp-label">
                 ${isBoss ? '💀 보스' : '⚔ 일반'} 몬스터 · Lv.${lv} ${badge}
-                ${isBoss ? '<span style="font-size:15px;color:#ff6666;margin-left:8px;">(HP × 10)</span>' : ''}
             </div>
             <div class="mon-hp-track">
                 <div class="mon-hp-fill ${isBoss ? 'boss-fill' : ''}" style="width:100%"></div>
@@ -6149,63 +6270,275 @@ function renderMonsterInfo() {
 
         <div class="mon-section-title">기본 능력치</div>
         <div class="mon-stat-grid">
-            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
-                <span class="mon-stat-lbl">최대 HP</span>
-                <span class="mon-stat-val ${isBoss ? 'boss-val' : 'highlight'}">${hp.toLocaleString()}</span>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">최대 HP ${en('MaxHP')}</span>
+                <span class="mon-stat-val ${isBoss ? bVal : 'highlight'}">${hp.toLocaleString()}</span>
             </div>
-            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
-                <span class="mon-stat-lbl">근거리 방어</span>
-                <span class="mon-stat-val">${s.meleeDef.toLocaleString()}</span>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">공격 간격 ${en('AttackSpeed')}</span>
+                <span class="mon-stat-val">${atkSec}초 / 회</span>
             </div>
-            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
-                <span class="mon-stat-lbl">최소 공격력</span>
-                <span class="mon-stat-val">${s.meleeMinAtk.toLocaleString()}</span>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">이동 속도 ${en('MoveSpeed')}</span>
+                <span class="mon-stat-val">${s.moveSpeed} px/s</span>
             </div>
-            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
-                <span class="mon-stat-lbl">최대 공격력</span>
-                <span class="mon-stat-val">${s.meleeMaxAtk.toLocaleString()}</span>
+        </div>
+
+        <div class="mon-section-title">PVP 공격력 — 근거리</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 최소 근거리 공격 ${en('PVPMeleeMinAtk')}</span>
+                <span class="mon-stat-val">${s.pvpMeleeMinAtk.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 최대 근거리 공격 ${en('PVPMeleeMaxAtk')}</span>
+                <span class="mon-stat-val">${s.pvpMeleeMaxAtk.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 치명타 근거리 공격력 ${en('PVPCritMeleeAtk')}</span>
+                <span class="mon-stat-val">+${s.pvpCritMeleeAtk.toLocaleString()}</span>
+            </div>
+        </div>
+
+        <div class="mon-section-title">PVP 공격력 — 원거리 / 마법</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 최소 원거리 공격 ${en('PVPRangedMinAtk')}</span>
+                <span class="mon-stat-val">${s.pvpRangedMinAtk.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 최대 원거리 공격 ${en('PVPRangedMaxAtk')}</span>
+                <span class="mon-stat-val">${s.pvpRangedMaxAtk.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 치명타 원거리 공격력 ${en('PVPCritRangedAtk')}</span>
+                <span class="mon-stat-val">+${s.pvpCritRangedAtk.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 최소 마법 공격 ${en('PVPMagicMinAtk')}</span>
+                <span class="mon-stat-val">${s.pvpMagicMinAtk.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 최대 마법 공격 ${en('PVPMagicMaxAtk')}</span>
+                <span class="mon-stat-val">${s.pvpMagicMaxAtk.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 치명타 마법 공격력 ${en('PVPCritMagicAtk')}</span>
+                <span class="mon-stat-val">+${s.pvpCritMagicAtk.toLocaleString()}</span>
+            </div>
+        </div>
+
+        <div class="mon-section-title">치명타율 / 저항</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 근거리 치명타율 ${en('PVPMeleeCritRate')}</span>
+                <span class="mon-stat-val">${s.pvpMeleeCritRate.toFixed(2)}%</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 원거리 치명타율 ${en('PVPRangedCritRate')}</span>
+                <span class="mon-stat-val">${s.pvpRangedCritRate.toFixed(2)}%</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 마법 치명타율 ${en('PVPMagicCritRate')}</span>
+                <span class="mon-stat-val">${s.pvpMagicCritRate.toFixed(2)}%</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">근거리 치명타 저항 ${en('MeleeCriticalResist')}</span>
+                <span class="mon-stat-val">${s.meleeCritResist.toFixed(2)}%</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">원거리 치명타 저항 ${en('RangedCriticalResist')}</span>
+                <span class="mon-stat-val">${s.rangedCritResist.toFixed(2)}%</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">마법 치명타 저항 ${en('MagicCriticalResist')}</span>
+                <span class="mon-stat-val">${s.magicCritResist.toFixed(2)}%</span>
             </div>
         </div>
 
         <div class="mon-section-title">명중 / 회피</div>
         <div class="mon-stat-grid">
-            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
-                <span class="mon-stat-lbl">명중 (Accuracy)</span>
-                <span class="mon-stat-val">${s.meleeAccuracy}</span>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 근거리 명중 ${en('PVPMeleeAccuracy')}</span>
+                <span class="mon-stat-val">${s.pvpMeleeAccuracy.toLocaleString()}</span>
             </div>
-            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
-                <span class="mon-stat-lbl">회피 (Evasion)</span>
-                <span class="mon-stat-val">${s.meleeEvasion}</span>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 원거리 명중 ${en('PVPRangedAccuracy')}</span>
+                <span class="mon-stat-val">${s.pvpRangedAccuracy.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 마법 명중 ${en('PVPMagicAccuracy')}</span>
+                <span class="mon-stat-val">${s.pvpMagicAccuracy.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">근거리 회피 ${en('MeleeEvasion')}</span>
+                <span class="mon-stat-val">${pct(s.meleeEvasion)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">원거리 회피 ${en('RangedEvasion')}</span>
+                <span class="mon-stat-val">${pct(s.rangedEvasion)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">마법 회피 ${en('MagicEvasion')}</span>
+                <span class="mon-stat-val">${pct(s.magicEvasion)}</span>
             </div>
         </div>
 
-        <div class="mon-section-title">치명타</div>
+        <div class="mon-section-title">방어력 / 방어력 관통</div>
         <div class="mon-stat-grid">
-            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
-                <span class="mon-stat-lbl">치명타율</span>
-                <span class="mon-stat-val">${s.critRate.toFixed(2)}%</span>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">근거리 방어력 ${en('MeleeDef')}</span>
+                <span class="mon-stat-val">${s.meleeDef.toLocaleString()}</span>
             </div>
-            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
-                <span class="mon-stat-lbl">치명타 추가 공격력</span>
-                <span class="mon-stat-val">+${s.critMeleeAtk}</span>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">원거리 방어력 ${en('RangedDef')}</span>
+                <span class="mon-stat-val">${s.rangedDef.toLocaleString()}</span>
             </div>
-            <div class="mon-stat-row ${isBoss ? 'boss-row' : ''}">
-                <span class="mon-stat-lbl">치명타 저항</span>
-                <span class="mon-stat-val">${s.critResist.toFixed(2)}%</span>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">마법 방어력 ${en('MagicDef')}</span>
+                <span class="mon-stat-val">${s.magicDef.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 근거리 방어력 관통 ${en('PVPMeleeDefPen')}</span>
+                <span class="mon-stat-val">${s.pvpMeleeDefPen.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 원거리 방어력 관통 ${en('PVPRangedDefPen')}</span>
+                <span class="mon-stat-val">${s.pvpRangedDefPen.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 마법 방어력 관통 ${en('PVPMagicDefPen')}</span>
+                <span class="mon-stat-val">${s.pvpMagicDefPen.toLocaleString()}</span>
+            </div>
+        </div>
+
+        <div class="mon-section-title">치명타 피해 감소 / 감소 무시</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">근거리 치명타 피해 감소 ${en('MeleeCritDmgReduc')}</span>
+                <span class="mon-stat-val">${pct(s.meleeCritDmgReduc)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">원거리 치명타 피해 감소 ${en('RangedCritDmgReduc')}</span>
+                <span class="mon-stat-val">${pct(s.rangedCritDmgReduc)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">마법 치명타 피해 감소 ${en('MagicCritDmgReduc')}</span>
+                <span class="mon-stat-val">${pct(s.magicCritDmgReduc)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 근거리 치명타 감소 무시 ${en('PVPMeleeCritDmgDecIgnore')}</span>
+                <span class="mon-stat-val">${pct(s.pvpMeleeCritDmgDecIgnore)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 원거리 치명타 감소 무시 ${en('PVPRangedCritDmgDecIgnore')}</span>
+                <span class="mon-stat-val">${pct(s.pvpRangedCritDmgDecIgnore)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 마법 치명타 감소 무시 ${en('PVPMagicCritDmgDecIgnore')}</span>
+                <span class="mon-stat-val">${pct(s.pvpMagicCritDmgDecIgnore)}</span>
+            </div>
+        </div>
+
+        <div class="mon-section-title">스킬 피해 감소 / 감소 무시</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">근거리 스킬 피해 감소 ${en('MeleeSkillDmgReduc')}</span>
+                <span class="mon-stat-val">${pct(s.meleeSkillDmgReduc)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">원거리 스킬 피해 감소 ${en('RangedSkillDmgReduc')}</span>
+                <span class="mon-stat-val">${pct(s.rangedSkillDmgReduc)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">마법 스킬 피해 감소 ${en('MagicSkillDmgReduc')}</span>
+                <span class="mon-stat-val">${pct(s.magicSkillDmgReduc)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 근거리 스킬 감소 무시 ${en('PVPMeleeSkillDmgDecIgnore')}</span>
+                <span class="mon-stat-val">${pct(s.pvpMeleeSkillDmgDecIgnore)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 원거리 스킬 감소 무시 ${en('PVPRangedSkillDmgDecIgnore')}</span>
+                <span class="mon-stat-val">${pct(s.pvpRangedSkillDmgDecIgnore)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 마법 스킬 감소 무시 ${en('PVPMagicSkillDmgDecIgnore')}</span>
+                <span class="mon-stat-val">${pct(s.pvpMagicSkillDmgDecIgnore)}</span>
+            </div>
+        </div>
+
+        <div class="mon-section-title">PVP 받는 피해 감소</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 근거리 받는 피해 감소 ${en('PVPMeleeDmgReduc')}</span>
+                <span class="mon-stat-val">${pct(s.pvpMeleeDmgReduc)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 원거리 받는 피해 감소 ${en('PVPRangedDmgReduc')}</span>
+                <span class="mon-stat-val">${pct(s.pvpRangedDmgReduc)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">PVP 마법 받는 피해 감소 ${en('PVPMagicDmgReduc')}</span>
+                <span class="mon-stat-val">${pct(s.pvpMagicDmgReduc)}</span>
+            </div>
+        </div>
+
+        <div class="mon-section-title">CC 적중 / 저항 (스턴·마비·침묵·속박·둔화·도발)</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">스턴 적중 ${en('StunHit')}</span>
+                <span class="mon-stat-val">${s.stunHit.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">마비 적중 ${en('ParalysisHit')}</span>
+                <span class="mon-stat-val">${s.paralysisHit.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">침묵 적중 ${en('SilenceHit')}</span>
+                <span class="mon-stat-val">${s.silenceHit.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">속박 적중 ${en('HoldHit')}</span>
+                <span class="mon-stat-val">${s.holdHit.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">둔화 적중 ${en('SlowHit')}</span>
+                <span class="mon-stat-val">${s.slowHit.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">도발 적중 ${en('ProvokeHit')}</span>
+                <span class="mon-stat-val">${s.provokeHit.toLocaleString()}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">스턴 저항 ${en('StunResist')}</span>
+                <span class="mon-stat-val">${pct(s.stunResist)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">마비 저항 ${en('ParalysisResist')}</span>
+                <span class="mon-stat-val">${pct(s.paralysisResist)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">침묵 저항 ${en('SilenceResist')}</span>
+                <span class="mon-stat-val">${pct(s.silenceResist)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">속박 저항 ${en('HoldResist')}</span>
+                <span class="mon-stat-val">${pct(s.holdResist)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">둔화 저항 ${en('SlowResist')}</span>
+                <span class="mon-stat-val">${pct(s.slowResist)}</span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">도발 저항 ${en('ProvokeResist')}</span>
+                <span class="mon-stat-val">${pct(s.provokeResist)}</span>
             </div>
         </div>
 
         ${isBoss ? `
         <div class="mon-section-title">보스 전용 정보</div>
         <div class="mon-stat-grid">
-            <div class="mon-stat-row boss-row">
-                <span class="mon-stat-lbl">이동 속도 배율</span>
-                <span class="mon-stat-val boss-val">× 1.5 (일반 대비)</span>
-            </div>
-            <div class="mon-stat-row boss-row">
-                <span class="mon-stat-lbl">반격 속도 배율</span>
-                <span class="mon-stat-val boss-val">× 1.5 (일반 대비)</span>
-            </div>
             <div class="mon-stat-row boss-row">
                 <span class="mon-stat-lbl">보스 등장 조건</span>
                 <span class="mon-stat-val">5라운드 — 일반 ${ROUND_KILLS}킬</span>
@@ -6227,7 +6560,7 @@ function renderMonsterInfo() {
             </div>
         </div>`}
 
-        <p class="mon-compare-note">※ 능력치 제한값 설정(회피율 한계 등)은 별도 설정 참조</p>
+        <p class="mon-compare-note">※ 능력치는 나이트(기본) 레벨 1 전투력 기준으로 자동 산출됩니다.</p>
     `;
 
     document.getElementById('moninfo-body').innerHTML = html;
