@@ -2317,9 +2317,19 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">86건</span>
+                <span class="pn-month-count">87건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-29 12:12 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">12:12</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>전투 시작 첫 공격 즉시 발사 — 새 타겟 인식 시 atkTimer를 0으로 초기화하여 사거리 진입 즉시 첫 공격이 발사되도록 수정. 기존에는 직전 공격에서 리셋된 타이머(최대 1초)가 소진될 때까지 대기 후 첫 공격이 실행됨</li>
+            </ul>
 
             <!-- ── 2026-04-29 11:50 ── -->
             <div class="pn-ver">
@@ -4097,7 +4107,12 @@ function update(rawDelta) {
     if (inTown) {
         character.target = null;
     } else if (!character.target || character.target.isDead) {
-        character.target = findNearest();
+        const newTarget = findNearest();
+        if (newTarget && newTarget !== character.target) {
+            // 새 타겟 인식 시 공격 타이머를 0으로 초기화 → 사거리 진입 즉시 첫 공격 발사
+            character.atkTimer = 0;
+        }
+        character.target = newTarget;
     }
 
     character.hitFlash   = Math.max(0, character.hitFlash   - delta);
