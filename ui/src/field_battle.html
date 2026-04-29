@@ -569,6 +569,280 @@ body {
 .log-entry.miss   { color: #6e7681; font-style: italic; }
 .log-entry.crit   { color: #ffd700; font-weight: bold; }
 .log-entry.damage { color: #f85149; }
+.log-entry.heal   { color: #7ee787; }
+
+/* ══════════════════════════════════════════
+   인게임 퀵슬롯 바
+══════════════════════════════════════════ */
+#quickslot-bar {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 20;
+    pointer-events: none;
+}
+.qs-slot {
+    width: 58px;
+    height: 58px;
+    position: relative;
+    background: rgba(13, 17, 23, 0.82);
+    border: 2px solid #2ea043;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    pointer-events: auto;
+    transition: border-color 0.15s, opacity 0.15s;
+}
+.qs-slot:hover { border-color: #3fb950; background: rgba(20, 45, 25, 0.9); }
+.qs-icon { font-size: 26px; line-height: 1; }
+.qs-key {
+    position: absolute;
+    bottom: 2px;
+    right: 5px;
+    font-size: 15px;
+    color: #8b949e;
+    font-weight: bold;
+    line-height: 1;
+}
+/* 쿨타임 다크 오버레이 — conic-gradient 시계방향 스윕 */
+.qs-cooldown {
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    pointer-events: none;
+}
+.qs-cd-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 4px #000, 0 0 8px #000;
+    pointer-events: none;
+}
+/* 자동 사용 활성 상태 표시 (슬롯 테두리 파란색) */
+.qs-slot.auto-active { border-color: #58a6ff; }
+.qs-slot.auto-active:hover { border-color: #79c0ff; }
+
+/* ══════════════════════════════════════════
+   인게임 캐릭터 상태창 (좌측 하단 오버레이)
+══════════════════════════════════════════ */
+#char-status-panel {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    width: 210px;
+    background: rgba(13, 17, 23, 0.82);
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 8px 10px;
+    z-index: 20;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+#char-status-panel .cs-class-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #21262d;
+}
+#char-status-panel .cs-class-name {
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+#char-status-panel .cs-level-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+#char-status-panel .cs-label {
+    font-size: 15px;
+    color: #8b949e;
+    min-width: 28px;
+}
+#char-status-panel .cs-level-val {
+    font-size: 17px;
+    font-weight: bold;
+    color: #e6edf3;
+}
+#char-status-panel .cs-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+#char-status-panel .cs-bar-label {
+    font-size: 15px;
+    color: #8b949e;
+}
+#char-status-panel .cs-bar-bg {
+    position: relative;
+    height: 20px;
+    background: #21262d;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #30363d;
+}
+#char-status-panel .cs-bar-fill {
+    position: absolute;
+    top: 0; left: 0; height: 100%;
+    border-radius: 3px;
+    transition: width 0.12s ease;
+}
+#char-status-panel .cs-bar-fill.hp  { background: linear-gradient(90deg, #b91c1c, #f87171); }
+#char-status-panel .cs-bar-fill.exp { background: linear-gradient(90deg, #1f6feb, #58a6ff); }
+#char-status-panel .cs-bar-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 3px #000, 0 0 6px #000;
+    white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════
+   인게임 스테이지 인디케이터 (캔버스 중앙 상단)
+══════════════════════════════════════════ */
+/* 스테이지 래퍼 — 배지+인디케이터를 가로로 묶어 캔버스 중앙 상단 정렬 */
+#stage-wrap {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* 스테이지 번호 배지 (인디케이터 좌측에 나란히) */
+#si-stage-badge {
+    background: rgba(13, 17, 23, 0.82);
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+}
+.sib-label {
+    font-size: 15px;
+    color: #8b949e;
+}
+.sib-num {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff6633;
+}
+
+#stage-indicator {
+    background: rgba(13, 17, 23, 0.82);
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 5px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 240px;
+}
+.si-rounds-row {
+    display: flex;
+    align-items: center;
+}
+.si-node {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: bold;
+    border: 2px solid #30363d;
+    background: #161b22;
+    color: #484f58;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.si-node.done {
+    background: #196c2e;
+    border-color: #3fb950;
+    color: #3fb950;
+}
+.si-node.current {
+    background: rgba(255, 102, 51, 0.2);
+    border-color: #ff6633;
+    color: #ff9966;
+    box-shadow: 0 0 10px rgba(255, 102, 51, 0.5);
+}
+.si-node.boss.current {
+    background: rgba(210, 153, 34, 0.2);
+    border-color: #d29922;
+    color: #e3b341;
+    box-shadow: 0 0 10px rgba(210, 153, 34, 0.5);
+}
+.si-connector {
+    width: 24px;
+    height: 2px;
+    background: #30363d;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+.si-connector.done { background: #3fb950; }
+.si-progress-bg {
+    position: relative;
+    width: 100%;
+    height: 18px;
+    background: #21262d;
+    border-radius: 4px;
+    border: 1px solid #30363d;
+    overflow: hidden;
+}
+.si-progress-fill {
+    position: absolute;
+    top: 0; left: 0; height: 100%;
+    background: linear-gradient(90deg, #b45309, #d29922);
+    border-radius: 3px;
+    transition: width 0.15s ease;
+}
+.si-progress-fill.boss-fill {
+    background: linear-gradient(90deg, #7c2d12, #f87171);
+}
+.si-progress-fill.clear-fill {
+    background: linear-gradient(90deg, #196c2e, #3fb950);
+}
+.si-progress-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 3px #000;
+    white-space: nowrap;
+}
 
 /* ══════════════════════════════════════════
    레벨 능력치 설정 팝업
@@ -1595,29 +1869,6 @@ body {
 <div id="hud">
     <span class="title">⚔ PROJECT 베르시온</span>
 
-    <div class="hud-stat" style="background:rgba(180,30,0,0.15);border:1px solid rgba(255,80,0,0.3);border-radius:5px;padding:2px 8px;">
-        <span class="label" style="color:#ff9966;">스테이지</span>
-        <span class="value" style="color:#ff6633;" id="h-stage">1</span>
-    </div>
-
-    <div class="hud-stat">
-        <span class="label">캐릭터 레벨</span>
-        <span class="value" id="h-level">1</span>
-    </div>
-
-    <div class="exp-wrap">
-        <div class="label">경험치</div>
-        <div class="exp-bar-bg">
-            <div class="exp-bar-fill" id="h-exp-bar" style="width:0%"></div>
-        </div>
-        <div class="exp-bar-text" id="h-exp-text">0 / 10</div>
-    </div>
-
-    <div class="hud-stat">
-        <span class="label">총 처치</span>
-        <span class="value" id="h-kills">0</span>
-    </div>
-
     <div class="speed-group">
         <span class="speed-label">게임 속도</span>
         <button class="speed-btn active" onclick="setSpeed(1)"    id="spd-1">×1</button>
@@ -1655,6 +1906,62 @@ body {
     <div id="canvas-col">
         <div id="canvas-wrap">
             <canvas id="gameCanvas"></canvas>
+            <!-- 스테이지 번호 배지 (캔버스 좌측 상단) -->
+            <div id="si-stage-badge">
+                <span class="sib-label">Stage</span>
+                <span class="sib-num" id="sib-stage-num">1</span>
+            </div>
+            <!-- 스테이지 인디케이터 (캔버스 중앙 상단 오버레이) -->
+            <div id="stage-indicator">
+                <div class="si-rounds-row">
+                    <div class="si-node current" id="si-r1"><span>1</span></div>
+                    <div class="si-connector" id="si-c1"></div>
+                    <div class="si-node future" id="si-r2"><span>2</span></div>
+                    <div class="si-connector" id="si-c2"></div>
+                    <div class="si-node future" id="si-r3"><span>3</span></div>
+                    <div class="si-connector" id="si-c3"></div>
+                    <div class="si-node future" id="si-r4"><span>4</span></div>
+                    <div class="si-connector" id="si-c4"></div>
+                    <div class="si-node future boss" id="si-r5"><span>👑</span></div>
+                </div>
+                <div class="si-progress-bg">
+                    <div class="si-progress-fill" id="si-progress-fill" style="width:0%"></div>
+                    <span class="si-progress-text" id="si-progress-text">0 / 10</span>
+                </div>
+            </div>
+            <!-- 인게임 퀵슬롯 바 (캔버스 위에 절대 위치로 표시) -->
+            <div id="quickslot-bar">
+                <div id="qs-potion" class="qs-slot" onclick="useHPPotion()" title="하급 HP 물약 (Q)">
+                    <span class="qs-icon">💊</span>
+                    <span class="qs-key">Q</span>
+                    <div id="qs-potion-cd" class="qs-cooldown"></div>
+                    <div id="qs-potion-cd-text" class="qs-cd-text"></div>
+                </div>
+            </div>
+            <!-- 캐릭터 상태창 (캔버스 좌측 하단 오버레이) -->
+            <div id="char-status-panel">
+                <div class="cs-class-row">
+                    <span class="cs-class-name" id="cs-class-name">나이트</span>
+                </div>
+                <div class="cs-level-row">
+                    <span class="cs-label">Lv.</span>
+                    <span class="cs-level-val" id="cs-level">1</span>
+                </div>
+                <div class="cs-bar-wrap">
+                    <span class="cs-bar-label">HP</span>
+                    <div class="cs-bar-bg">
+                        <div class="cs-bar-fill hp" id="cs-hp-bar" style="width:100%"></div>
+                        <span class="cs-bar-text" id="cs-hp-text">100 / 100</span>
+                    </div>
+                </div>
+                <div class="cs-bar-wrap">
+                    <span class="cs-bar-label">EXP</span>
+                    <div class="cs-bar-bg">
+                        <div class="cs-bar-fill exp" id="cs-exp-bar" style="width:0%"></div>
+                        <span class="cs-bar-text" id="cs-exp-text">0 / 10</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- 전투 로그 (canvas-col 안에 위치) -->
@@ -1719,7 +2026,7 @@ body {
                 🏠 마을 귀환
             </button>
             <button class="btn-full" id="btn-resume-combat" onclick="resumeCombat()"
-                    style="background:#2d1e1e;color:#f85149;border:1px solid #6e3434;margin-bottom:2px;font-weight:700;display:none;">
+                    style="background:#2d1e1e;color:#f85149;border:1px solid #6e3434;margin-bottom:6px;font-weight:700;display:none;">
                 ⚔ 전투 재개
             </button>
         </div>
@@ -1797,6 +2104,7 @@ body {
         <div class="limit-tabs">
             <button class="limit-tab" id="stab-btn-lvstat"   onclick="switchSettingsTab('lvstat')">📈 레벨 능력치</button>
             <button class="limit-tab" id="stab-btn-limit"    onclick="switchSettingsTab('limit')">⚙ 제한값</button>
+            <button class="limit-tab" id="stab-btn-potion"   onclick="switchSettingsTab('potion')">💊 물약</button>
         </div>
 
         <!-- 패널 컨테이너 -->
@@ -2170,6 +2478,89 @@ body {
                 </div>
             </div>
 
+            <!-- ④ 물약 설정 패널 -->
+            <div class="settings-panel" id="stab-potion">
+                <div class="limit-content active" style="flex:1;overflow-y:auto;padding:18px 20px;">
+
+                    <p class="limit-desc">
+                        하급 HP 물약 사용 시 회복되는 기본 HP 범위를 설정합니다.<br>
+                        <b>회복 공식 (기획서 104_전투_HP 물약):</b><br>
+                        <span style="color:#7ee787">Random(최솟값 ~ 최댓값) × (1 + 물약회복률 / 100) + 고정추가회복량</span><br>
+                        <span style="color:#6e7681">물약회복률(PotionRecoveryRate)은 레벨 능력치에서 설정하며, 고정추가회복(TotalPotionRecoveryPoint)은 현재 0 고정.</span>
+                    </p>
+
+                    <div style="display:flex;gap:14px;margin-bottom:16px;">
+                        <div class="limit-field" style="flex:1;">
+                            <div class="limit-field-header">
+                                <span class="limit-field-label">최솟값 (FixValueMin)</span>
+                                <span class="limit-field-desc">물약 기본 회복량 최솟값 (0 이상)</span>
+                            </div>
+                            <div class="limit-input-row">
+                                <input class="limit-input" id="potion-min-input" type="number" min="0" value="100" style="width:100px;">
+                            </div>
+                        </div>
+                        <div class="limit-field" style="flex:1;">
+                            <div class="limit-field-header">
+                                <span class="limit-field-label">최댓값 (FixValueMax)</span>
+                                <span class="limit-field-desc">물약 기본 회복량 최댓값 (최솟값 이상)</span>
+                            </div>
+                            <div class="limit-input-row">
+                                <input class="limit-input" id="potion-max-input" type="number" min="0" value="200" style="width:100px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 자동 사용 설정 -->
+                    <div style="border:1px solid #30363d;border-radius:6px;padding:14px 16px;margin-bottom:16px;background:#0d1117;">
+                        <div style="font-size:15px;font-weight:bold;color:#e6edf3;margin-bottom:10px;">⚙ 자동 사용 설정</div>
+                        <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
+                            <div class="limit-field" style="flex:0 0 auto;">
+                                <div class="limit-field-header">
+                                    <span class="limit-field-label">자동 사용</span>
+                                    <span class="limit-field-desc">HP 비율이 임계값 이하이면 자동으로 물약 사용</span>
+                                </div>
+                                <div class="limit-input-row" style="margin-top:6px;">
+                                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                        <input type="checkbox" id="potion-auto-use-check"
+                                               style="width:17px;height:17px;cursor:pointer;accent-color:#58a6ff;">
+                                        <span style="font-size:15px;color:#e6edf3;">활성화</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="limit-field" style="flex:0 0 auto;">
+                                <div class="limit-field-header">
+                                    <span class="limit-field-label">HP 임계값 (%)</span>
+                                    <span class="limit-field-desc">이 비율 이하가 되면 자동 사용 (1~99)</span>
+                                </div>
+                                <div class="limit-input-row">
+                                    <input class="limit-input" id="potion-threshold-input"
+                                           type="number" min="1" max="99" value="30" style="width:80px;">
+                                    <span style="font-size:15px;color:#8b949e;margin-left:4px;">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 행 -->
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                        <button class="limit-btn-cancel" onclick="resetPotionToDefault()"
+                                style="font-size:15px;padding:5px 14px;">⟳ Default 복원</button>
+                        <button class="limit-btn-apply" onclick="applyPotionSettings()"
+                                style="font-size:15px;padding:5px 14px;">✔ 변경 저장</button>
+                        <button class="limit-btn-cancel" onclick="savePotionDefault()"
+                                style="font-size:15px;padding:5px 14px;color:#d29922;">★ 현재 값을 Default로 저장</button>
+                    </div>
+                    <div id="potion-apply-msg"
+                         style="font-size:15px;margin-top:10px;min-height:22px;"></div>
+
+                    <div class="limit-desc" style="margin-top:20px;">
+                        <b>팁:</b> 쿨타임은 1초로 고정입니다. 캔버스 하단 퀵슬롯 또는
+                        <code style="background:#0d1117;padding:1px 5px;border-radius:3px;">Q</code>
+                        키로 수동 사용 가능. 자동 사용 시 퀵슬롯 테두리가 파란색으로 표시됩니다.
+                    </div>
+                </div>
+            </div>
+
         </div><!-- .settings-panels -->
     </div>
 </div>
@@ -2318,9 +2709,150 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">89건</span>
+                <span class="pn-month-count">112건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-29 20:55 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:55</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>캐릭터 상태창(좌측 하단) 개선 — 최상단에 현재 클래스 명칭 표시 행 추가. 클래스별 고유 색상(나이트 파랑·워리어 빨강 등)으로 표시되며, 클래스 전환 시 실시간 반영</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 번호를 캔버스 좌측 상단으로 분리 — 기존 중앙 인디케이터에서 "Stage X" 헤더 행을 제거하고, 독립 배지(si-stage-badge)로 캔버스 좌상단에 재배치</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>중앙 스테이지 인디케이터 세로 크기 축소 및 상단 밀착 — 헤더 행 제거 후 패딩·gap 축소, top 위치를 상단에 붙여 재정렬 (top:6px, padding 5px)</li>
+            </ul>
+
+            <!-- ── 2026-04-29 20:50 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:50</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인게임 캔버스 중앙 상단에 스테이지 인디케이터 추가 — 현재 Stage 번호, 라운드 1~4(숫자)·5(👑 보스) 진행 상태를 원형 노드+연결선 형태로 표시. 완료 라운드는 초록 ✓, 현재 라운드는 주황 강조·발광 효과, 미진행 라운드는 회색으로 구분</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>라운드별 처치 진행 바 추가 — 현재 라운드 처치 수(stageKills / ROUND_KILLS)를 게이지 바로 표시. 5라운드 보스 대기 시 '보스까지', 보스 등장 시 빨간 '보스 전투 중!', 스테이지 클리어 시 초록 '스테이지 클리어!' 표시</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>상단 HUD 간소화 — 스테이지 정보 항목(h-stage)을 HUD 상단 바에서 제거. 해당 정보는 캔버스 중앙 상단 스테이지 인디케이터에서 확인 가능</li>
+            </ul>
+
+            <!-- ── 2026-04-29 20:43 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:43</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인게임 좌측 하단 캐릭터 상태창 추가 — 캐릭터 레벨(Lv.), HP 바(현재/MAX 수치 포함), 경험치 바(현재/MAX 수치 포함)를 캔버스 좌측 하단 오버레이로 표시</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>상단 HUD 간소화 — 캐릭터 레벨, 경험치 바, 총 처치 수 항목을 HUD 상단 바에서 제거. 해당 정보는 좌측 하단 상태창에서 확인 가능</li>
+            </ul>
+
+            <!-- ── 2026-04-29 20:31 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:31</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>몬스터 인식 조건 수정 — 캐릭터의 타겟팅만으로 몬스터가 즉시 반응하던 버그 수정. 이제 몬스터가 캐릭터를 인식하는 경우는 (1) 인식 범위(AggroRange) 내 진입, (2) 근접 공격의 대미지·miss 직격, (3) 원거리·마법 발사체가 몬스터에 실제 도달하여 판정이 발생한 경우만 해당. 원거리·마법 캐릭터가 인식 범위 밖에서 선제 공격을 할 수 있는 이점이 정상 복원됨. 리스폰·전체 초기화 시 인식 상태(alerted) 리셋</li>
+            </ul>
+
+            <!-- ── 2026-04-29 20:23 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:23</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>이동속도 단위 기준 통일 — 기획서 103_전투_속도 "1m = 100" 변환식 적용. 기존에는 raw MoveSpeed 값을 px/s로 직접 사용하여 10배 빠르게 동작. 캐릭터·몬스터·배회 속도 모두 MOVE_SPEED_SCALE(= PX_PER_METER/100 = 0.1) 적용으로 통일. 캐릭터 500→50 px/s, 몬스터 일반 480→48 px/s, 보스 550→55 px/s. 몬스터 능력치 정보 패널에 raw값과 변환된 px/s 함께 표시</li>
+            </ul>
+
+            <!-- ── 2026-04-29 20:17 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:17</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 적 인식 범위 축소 — 일반 200px → 100px, 보스 350px → 175px (기존 대비 절반)</li>
+            </ul>
+
+            <!-- ── 2026-04-29 20:14 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:14</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 적 인식 범위(AggroRange) 시스템 추가 — 일반 몬스터 200px, 보스 350px. 캐릭터가 인식 범위 내에 들어오면 타겟 여부와 무관하게 몬스터가 즉시 추적·공격 개시. 기존에는 캐릭터가 타겟으로 지정한 몬스터만 반격했으나, 이제 범위 내 모든 몬스터가 자발적으로 반응함</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>몬스터 능력치 정보 패널에 적 인식 범위 표기 추가 — 일반 몬스터 "필드 정보" 섹션과 보스 "보스 전용 정보" 섹션에 각각 AggroRange(px) 항목 추가</li>
+            </ul>
+
+            <!-- ── 2026-04-29 20:11 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:11</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>팩토리 Default 갱신 — 나이트 일반공격 사거리 조정: normalAtkRange 100 → 25 (스킬 사거리와 동일하게 통일). FACTORY_SNAPSHOT.ver '2026-04-29-4'로 업데이트</li>
+            </ul>
+
+            <!-- ── 2026-04-29 20:10 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:10</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>팩토리 Default 갱신 — 물약 자동 사용 초기값 변경: autoUse false → true, autoThreshold 30% → 90%. FACTORY_SNAPSHOT.ver '2026-04-29-3'으로 업데이트, 기존 접속 사용자도 다음 접속 시 자동 적용</li>
+            </ul>
+
+            <!-- ── 2026-04-29 20:08 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:08</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>팩토리 Default 내보내기에 물약 자동 사용 설정 포함 — buildFactorySnapshotJSON()의 potion 항목에 autoUse·autoThreshold 필드 추가. FACTORY_SNAPSHOT.potion에도 기본값(autoUse: false, autoThreshold: 30) 추가</li>
+            </ul>
+
+            <!-- ── 2026-04-29 20:04 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">20:04</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인게임 퀵슬롯 추가 — 캔버스 하단 중앙에 HP 물약 퀵슬롯(💊) 고정 표시. 클릭 또는 Q 키로 즉시 사용 가능</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>퀵슬롯 쿨타임 연출 — 물약 사용 시 12시 방향에서 시계 방향으로 어두운 오버레이가 회전하며 쿨타임 시각화. 쿨타임 중 잔여 시간(0.0s)도 슬롯 위에 표시</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>HP 물약 자동 사용 기능 추가 — 공통 능력치 설정 › 물약 탭에서 자동 사용 활성화 및 HP 임계값(%) 설정 가능. 현재 HP 비율이 임계값 이하가 되면 쿨타임 없을 때 자동 발동. 자동 사용 활성 시 퀵슬롯 테두리가 파란색으로 표시</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>사이드바 HP 물약 버튼 제거 — 퀵슬롯으로 기능 통합, 기존 사이드바 버튼 삭제</li>
+            </ul>
+
+            <!-- ── 2026-04-29 19:56 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">19:56</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>팩토리 Default 갱신 — 하급 HP 물약 기본 회복량 조정: 최솟값 100 → 50, 최댓값 200 → 150. FACTORY_SNAPSHOT.ver을 '2026-04-29-2'로 업데이트하여 기존 접속 사용자도 다음 접속 시 자동으로 새 물약 초기값 적용</li>
+            </ul>
+
+            <!-- ── 2026-04-29 19:53 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">19:53</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>하급 HP 물약 추가 — 사이드바에 💊 HP 물약 사용 버튼 추가. 게임 중 Q 키로도 즉시 사용 가능. 쿨타임 1초, 쿨타임 중에는 버튼에 남은 시간 표시 및 비활성화. 이미 HP 최대치이면 사용 불가 처리</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>물약 회복 공식 연동 — 기획서 104_전투_HP 물약 공식 적용: floor(Random(Min~Max) × (1 + PotionRecoveryRate/100) + TotalPotionRecoveryPoint). 물약 회복률 능력치(PotionRecoveryRate)가 높을수록 회복량 증가. 사용 시 회복량 상세 내역이 전투 로그에 초록색으로 출력됨</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>공통 능력치 설정에 💊 물약 탭 추가 — 기본 회복량 최솟값(FixValueMin)/최댓값(FixValueMax) 설정. ⟳ Default 복원 / ✔ 변경 저장 / ★ 현재 값을 Default로 저장 버튼 제공. 팩토리 Default 내보내기 JSON에 potion 항목 포함</li>
+            </ul>
 
             <!-- ── 2026-04-29 15:21 ── -->
             <div class="pn-ver">
@@ -2770,11 +3302,15 @@ body {
 const MAX_LEVEL     = 300;    // 캐릭터 최대 레벨
 const MONSTER_COUNT = 15;     // 필드 몬스터 수
 const ATK_INTERVAL  = 500;    // 기본 공격 주기 (ms)
-const MOVE_SPEED    = 100;    // 캐릭터 이동 속도 (px/s)
-const ATK_RANGE     = 44;     // 공격 사거리 (px)
-const PX_PER_METER  = 10;    // 1미터 = 10px (사거리 단위 변환 기준)
-const RESPAWN_DELAY = 5000;   // 몬스터 리스폰 대기 (ms)
-const WANDER_SPEED  = 22;     // 몬스터 배회 속도 (px/s)
+const MOVE_SPEED    = 100;    // 캐릭터 이동 속도 (px/s) — 미사용, 하위 호환용 보존
+const ATK_RANGE               = 44;   // 공격 사거리 (px)
+const PX_PER_METER            = 10;   // 1미터 = 10px (사거리 단위 변환 기준)
+// 기획서 103_전투_속도: MoveSpeed 1 단위 = 1/100 m/s → px/s = MoveSpeed × PX_PER_METER / 100
+const MOVE_SPEED_SCALE        = PX_PER_METER / 100; // 0.1 — raw MoveSpeed → px/s 변환 계수
+const RESPAWN_DELAY           = 5000; // 몬스터 리스폰 대기 (ms)
+const WANDER_SPEED            = 22;   // 몬스터 배회 속도 (px/s)
+const MONSTER_AGGRO_RANGE     = 100;  // 일반 몬스터 적 인식 범위 (px)
+const MONSTER_BOSS_AGGRO_RANGE= 175;  // 보스 몬스터 적 인식 범위 (px)
 
 // ── 마을 구역 설정 (캔버스 좌상단 고정 크기)
 const TOWN_W = 200;   // 마을 구역 너비 (px)
@@ -3297,9 +3833,9 @@ function calcCritRate(attackerCritPct, defenderResistPct) {
 //      설정을 바꾸고 재배포할 때마다 날짜(YYYY-MM-DD) 형식으로 갱신할 것.
 // 갱신 방법: 설정창 "🛠 팩토리 Default 내보내기" → 복사 → Claude에게 붙여넣기 요청
 const FACTORY_SNAPSHOT = {
-    ver: '2026-04-29',
+    ver: '2026-04-29-4',
     classAll: {
-        knight:   { stats:{ STR:16, DEX:12, INT:8,  AGI:14, CON:20, WIS:8,  LUK:9 }, atkType:{ normalAtkType:'melee',  skillAtkType:'melee'  }, atkRange:{ normalAtkRange:100, skillAtkRange:25  }, speed:{ atkSpeed:2000, moveSpeed:500 } },
+        knight:   { stats:{ STR:16, DEX:12, INT:8,  AGI:14, CON:20, WIS:8,  LUK:9 }, atkType:{ normalAtkType:'melee',  skillAtkType:'melee'  }, atkRange:{ normalAtkRange:25,  skillAtkRange:25  }, speed:{ atkSpeed:2000, moveSpeed:500 } },
         warrior:  { stats:{ STR:20, DEX:15, INT:10, AGI:12, CON:16, WIS:8,  LUK:9 }, atkType:{ normalAtkType:'melee',  skillAtkType:'melee'  }, atkRange:{ normalAtkRange:30,  skillAtkRange:30  }, speed:{ atkSpeed:2000, moveSpeed:500 } },
         assassin: { stats:{ STR:12, DEX:16, INT:8,  AGI:20, CON:15, WIS:10, LUK:9 }, atkType:{ normalAtkType:'melee',  skillAtkType:'melee'  }, atkRange:{ normalAtkRange:18,  skillAtkRange:18  }, speed:{ atkSpeed:2000, moveSpeed:500 } },
         archer:   { stats:{ STR:15, DEX:20, INT:10, AGI:16, CON:12, WIS:8,  LUK:9 }, atkType:{ normalAtkType:'ranged', skillAtkType:'ranged' }, atkRange:{ normalAtkRange:180, skillAtkRange:180 }, speed:{ atkSpeed:2000, moveSpeed:500 } },
@@ -3324,6 +3860,12 @@ const FACTORY_SNAPSHOT = {
         minSkillDmgDec:0,  maxSkillDmgDec:9000, skillDmgDecCorr:1,
         minDamageCorrRate:5000,
     },
+    potion: {
+        fixValueMin:   50,    // 하급 HP 물약 최소 기본 회복량
+        fixValueMax:   150,   // 하급 HP 물약 최대 기본 회복량
+        autoUse:       true,  // 자동 사용 기본값: 활성
+        autoThreshold: 90,    // 자동 사용 HP 임계값 기본값: 90%
+    },
 };
 
 let MIN_AVOIDANCE = 0;      // 최소 회피율 (기본 0 = 0%)
@@ -3337,6 +3879,15 @@ let inTown     = false;     // 마을 체류 중 여부 (true = 전투 없음)
 // TotalAttackSpeed = 레벨 능력치(LV_STAT_CONFIG)에서 설정된 AttackSpeed 합산. 미설정 시 0 → 공격 불가
 // TotalMoveSpeed   = 레벨 능력치(LV_STAT_CONFIG)에서 설정된 MoveSpeed 합산.   미설정 시 0 → 이동 불가
 let ATTACK_SPEED_CORRECTION = 100;
+
+// ── HP 물약 설정 (기획서 104_전투_HP 물약 기준) — 기획자가 공통 능력치 설정 UI에서 변경 가능
+// 하급 HP 물약: AbilityType=112, 쿨타임 1초 고정
+// 회복 공식: Random(Min~Max) × (1 + TotalPotionRecoveryRate/10000) + TotalPotionRecoveryPoint
+let POTION_FIX_VALUE_MIN   = 50;    // FixValueMin — 물약 최소 기본 회복량
+let POTION_FIX_VALUE_MAX   = 150;   // FixValueMax — 물약 최대 기본 회복량
+const POTION_COOLDOWN_MS   = 1000;  // 물약 쿨타임: 1초 고정 (기획서 기준)
+let POTION_AUTO_USE        = true;  // 자동 물약 사용 활성 여부
+let POTION_AUTO_THRESHOLD  = 90;    // 자동 사용 HP 임계값 (%) — 이 값 이하가 되면 자동 사용
 
 // ── 치명타 제한 설정 (기획서 101_전투_치명타 기준) — 기획자가 공통 능력치 설정 UI에서 변경 가능
 // ConfigTable.MaxCritialLimit (TID=82): 최종 치명타율 상한선
@@ -4142,7 +4693,8 @@ function initGame() {
         currentHP: stats.maxHP,
         maxMP:     stats.maxMP,
         currentMP: stats.maxMP,
-        regenTimer: 0,      // 자연 회복 타이머 (ms)
+        regenTimer:    0, // 자연 회복 타이머 (ms)
+        potionCooldown:0, // HP 물약 쿨타임 타이머 (ms)
     };
     projectiles = [];
 
@@ -4190,6 +4742,8 @@ function spawnMonster(level, avoidCenter = true, isBoss = false) {
         hitFlash: 0,
         atkSpeedMs,              // 공격 주기 (ms) — 레벨 무관 고정
         moveSpeedPx: mStats.moveSpeed, // 이동 속도 (px/s) — 레벨 무관 고정
+        aggroRange: isBoss ? MONSTER_BOSS_AGGRO_RANGE : MONSTER_AGGRO_RANGE, // 적 인식 범위 (px)
+        alerted: false,          // 피격(대미지/miss) 또는 인식 범위 진입 시 true로 전환
     };
 }
 
@@ -4222,8 +4776,20 @@ function update(rawDelta) {
         character.target = newTarget;
     }
 
-    character.hitFlash   = Math.max(0, character.hitFlash   - delta);
-    character.levelFlash = Math.max(0, character.levelFlash - delta);
+    character.hitFlash     = Math.max(0, character.hitFlash     - delta);
+    character.levelFlash   = Math.max(0, character.levelFlash   - delta);
+    // 물약 쿨타임 감소
+    if (character.potionCooldown > 0) {
+        character.potionCooldown = Math.max(0, character.potionCooldown - delta);
+    }
+
+    // 자동 물약 사용 — HP 비율이 임계값 이하이고 쿨타임이 없을 때 자동 발동
+    if (POTION_AUTO_USE && character.potionCooldown <= 0 && character.currentHP > 0) {
+        const hpPct = (character.currentHP / character.maxHP) * 100;
+        if (hpPct <= POTION_AUTO_THRESHOLD) {
+            useHPPotion();
+        }
+    }
 
     // HP / MP 자연 회복 (1초마다 회복, 마을에서는 2배 속도)
     character.regenTimer += delta;
@@ -4243,8 +4809,8 @@ function update(rawDelta) {
         const atkRange = character.normalAtkRange || ATK_RANGE; // 평타 사거리 (미설정 시 기본값)
 
         if (dist > atkRange) {
-            // 사거리 밖 → 몬스터에게 이동
-            const spd = getCharMoveSpeed() * (delta / 1000);
+            // 사거리 밖 → 몬스터에게 이동 (MoveSpeed × MOVE_SPEED_SCALE → px/s)
+            const spd = getCharMoveSpeed() * MOVE_SPEED_SCALE * (delta / 1000);
             character.x += (dx / dist) * spd;
             character.y += (dy / dist) * spd;
         } else {
@@ -4273,17 +4839,23 @@ function update(rawDelta) {
                 m.wDx = Math.cos(a);
                 m.wDy = Math.sin(a);
             }
-            // 타겟 당한 몬스터는 캐릭터에게 접근하며 반격
+            // 타겟 당한 몬스터 또는 인식 범위 내 캐릭터가 있는 몬스터는 추적·공격
             // 이동·공격 속도는 spawnMonster()에서 저장된 개별 값 사용 (레벨 무관 고정)
-            const mSpeedPx  = m.moveSpeedPx || 480; // 이동 속도 (px/s)
+            const mSpeedRaw = m.moveSpeedPx || 480; // raw MoveSpeed 값 (기획서 단위)
             const mAtkMs    = m.atkSpeedMs   || 1000; // 공격 주기 (ms)
+            const distToChar = Math.hypot(character.x - m.x, character.y - m.y);
+            const inAggro    = distToChar <= (m.aggroRange || MONSTER_AGGRO_RANGE);
+            // 인식 범위 진입 시 alerted 전환 (이후 범위 밖으로 나가도 유지)
+            if (inAggro) m.alerted = true;
             // 마을 체류 중이면 몬스터가 캐릭터를 추적·반격하지 않음
-            if (!inTown && character.target === m && character.currentHP > 0) {
+            // 인식 조건: 범위 내 진입 또는 피격(대미지/miss) — 타겟팅 즉시 반응하지 않음
+            if (!inTown && m.alerted && character.currentHP > 0) {
                 const mdx  = character.x - m.x;
                 const mdy  = character.y - m.y;
                 const mdist = Math.hypot(mdx, mdy);
                 if (mdist > ATK_RANGE) {
-                    const mspd = mSpeedPx * (delta / 1000);
+                    // MoveSpeed × MOVE_SPEED_SCALE → px/s (기획서 103 기준)
+                    const mspd = mSpeedRaw * MOVE_SPEED_SCALE * (delta / 1000);
                     m.x += (mdx / mdist) * mspd;
                     m.y += (mdy / mdist) * mspd;
                 } else {
@@ -4295,7 +4867,7 @@ function update(rawDelta) {
                     }
                 }
             } else {
-                const wSpd = (mSpeedPx * 0.1) * (delta / 1000); // 배회 속도 = 이동 속도의 10%
+                const wSpd = mSpeedRaw * MOVE_SPEED_SCALE * 0.1 * (delta / 1000); // 배회 = 추적 속도의 10%
                 m.x += m.wDx * wSpd;
                 m.y += m.wDy * wSpd;
             }
@@ -4415,12 +4987,14 @@ function applyProjectilePayload(p) {
     if (!pl) return;
 
     if (pl.isMiss) {
-        // 미스: 도달 순간 MISS 표시
+        // 발사체 도달 — miss여도 피격으로 간주하여 캐릭터 인식
+        m.alerted  = true;
         m.hitFlash = 80;
         particles.push({ x: m.x, y: m.y - m.radius - 4, text: 'MISS', color: '#8b949e', vy: -55, life: 700 });
         addLog(pl.logMsg, 'miss');
     } else {
-        // 명중: 대미지 적용
+        // 발사체 도달 — 명중: 캐릭터 인식 + 대미지 적용
+        m.alerted  = true;
         m.hp      -= pl.dmg;
         m.hitFlash = 150;
         particles.push({ x: m.x + (Math.random() - 0.5) * 14, y: m.y - m.radius - 4,
@@ -4614,11 +5188,13 @@ function doAttack(m) {
     // ════════════════════════════════════════════
     if (atkType === 'melee') {
         if (!isHit) {
+            m.alerted  = true; // miss여도 캐릭터를 인식
             m.hitFlash = 80;
             particles.push({ x: m.x, y: m.y - m.radius - 4, text: 'MISS', color: '#8b949e', vy: -55, life: 700 });
             addLog(`⚡ 공격[${b.typeLabel}] → Miss! (명중:${b.accuracy} / 몬스터 회피:${b.evasion})`, 'miss');
             return;
         }
+        m.alerted = true; // 피격 시 캐릭터를 인식
         const { isCrit, dmg, baseAtk, rate1st, resultCritRate } = calcDmgResult();
         m.hp      -= dmg;
         m.hitFlash = 150;
@@ -4893,6 +5469,7 @@ function resetAllMonsters() {
         m.x = 40 + Math.random() * (canvas.width  - 80);
         m.y = 40 + Math.random() * (canvas.height - 80);
         m.hitFlash = 0;
+        m.alerted  = false; // 전체 초기화 시 인식 상태 리셋
         const a = Math.random() * Math.PI * 2;
         m.wDx = Math.cos(a); m.wDy = Math.sin(a);
         m.wTimer = Math.random() * 3000;
@@ -4926,6 +5503,7 @@ function reviveMonster(m) {
     m.isDead      = false;
     m.respawnLeft = 0;
     m.hitFlash    = 0;
+    m.alerted     = false; // 리스폰 시 인식 초기화
     const a = Math.random() * Math.PI * 2;
     m.wDx = Math.cos(a); m.wDy = Math.sin(a);
     m.wTimer = Math.random() * 3000;
@@ -6070,6 +6648,57 @@ function drawCharacter() {
 }
 
 // ────────────────────────────────────────────────
+// 스테이지 인디케이터 갱신
+// ────────────────────────────────────────────────
+function updateStageIndicator() {
+    document.getElementById('sib-stage-num').textContent = currentStage;
+
+    for (let r = 1; r <= ROUND_COUNT; r++) {
+        const nodeEl = document.getElementById(`si-r${r}`);
+        const spanEl = nodeEl.querySelector('span');
+        nodeEl.classList.remove('done', 'current', 'future');
+
+        if (r < currentRound) {
+            nodeEl.classList.add('done');
+            spanEl.textContent = '✓';
+        } else if (r === currentRound) {
+            nodeEl.classList.add('current');
+            spanEl.textContent = r === ROUND_COUNT ? '👑' : String(r);
+        } else {
+            nodeEl.classList.add('future');
+            spanEl.textContent = r === ROUND_COUNT ? '👑' : String(r);
+        }
+
+        // 커넥터 (라운드 사이 연결선)
+        if (r < ROUND_COUNT) {
+            const connEl = document.getElementById(`si-c${r}`);
+            connEl.classList.toggle('done', r < currentRound);
+        }
+    }
+
+    // 진행 바 갱신
+    const fillEl = document.getElementById('si-progress-fill');
+    const textEl = document.getElementById('si-progress-text');
+    fillEl.classList.remove('boss-fill', 'clear-fill');
+
+    if (bossDefeated) {
+        fillEl.style.width = '100%';
+        fillEl.classList.add('clear-fill');
+        textEl.textContent = '✓ 스테이지 클리어!';
+    } else if (bossSpawned) {
+        fillEl.style.width = '100%';
+        fillEl.classList.add('boss-fill');
+        textEl.textContent = '⚔ 보스 전투 중!';
+    } else {
+        const pct = Math.min(100, (stageKills / ROUND_KILLS) * 100).toFixed(0);
+        fillEl.style.width = pct + '%';
+        textEl.textContent = currentRound === ROUND_COUNT
+            ? `${stageKills} / ${ROUND_KILLS} — 보스까지`
+            : `${stageKills} / ${ROUND_KILLS}`;
+    }
+}
+
+// ────────────────────────────────────────────────
 // UI 갱신
 // ────────────────────────────────────────────────
 function refreshUI() {
@@ -6077,11 +6706,21 @@ function refreshUI() {
     const need   = expNeeded(character.level);
     const expPct = Math.min(100, (character.exp / need) * 100).toFixed(1);
 
-    document.getElementById('h-level').textContent    = character.level;
-    document.getElementById('h-kills').textContent    = totalKills;
-    document.getElementById('h-exp-bar').style.width  = expPct + '%';
-    document.getElementById('h-exp-text').textContent = `${character.exp} / ${need}`;
-    document.getElementById('h-stage').textContent    = stageRoundLabel();
+    updateStageIndicator();
+
+    // 캐릭터 상태창 갱신
+    const hpPct = character.maxHP > 0
+        ? Math.min(100, (character.currentHP / character.maxHP) * 100).toFixed(1)
+        : '0.0';
+    const classDef = CLASS_DEFS[currentClass] || CLASS_DEFS['knight'];
+    const classNameEl = document.getElementById('cs-class-name');
+    classNameEl.textContent  = classDef.label;
+    classNameEl.style.color  = classDef.color;
+    document.getElementById('cs-level').textContent    = character.level;
+    document.getElementById('cs-hp-bar').style.width   = hpPct + '%';
+    document.getElementById('cs-hp-text').textContent  = `${character.currentHP} / ${character.maxHP}`;
+    document.getElementById('cs-exp-bar').style.width  = expPct + '%';
+    document.getElementById('cs-exp-text').textContent = `${character.exp} / ${need}`;
 
     document.getElementById('s-level').textContent    = character.level;
     document.getElementById('s-exp').textContent      = `${character.exp} / ${need}`;
@@ -6114,6 +6753,9 @@ function refreshUI() {
         saveCharacterState();
         refreshUI._lastSave = Date.now();
     }
+
+    // 퀵슬롯 상태 갱신 (쿨타임 연출)
+    updateQuickslot();
 }
 
 // ────────────────────────────────────────────────
@@ -6280,7 +6922,7 @@ function renderMonsterInfo() {
             </div>
             <div class="mon-stat-row ${bRow}">
                 <span class="mon-stat-lbl">이동 속도 ${en('MoveSpeed')}</span>
-                <span class="mon-stat-val">${s.moveSpeed} px/s</span>
+                <span class="mon-stat-val">${s.moveSpeed} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed * MOVE_SPEED_SCALE).toFixed(1)} px/s)</span></span>
             </div>
         </div>
 
@@ -6547,6 +7189,10 @@ function renderMonsterInfo() {
                 <span class="mon-stat-lbl">부활 여부</span>
                 <span class="mon-stat-val boss-val">없음 (1회 등장)</span>
             </div>
+            <div class="mon-stat-row boss-row">
+                <span class="mon-stat-lbl">적 인식 범위 ${en('AggroRange')}</span>
+                <span class="mon-stat-val boss-val">${MONSTER_BOSS_AGGRO_RANGE}px</span>
+            </div>
         </div>` : `
         <div class="mon-section-title">필드 정보</div>
         <div class="mon-stat-grid">
@@ -6557,6 +7203,10 @@ function renderMonsterInfo() {
             <div class="mon-stat-row">
                 <span class="mon-stat-lbl">동시 등장 수</span>
                 <span class="mon-stat-val">${MONSTER_COUNT}마리</span>
+            </div>
+            <div class="mon-stat-row">
+                <span class="mon-stat-lbl">적 인식 범위 ${en('AggroRange')}</span>
+                <span class="mon-stat-val">${MONSTER_AGGRO_RANGE}px</span>
             </div>
         </div>`}
 
@@ -6840,6 +7490,147 @@ function applyLimitSettings(skipClose = false) {
 }
 
 // 제한값 설정을 localStorage에 저장
+// ─── HP 물약 ──────────────────────────────────────────────────────────────────
+// 기획서 104_전투_HP 물약 기준
+// 회복 공식: floor(Random(Min~Max) × (1 + PotionRecoveryRate/100) + TotalPotionRecoveryPoint)
+// PotionRecoveryRate: computeStats 반환값 (0~100 범위, 이미 /100 변환됨)
+// TotalPotionRecoveryPoint: 현재 미구현 → 0
+function useHPPotion() {
+    if (!character || character.currentHP <= 0) return;
+    if (character.potionCooldown > 0) {
+        addLog(`💊 물약 쿨타임 중 (${(character.potionCooldown / 1000).toFixed(1)}초 후 사용 가능)`, 'info');
+        return;
+    }
+    if (character.currentHP >= character.maxHP) {
+        addLog('💊 HP가 이미 최대치입니다.', 'info');
+        return;
+    }
+    const s    = calcCharStats(character.level);
+    const rate = s.PotionRecoveryRate || 0; // 0~100 범위 (computeStats에서 /100 변환)
+    const base = POTION_FIX_VALUE_MIN + Math.floor(Math.random() * (POTION_FIX_VALUE_MAX - POTION_FIX_VALUE_MIN + 1));
+    const heal = Math.floor(base * (1 + rate / 100));
+    const prev = character.currentHP;
+    character.currentHP   = Math.min(character.maxHP, character.currentHP + heal);
+    character.potionCooldown = POTION_COOLDOWN_MS;
+    const actual = character.currentHP - prev;
+    addLog(`💊 하급 HP 물약 → HP +${actual.toLocaleString()} (기본 ${base} / 회복률 ${rate.toFixed(2)}%)`, 'heal');
+    updateQuickslot();
+}
+
+// 퀵슬롯 쿨타임 연출 갱신 — conic-gradient 시계방향 스윕 + 자동 사용 표시
+function updateQuickslot() {
+    const slot  = document.getElementById('qs-potion');
+    const cdEl  = document.getElementById('qs-potion-cd');
+    const txtEl = document.getElementById('qs-potion-cd-text');
+    if (!slot || !cdEl || !txtEl) return;
+
+    const cd = character ? character.potionCooldown : 0;
+
+    // 자동 사용 활성 여부를 슬롯 테두리 색으로 표시
+    slot.classList.toggle('auto-active', POTION_AUTO_USE);
+
+    if (cd <= 0) {
+        // 쿨타임 없음 — 오버레이 제거
+        cdEl.style.background = '';
+        txtEl.textContent     = '';
+        slot.style.opacity    = '1';
+    } else {
+        // 쿨타임 중 — 남은 비율만큼 12시 방향에서 시계방향으로 어두운 오버레이
+        const pct = cd / POTION_COOLDOWN_MS;         // 1 = 방금 사용, 0 = 준비됨
+        const deg = Math.round(pct * 360);
+        cdEl.style.background = `conic-gradient(from -90deg, rgba(0,0,0,0.72) ${deg}deg, transparent ${deg}deg)`;
+        txtEl.textContent     = (cd / 1000).toFixed(1);
+        slot.style.opacity    = '0.78';
+    }
+}
+
+// 물약 설정 저장/불러오기
+function savePotionSettings() {
+    localStorage.setItem('versione_potion_settings', JSON.stringify({
+        fixValueMin:    POTION_FIX_VALUE_MIN,
+        fixValueMax:    POTION_FIX_VALUE_MAX,
+        autoUse:        POTION_AUTO_USE,
+        autoThreshold:  POTION_AUTO_THRESHOLD,
+    }));
+}
+function loadPotionSettings() {
+    try {
+        const raw = localStorage.getItem('versione_potion_settings');
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        if (typeof d.fixValueMin   === 'number'  && d.fixValueMin >= 0)  POTION_FIX_VALUE_MIN  = d.fixValueMin;
+        if (typeof d.fixValueMax   === 'number'  && d.fixValueMax >= 0)  POTION_FIX_VALUE_MAX  = d.fixValueMax;
+        if (typeof d.autoUse       === 'boolean')                         POTION_AUTO_USE       = d.autoUse;
+        if (typeof d.autoThreshold === 'number'  && d.autoThreshold >= 1) POTION_AUTO_THRESHOLD = d.autoThreshold;
+    } catch (e) {}
+}
+
+// 물약 설정 UI → 변수 적용 후 저장
+function applyPotionSettings() {
+    const minEl   = document.getElementById('potion-min-input');
+    const maxEl   = document.getElementById('potion-max-input');
+    const autoEl  = document.getElementById('potion-auto-use-check');
+    const thrEl   = document.getElementById('potion-threshold-input');
+    const msg     = document.getElementById('potion-apply-msg');
+    const minV    = parseInt(minEl.value, 10);
+    const maxV    = parseInt(maxEl.value, 10);
+    const thrV    = parseInt(thrEl.value, 10);
+    if (isNaN(minV) || minV < 0)           { msg.style.color='#f85149'; msg.textContent='최솟값은 0 이상이어야 합니다.'; return; }
+    if (isNaN(maxV) || maxV < 0)           { msg.style.color='#f85149'; msg.textContent='최댓값은 0 이상이어야 합니다.'; return; }
+    if (minV > maxV)                        { msg.style.color='#f85149'; msg.textContent='최솟값이 최댓값보다 클 수 없습니다.'; return; }
+    if (isNaN(thrV) || thrV < 1 || thrV > 99) { msg.style.color='#f85149'; msg.textContent='HP 임계값은 1~99 사이여야 합니다.'; return; }
+    POTION_FIX_VALUE_MIN  = minV;
+    POTION_FIX_VALUE_MAX  = maxV;
+    POTION_AUTO_USE       = autoEl.checked;
+    POTION_AUTO_THRESHOLD = thrV;
+    savePotionSettings();
+    updateQuickslot();
+    msg.style.color = '#3fb950'; msg.textContent = '✔ 저장되었습니다.';
+    setTimeout(() => { if (msg) msg.textContent = ''; }, 2000);
+}
+
+// 물약 설정 UI를 현재 변수값으로 동기화
+function syncPotionSettingsUI() {
+    const minEl  = document.getElementById('potion-min-input');
+    const maxEl  = document.getElementById('potion-max-input');
+    const autoEl = document.getElementById('potion-auto-use-check');
+    const thrEl  = document.getElementById('potion-threshold-input');
+    if (minEl)  minEl.value     = POTION_FIX_VALUE_MIN;
+    if (maxEl)  maxEl.value     = POTION_FIX_VALUE_MAX;
+    if (autoEl) autoEl.checked  = POTION_AUTO_USE;
+    if (thrEl)  thrEl.value     = POTION_AUTO_THRESHOLD;
+    const msg = document.getElementById('potion-apply-msg');
+    if (msg) msg.textContent = '';
+}
+
+// 물약 Default 저장
+function savePotionDefault() {
+    localStorage.setItem('versione_default_potion', JSON.stringify({
+        fixValueMin:   POTION_FIX_VALUE_MIN,
+        fixValueMax:   POTION_FIX_VALUE_MAX,
+        autoUse:       POTION_AUTO_USE,
+        autoThreshold: POTION_AUTO_THRESHOLD,
+    }));
+    const msg = document.getElementById('potion-apply-msg');
+    if (msg) { msg.style.color = '#d29922'; msg.textContent = '✔ 현재 값을 Default로 저장했습니다.'; setTimeout(() => { if (msg) msg.textContent = ''; }, 2000); }
+}
+
+// 물약 Default 복원
+function resetPotionToDefault() {
+    const raw = localStorage.getItem('versione_default_potion');
+    const def = raw ? JSON.parse(raw) : FACTORY_SNAPSHOT.potion;
+    if (!def) return;
+    if (typeof def.fixValueMin   === 'number')  POTION_FIX_VALUE_MIN  = def.fixValueMin;
+    if (typeof def.fixValueMax   === 'number')  POTION_FIX_VALUE_MAX  = def.fixValueMax;
+    if (typeof def.autoUse       === 'boolean') POTION_AUTO_USE       = def.autoUse;
+    if (typeof def.autoThreshold === 'number')  POTION_AUTO_THRESHOLD = def.autoThreshold;
+    savePotionSettings();
+    syncPotionSettingsUI();
+    updateQuickslot();
+    const msg = document.getElementById('potion-apply-msg');
+    if (msg) { msg.style.color = '#58a6ff'; msg.textContent = '✔ Default 값으로 복원되었습니다.'; setTimeout(() => { if (msg) msg.textContent = ''; }, 2000); }
+}
+
 function saveLimitSettings() {
     localStorage.setItem('versione_limit_settings', JSON.stringify({
         minAvoidance:          MIN_AVOIDANCE,
@@ -6944,9 +7735,20 @@ window.addEventListener('DOMContentLoaded', () => {
     loadBaseStats();
     loadLimitSettings();
     loadLvStatConfig();
+    loadPotionSettings();
     ensureFactoryDefaults(); // versione_default_* 키 없으면 팩토리값으로 자동 초기화
     buildLvStatSelect();
     switchLimitTab('hit');
+    updateQuickslot();
+});
+
+// Q 키: HP 물약 사용 단축키 (게임 중에만 동작, 입력 필드 포커스 시 무시)
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'q' && e.key !== 'Q') return;
+    const tag = document.activeElement ? document.activeElement.tagName : '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    if (gameState !== 'playing') return;
+    useHPPotion();
 });
 
 // ────────────────────────────────────────────────
@@ -7222,8 +8024,9 @@ function openSettingsModal(tab) {
     // basestat 탭은 삭제됨 → 클래스 모달로 리다이렉트
     if (tab === 'basestat') tab = 'lvstat';
     switchSettingsTab(tab);
-    // 제한값 탭 입력 필드를 현재 게임 변수 값으로 동기화
+    // 탭 입력 필드를 현재 게임 변수 값으로 동기화
     syncLimitSettingsUI();
+    syncPotionSettingsUI();
     document.getElementById('settings-overlay').classList.add('open');
     if (gameState === 'playing') gameState = 'paused';
 }
@@ -7236,7 +8039,7 @@ function closeSettingsModal() {
 
 function switchSettingsTab(tab) {
     _currentSettingsTab = tab;
-    ['lvstat','limit'].forEach(t => {
+    ['lvstat','limit','potion'].forEach(t => {
         document.getElementById('stab-btn-' + t).classList.toggle('active', t === tab);
         document.getElementById('stab-' + t).classList.toggle('active', t === tab);
     });
@@ -7425,6 +8228,12 @@ function ensureFactoryDefaults() {
             loadLimitSettings();
         }
 
+        // 물약 설정 갱신
+        if (fs.potion) {
+            localStorage.setItem('versione_potion_settings', JSON.stringify(fs.potion));
+            loadPotionSettings();
+        }
+
         localStorage.setItem('versione_factory_ver', fs.ver);
     }
 
@@ -7474,7 +8283,13 @@ function buildFactorySnapshotJSON() {
         minSkillDmgDec: MIN_SKILL_DMG_DEC, maxSkillDmgDec: MAX_SKILL_DMG_DEC, skillDmgDecCorr: SKILL_DMG_DEC_CORR,
         minDamageCorrRate: MIN_DAMAGE_CORR_RATE,
     };
-    return JSON.stringify({ classAll, lvStat, limit }, null, 2);
+    const potion = {
+        fixValueMin:   POTION_FIX_VALUE_MIN,
+        fixValueMax:   POTION_FIX_VALUE_MAX,
+        autoUse:       POTION_AUTO_USE,
+        autoThreshold: POTION_AUTO_THRESHOLD,
+    };
+    return JSON.stringify({ classAll, lvStat, limit, potion }, null, 2);
 }
 
 function openFactoryExport() {
