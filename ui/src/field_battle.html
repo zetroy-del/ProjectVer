@@ -2317,9 +2317,29 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">83건</span>
+                <span class="pn-month-count">85건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-29 11:36 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">11:36</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>.gitignore 추가 — GitHub 배포 시 불필요한 파일 자동 제외. field_battle_check.js(구버전 JS 사본), *.xlsx/docx(기획 원본), *.py/__pycache__(변환 스크립트), .DS_Store/Thumbs.db(OS 메타데이터) 등 배포 대상에서 제외</li>
+            </ul>
+
+            <!-- ── 2026-04-29 11:33 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">11:33</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>팩토리 버전 관리 추가 — FACTORY_SNAPSHOT에 ver 필드(날짜 문자열) 추가. 게임 접속 시 저장된 버전(versione_factory_ver)과 코드 버전이 다르면 Default 스냅샷을 자동 갱신. 앞으로 설정 변경 후 재배포 시 ver 날짜만 변경하면 기존 사용자의 Default 복원값도 자동으로 새 값으로 교체됨 (실제 플레이 데이터는 유지)</li>
+            </ul>
 
             <!-- ── 2026-04-29 11:22 ── -->
             <div class="pn-ver">
@@ -3152,10 +3172,11 @@ function calcCritRate(attackerCritPct, defenderResistPct) {
 // 입력 범위: 0~10000 (10000분의 1 단위, 예: 7500 = 75%)
 // 내부 저장은 음수 포함 가능하지만, UI 입력은 0~10000만 허용
 // ─── 팩토리 Default 스냅샷 (코드에 하드코딩된 초기값) ──────────────────────────
-// null이면 ensureFactoryDefaults()가 CLASS_DEFS + 게임 변수 코드 초깃값을 사용.
-// Claude가 기획자의 설정 데이터를 받아 여기에 붙여넣으면 배포 후 어디서도 이 값이 최초 기본값이 됨.
-// 갱신 방법: 게임 설정창 "🛠 팩토리 Default 내보내기" → 복사 → Claude에게 붙여넣기 요청
+// ver: 버전 문자열 — 이 값이 바뀌면 기존 사용자도 다음 접속 시 자동으로 초기값이 갱신됨.
+//      설정을 바꾸고 재배포할 때마다 날짜(YYYY-MM-DD) 형식으로 갱신할 것.
+// 갱신 방법: 설정창 "🛠 팩토리 Default 내보내기" → 복사 → Claude에게 붙여넣기 요청
 const FACTORY_SNAPSHOT = {
+    ver: '2026-04-29',
     classAll: {
         knight:   { stats:{ STR:16, DEX:12, INT:8,  AGI:14, CON:20, WIS:8,  LUK:9 }, atkType:{ normalAtkType:'melee',  skillAtkType:'melee'  }, atkRange:{ normalAtkRange:100, skillAtkRange:25  }, speed:{ atkSpeed:2000, moveSpeed:500 } },
         warrior:  { stats:{ STR:20, DEX:15, INT:10, AGI:12, CON:16, WIS:8,  LUK:9 }, atkType:{ normalAtkType:'melee',  skillAtkType:'melee'  }, atkRange:{ normalAtkRange:30,  skillAtkRange:30  }, speed:{ atkSpeed:2000, moveSpeed:500 } },
@@ -7009,30 +7030,36 @@ function showLvStatMsg(msg, color) {
 }
 
 // ─── 팩토리 Default 초기화 ───────────────────────────────────────────────────
-// versione_default_* 키가 없을 때만 팩토리 초깃값으로 자동 세팅.
-// 우선순위: FACTORY_SNAPSHOT(코드 하드코딩) > CLASS_DEFS + 게임 변수 코드 초깃값
+// FACTORY_SNAPSHOT.ver가 저장된 버전과 다르면 → 기존 사용자도 강제 갱신
+// 같으면 → 없는 항목만 채우고 기존 값 유지
 // DOMContentLoaded에서 loadLimitSettings / loadLvStatConfig 실행 후 호출해야 정확함.
-// ① 기존 사용자: versione_default_* 가 이미 존재하면 아무것도 덮어쓰지 않음
-// ② 신규 사용자: FACTORY_SNAPSHOT이 null이 아니면 그 값을 사용, null이면 코드 초깃값 사용
 function ensureFactoryDefaults() {
-    const fs = FACTORY_SNAPSHOT; // 코드에 하드코딩된 팩토리 스냅샷
+    const fs = FACTORY_SNAPSHOT;
+
+    // 버전 확인 — FACTORY_SNAPSHOT.ver가 저장값과 다르면 default 키를 모두 삭제하여 강제 갱신
+    const storedVer = localStorage.getItem('versione_factory_ver');
+    const codeVer   = fs ? fs.ver : null;
+    if (codeVer && storedVer !== codeVer) {
+        // 버전이 바뀌었으므로 default 스냅샷 키를 초기화 (실제 게임 데이터는 유지)
+        localStorage.removeItem('versione_default_class_all');
+        localStorage.removeItem('versione_default_lvstat');
+        localStorage.removeItem('versione_default_limit');
+        localStorage.setItem('versione_factory_ver', codeVer);
+    }
 
     // 클래스 Default
     if (!localStorage.getItem('versione_default_class_all')) {
         if (fs && fs.classAll) {
-            // FACTORY_SNAPSHOT이 있으면 그 값 그대로 사용
             localStorage.setItem('versione_default_class_all', JSON.stringify(fs.classAll));
-            // 각 클래스 실제 세팅도 함께 초기화 (신규 사용자 게임 변수 세팅)
+            // 신규 사용자 — 실제 클래스 세팅도 함께 초기화 (기존 사용자는 이미 존재하므로 건너뜀)
             Object.keys(fs.classAll).forEach(classId => {
                 if (!localStorage.getItem('versione_class_stats_'    + classId)) saveClassBaseStats(classId, fs.classAll[classId].stats);
                 if (!localStorage.getItem('versione_class_atktype_'  + classId)) saveClassAtkType(classId, fs.classAll[classId].atkType.normalAtkType, fs.classAll[classId].atkType.skillAtkType);
                 if (!localStorage.getItem('versione_class_atkrange_' + classId)) saveClassAtkRange(classId, fs.classAll[classId].atkRange.normalAtkRange, fs.classAll[classId].atkRange.skillAtkRange);
                 if (!localStorage.getItem('versione_class_speed_'    + classId)) saveClassSpeed(classId, fs.classAll[classId].speed.atkSpeed, fs.classAll[classId].speed.moveSpeed);
             });
-            // BASE_STATS 즉시 재적재 (loadBaseStats()는 이미 실행됐지만 당시 localStorage가 비어 있었을 수 있음)
             loadBaseStats();
         } else {
-            // 폴백: CLASS_DEFS 코드 초깃값 사용
             const snap = {};
             Object.keys(CLASS_DEFS).forEach(classId => {
                 const def = CLASS_DEFS[classId];
@@ -7051,7 +7078,6 @@ function ensureFactoryDefaults() {
     if (!localStorage.getItem('versione_default_lvstat')) {
         const lvData = (fs && fs.lvStat) ? fs.lvStat : LV_STAT_CONFIG;
         localStorage.setItem('versione_default_lvstat', JSON.stringify(lvData));
-        // 신규 사용자라면 실제 설정도 함께 초기화
         if (fs && fs.lvStat && !localStorage.getItem('versione_lv_stat_config')) {
             LV_STAT_CONFIG = fs.lvStat;
             localStorage.setItem('versione_lv_stat_config', JSON.stringify(LV_STAT_CONFIG));
@@ -7079,7 +7105,6 @@ function ensureFactoryDefaults() {
             minDamageCorrRate:     MIN_DAMAGE_CORR_RATE,
         };
         localStorage.setItem('versione_default_limit', JSON.stringify(limitData));
-        // 신규 사용자라면 실제 제한값도 함께 초기화
         if (fs && fs.limit && !localStorage.getItem('versione_limit_settings')) {
             localStorage.setItem('versione_limit_settings', JSON.stringify(limitData));
             loadLimitSettings();
