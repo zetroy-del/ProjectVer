@@ -1320,6 +1320,19 @@ body {
 }
 .limit-btn-apply:hover { background: #2ea043; }
 
+/* ═══ 팩토리 스냅샷 내보내기 모달 ═══ */
+.factory-export-modal { width: 720px; max-height: 80vh; display: flex; flex-direction: column; }
+.factory-export-textarea {
+    flex: 1; min-height: 320px; max-height: 420px;
+    background: #0d1117; border: 1px solid #30363d; border-radius: 6px;
+    color: #c9d1d9; font-family: 'Consolas','Courier New',monospace; font-size: 13px;
+    padding: 10px; resize: vertical; white-space: pre; overflow: auto;
+}
+.factory-export-desc {
+    font-size: 15px; color: #8b949e; margin-bottom: 10px; line-height: 1.6;
+}
+.factory-export-desc b { color: #f0a000; }
+
 /* ═══ 패치 노트 팝업 ═══ */
 .patchnote-modal {
     width: 1080px;
@@ -1774,6 +1787,8 @@ body {
         <!-- 헤더 -->
         <div class="limit-header">
             <span class="limit-title">⚙ 공통 능력치 설정</span>
+            <button class="limit-btn-cancel" onclick="openFactoryExport()"
+                style="font-size:15px;margin-right:6px;padding:3px 10px;">🛠 팩토리 Default 내보내기</button>
             <button class="limit-close" onclick="closeSettingsModal()">✕</button>
         </div>
 
@@ -2218,6 +2233,8 @@ body {
         <!-- 헤더 -->
         <div class="limit-header">
             <span class="limit-title">⚔ 클래스 선택</span>
+            <button class="limit-btn-cancel" onclick="openFactoryExport()"
+                style="font-size:15px;margin-right:6px;padding:3px 10px;">🛠 팩토리 Default 내보내기</button>
             <button class="limit-close" onclick="closeClassModal()">✕</button>
         </div>
         <!-- 바디: 왼쪽 클래스 목록 + 오른쪽 스탯 편집 -->
@@ -2261,6 +2278,29 @@ body {
 </div>
 
 <!-- ================================================================
+     팩토리 스냅샷 내보내기 모달
+================================================================ -->
+<div id="factory-export-overlay" class="limit-overlay" style="display:none;">
+    <div class="limit-modal factory-export-modal">
+        <div class="limit-header">
+            <span class="limit-title">🛠 팩토리 Default 내보내기</span>
+            <button class="limit-close" onclick="closeFactoryExport()">✕</button>
+        </div>
+        <div style="padding:16px 20px;display:flex;flex-direction:column;gap:10px;flex:1;overflow:hidden;">
+            <div class="factory-export-desc">
+                아래 텍스트 전체를 복사하여 <b>Claude에게 붙여넣기</b> 해주세요.<br>
+                Claude가 이 값을 코드에 하드코딩하면, 배포 후 어디서 실행해도 이 설정이 최초 초기값이 됩니다.
+            </div>
+            <textarea id="factory-export-textarea" class="factory-export-textarea" readonly></textarea>
+            <div style="display:flex;justify-content:flex-end;gap:8px;">
+                <button class="limit-btn-cancel" onclick="closeFactoryExport()">닫기</button>
+                <button class="limit-btn-apply" onclick="copyFactoryExport()">📋 전체 복사</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
      패치 노트 팝업
 ================================================================ -->
 <div id="patchnote-overlay" class="limit-overlay">
@@ -2277,9 +2317,49 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">79건</span>
+                <span class="pn-month-count">83건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-29 11:22 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">11:22</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>팩토리 Default 수치 확정 — FACTORY_SNAPSHOT에 기획자 제공 데이터 하드코딩. 클래스 6종(나이트·워리어·어쌔신·아처·클레릭·소서러) 기본스탯·공격타입·사거리·속도 / 레벨 능력치 4항목(MaxHealthPoint·MaxManaPoint·PotionRecoveryRate·Weight) / 제한값 전체 반영 완료. 이후 배포되는 빌드는 어디서 최초 실행해도 이 값이 초기값으로 적용됨</li>
+            </ul>
+
+            <!-- ── 2026-04-29 11:18 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">11:18</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>팩토리 Default 내보내기·하드코딩 구조 추가 — 게임 설정창·클래스 선택 헤더에 "🛠 팩토리 Default 내보내기" 버튼 추가. 클릭 시 현재 저장된 클래스별 스탯·타입·사거리·속도 / 레벨 능력치 / 제한값 전체를 JSON으로 표시하고 클립보드 복사 가능. 이 JSON을 코드의 FACTORY_SNAPSHOT 상수에 적용하면 배포 후 어디서 접속해도 해당 값이 최초 초기값·Default 복원값으로 적용됨</li>
+            </ul>
+
+            <!-- ── 2026-04-29 10:24 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">10:24</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>Default 변경 저장 즉시 반영 — 클래스 모달·레벨 능력치·제한값에서 "Default 변경 저장" 버튼을 누르면 적용(✔ 저장·적용) 없이도 현재 UI 입력값을 바로 읽어 Default로 저장. saveLvStatDefault: 현재 레벨 능력치 행을 직접 파싱 → LV_STAT_CONFIG 갱신 + 캐릭터 즉시 반영. saveLimitDefault: applyLimitSettings(skipClose=true) 호출 → 유효성 검사 후 versione_limit_settings 복사. saveAllClassDefault: 현재 모달에 열려 있는 클래스의 스탯·타입·사거리·속도를 UI에서 직접 읽어 localStorage에 저장한 뒤 전체 스냅샷 생성</li>
+            </ul>
+
+            <!-- ── 2026-04-29 10:12 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">10:12</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>클래스별 공격속도·이동속도 설정 추가 — 클래스 모달 상단 영역을 공격타입 / 사거리 / 속도 3열 레이아웃으로 변경. 각 클래스마다 공격속도(atkSpeed)·이동속도(moveSpeed)를 0~9999 범위로 직접 설정 가능. 설정값은 레벨 능력치(LV_STAT_CONFIG)의 AttackSpeed·MoveSpeed에 합산되어 게임에 반영. localStorage 키: versione_class_speed_{classId}</li>
+            </ul>
 
             <!-- ── 2026-04-29 09:48 ── -->
             <div class="pn-ver">
@@ -2861,8 +2941,12 @@ function getLvStatBonuses(lv) {
 
 // computeStats(stats_calc.js)에 레벨 보너스 + 기본 스탯 치환 보너스를 합산하여 반환
 function calcCharStats(lv) {
-    // 1단계 기본 합산: 레벨 능력치 + 치환 보너스(computeStats 내부에서 자동 계산)
-    const s = computeStats(getLvStatBonuses(lv), BASE_STATS);
+    const lvBonuses = getLvStatBonuses(lv);
+    // 클래스 고유 공격속도·이동속도 보너스를 레벨 보너스에 합산
+    const spd = loadClassSpeed(currentClass);
+    lvBonuses.AttackSpeed = (lvBonuses.AttackSpeed || 0) + spd.atkSpeed;
+    lvBonuses.MoveSpeed   = (lvBonuses.MoveSpeed   || 0) + spd.moveSpeed;
+    const s = computeStats(lvBonuses, BASE_STATS);
     return {
         maxHP:         s.MaxHP,
         maxMP:         s.MaxMP,
@@ -3067,6 +3151,39 @@ function calcCritRate(attackerCritPct, defenderResistPct) {
 // Config TID=5 / TID=4 — 기획자가 UI에서 실시간 변경 가능
 // 입력 범위: 0~10000 (10000분의 1 단위, 예: 7500 = 75%)
 // 내부 저장은 음수 포함 가능하지만, UI 입력은 0~10000만 허용
+// ─── 팩토리 Default 스냅샷 (코드에 하드코딩된 초기값) ──────────────────────────
+// null이면 ensureFactoryDefaults()가 CLASS_DEFS + 게임 변수 코드 초깃값을 사용.
+// Claude가 기획자의 설정 데이터를 받아 여기에 붙여넣으면 배포 후 어디서도 이 값이 최초 기본값이 됨.
+// 갱신 방법: 게임 설정창 "🛠 팩토리 Default 내보내기" → 복사 → Claude에게 붙여넣기 요청
+const FACTORY_SNAPSHOT = {
+    classAll: {
+        knight:   { stats:{ STR:16, DEX:12, INT:8,  AGI:14, CON:20, WIS:8,  LUK:9 }, atkType:{ normalAtkType:'melee',  skillAtkType:'melee'  }, atkRange:{ normalAtkRange:100, skillAtkRange:25  }, speed:{ atkSpeed:2000, moveSpeed:500 } },
+        warrior:  { stats:{ STR:20, DEX:15, INT:10, AGI:12, CON:16, WIS:8,  LUK:9 }, atkType:{ normalAtkType:'melee',  skillAtkType:'melee'  }, atkRange:{ normalAtkRange:30,  skillAtkRange:30  }, speed:{ atkSpeed:2000, moveSpeed:500 } },
+        assassin: { stats:{ STR:12, DEX:16, INT:8,  AGI:20, CON:15, WIS:10, LUK:9 }, atkType:{ normalAtkType:'melee',  skillAtkType:'melee'  }, atkRange:{ normalAtkRange:18,  skillAtkRange:18  }, speed:{ atkSpeed:2000, moveSpeed:500 } },
+        archer:   { stats:{ STR:15, DEX:20, INT:10, AGI:16, CON:12, WIS:8,  LUK:9 }, atkType:{ normalAtkType:'ranged', skillAtkType:'ranged' }, atkRange:{ normalAtkRange:180, skillAtkRange:180 }, speed:{ atkSpeed:2000, moveSpeed:500 } },
+        cleric:   { stats:{ STR:8,  DEX:12, INT:16, AGI:10, CON:15, WIS:20, LUK:9 }, atkType:{ normalAtkType:'magic',  skillAtkType:'magic'  }, atkRange:{ normalAtkRange:140, skillAtkRange:140 }, speed:{ atkSpeed:2000, moveSpeed:500 } },
+        sorcerer: { stats:{ STR:10, DEX:15, INT:20, AGI:12, CON:8,  WIS:16, LUK:9 }, atkType:{ normalAtkType:'magic',  skillAtkType:'magic'  }, atkRange:{ normalAtkRange:160, skillAtkRange:160 }, speed:{ atkSpeed:2000, moveSpeed:500 } },
+    },
+    lvStat: [
+        { en:'MaxHealthPoint',     base:3000, perLv:120 },
+        { en:'MaxManaPoint',       base:1000, perLv:10  },
+        { en:'PotionRecoveryRate', base:0,    perLv:50  },
+        { en:'Weight',             base:2000, perLv:15  },
+    ],
+    limit: {
+        minAvoidance:500,          maxAvoidance:9500,
+        attackSpeedCorrection:2000,
+        critMinLimit:500,          critMaxLimit:9500,
+        defCorrVal:  [10000,20000,40000,80000,160000,320000,640000,1280000,2560000,5120000],
+        defDecRate:  [1500,1500,1500,1000,1000,500,500,500,500,500],
+        min1stPhys:0,  max1stPhys:9000,  min1stRange:0, max1stRange:9000, min1stMagic:0, max1stMagic:9000,
+        min3rdMelee:0, max3rdMelee:9000, min3rdRange:0, max3rdRange:9000, min3rdMagic:0, max3rdMagic:9000,
+        minCritDmgDec:0,   maxCritDmgDec:9000,  critDmgDecCorr:1,
+        minSkillDmgDec:0,  maxSkillDmgDec:9000, skillDmgDecCorr:1,
+        minDamageCorrRate:5000,
+    },
+};
+
 let MIN_AVOIDANCE = 0;      // 최소 회피율 (기본 0 = 0%)
 let MAX_AVOIDANCE = 7500;   // 최대 회피율 (기본 7500 = 75%)
 let showHPBars = false;     // HP바 표시 여부 (기본: 숨김)
@@ -3233,6 +3350,20 @@ function saveClassAtkRange(classId, normalRange, skillRange) {
         JSON.stringify({ normalAtkRange: normalRange, skillAtkRange: skillRange }));
 }
 
+// 클래스별 공격속도·이동속도 로드 (없으면 기본값 0 — LV_STAT_CONFIG에 합산됨)
+function loadClassSpeed(classId) {
+    try {
+        const raw = localStorage.getItem('versione_class_speed_' + classId);
+        if (raw) return JSON.parse(raw);
+    } catch(_) {}
+    return { atkSpeed: 0, moveSpeed: 0 };
+}
+// 클래스별 공격속도·이동속도 저장
+function saveClassSpeed(classId, atkSpeed, moveSpeed) {
+    localStorage.setItem('versione_class_speed_' + classId,
+        JSON.stringify({ atkSpeed, moveSpeed }));
+}
+
 // 클래스 전환: 현재 스탯 저장 → 새 클래스 로드 → 재계산
 function switchClass(classId) {
     if (!CLASS_DEFS[classId]) return;
@@ -3355,11 +3486,12 @@ function renderClassStatPanel(classId) {
     const krMap = {};
     if (typeof STAT_LIST !== 'undefined') STAT_LIST.forEach(s => { krMap[s.en] = s.kr; });
 
-    // 공격 타입 및 사거리 선택 영역 렌더링
+    // 공격 타입·사거리·속도 선택 영역 렌더링
     const atDiv = document.getElementById('cbs-atktype');
     if (atDiv) {
-        const at = loadClassAtkType(classId);
-        const ar = loadClassAtkRange(classId);
+        const at  = loadClassAtkType(classId);
+        const ar  = loadClassAtkRange(classId);
+        const spd = loadClassSpeed(classId);
         const typeOpts = [
             { val:'melee',  label:'근거리' },
             { val:'ranged', label:'원거리' },
@@ -3392,20 +3524,33 @@ function renderClassStatPanel(classId) {
             `<span id="${pxSpanId}" style="font-size:15px;color:#555;white-space:nowrap;">(${curValPx}px)</span>` +
             `</div>`;
         };
-        // 좌우 2열 레이아웃: 공격 타입(좌) | 사거리(우)
+        const makeSpeedRow = (rowLabel, inputId, curVal) =>
+            `<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">` +
+            `<span style="width:34px;font-size:15px;color:#8b949e;flex-shrink:0;">${rowLabel}</span>` +
+            `<input type="number" id="${inputId}" min="0" max="9999" step="1" value="${curVal}" ` +
+            `style="width:65px;background:#0d1117;border:1px solid #30363d;color:#c9d1d9;` +
+            `border-radius:4px;padding:3px 5px;text-align:center;font-size:15px;">` +
+            `</div>`;
+        // 3열 레이아웃: 공격 타입(flex) | 사거리(fixed) | 속도(fixed)
         atDiv.innerHTML =
             `<div style="display:flex;gap:14px;align-items:flex-start;">` +
-            // ── 왼쪽: 공격 타입
+            // ── ① 공격 타입
             `<div style="flex:1;min-width:0;">` +
             `<div style="font-size:15px;color:#c9d1d9;font-weight:700;margin-bottom:5px;">⚔ 공격 타입</div>` +
             makeTypeRow('평타', 'cbs-normal-atktype', at.normalAtkType) +
             makeTypeRow('스킬', 'cbs-skill-atktype',  at.skillAtkType) +
             `</div>` +
-            // ── 오른쪽: 사거리 (미터 단위)
+            // ── ② 사거리
             `<div style="flex-shrink:0;border-left:1px solid #21262d;padding-left:14px;">` +
             `<div style="font-size:15px;color:#c9d1d9;font-weight:700;margin-bottom:5px;">↕ 사거리</div>` +
             makeRangeRow('평타', 'cbs-num-normal-atkrange', ar.normalAtkRange, 'cbs-rng-px-normal') +
             makeRangeRow('스킬', 'cbs-num-skill-atkrange',  ar.skillAtkRange,  'cbs-rng-px-skill') +
+            `</div>` +
+            // ── ③ 속도 (공격속도·이동속도)
+            `<div style="flex-shrink:0;border-left:1px solid #21262d;padding-left:14px;">` +
+            `<div style="font-size:15px;color:#c9d1d9;font-weight:700;margin-bottom:5px;">⚡ 속도</div>` +
+            makeSpeedRow('공격', 'cbs-num-atkspeed',  spd.atkSpeed) +
+            makeSpeedRow('이동', 'cbs-num-movespeed', spd.moveSpeed) +
             `</div>` +
             `</div>`;
     }
@@ -3601,6 +3746,11 @@ function applyClassModalStats() {
     const normalRange = Math.round(normalRangeM * PX_PER_METER); // px
     const skillRange  = Math.round(skillRangeM  * PX_PER_METER); // px
     saveClassAtkRange(classId, normalRange, skillRange);
+
+    // 공격속도·이동속도 저장 (클래스 고유 기본값 — LV_STAT_CONFIG 합산)
+    const atkSpeedVal  = Math.max(0, Math.min(9999, parseInt(document.getElementById('cbs-num-atkspeed')?.value)  || 0));
+    const moveSpeedVal = Math.max(0, Math.min(9999, parseInt(document.getElementById('cbs-num-movespeed')?.value) || 0));
+    saveClassSpeed(classId, atkSpeedVal, moveSpeedVal);
 
     // 해당 클래스 스탯 저장
     try {
@@ -6145,7 +6295,9 @@ function onDmg1stInput() {
 }
 
 // "적용" 버튼: 각 탭의 값을 모두 검증 후 게임 변수에 반영
-function applyLimitSettings() {
+// skipClose=true 이면 성공 후 자동 닫기를 생략 (Default 변경 저장 호출 시 사용)
+// 반환값: true(성공) / false(유효성 오류)
+function applyLimitSettings(skipClose = false) {
     const msgEl  = document.getElementById('limit-apply-msg');
 
     // ── 명중/회피 탭 값 검증
@@ -6154,17 +6306,17 @@ function applyLimitSettings() {
     if (isNaN(minRaw) || minRaw < 0 || minRaw > 10000) {
         msgEl.style.color = '#f85149';
         msgEl.textContent = '최소 회피율 값이 올바르지 않습니다 (0~10000)';
-        return;
+        return false;
     }
     if (isNaN(maxRaw) || maxRaw < 0 || maxRaw > 10000) {
         msgEl.style.color = '#f85149';
         msgEl.textContent = '최대 회피율 값이 올바르지 않습니다 (0~10000)';
-        return;
+        return false;
     }
     if (minRaw > maxRaw) {
         msgEl.style.color = '#f85149';
         msgEl.textContent = '최소 회피율이 최대 회피율보다 클 수 없습니다';
-        return;
+        return false;
     }
 
     // ── 속도 탭 값 검증
@@ -6172,7 +6324,7 @@ function applyLimitSettings() {
     if (isNaN(corr) || corr < 1 || corr > 9999) {
         msgEl.style.color = '#f85149';
         msgEl.textContent = '공격속도 보정 계수 값이 올바르지 않습니다 (1~9999)';
-        return;
+        return false;
     }
 
     // ── 치명타 탭 값 검증
@@ -6181,17 +6333,17 @@ function applyLimitSettings() {
     if (isNaN(minCrit) || minCrit < 0 || minCrit > 10000) {
         msgEl.style.color = '#f85149';
         msgEl.textContent = '치명타 최소 제한 값이 올바르지 않습니다 (0~10000)';
-        return;
+        return false;
     }
     if (isNaN(maxCrit) || maxCrit < 0 || maxCrit > 10000) {
         msgEl.style.color = '#f85149';
         msgEl.textContent = '치명타 최대 제한 값이 올바르지 않습니다 (0~10000)';
-        return;
+        return false;
     }
     if (minCrit > maxCrit) {
         msgEl.style.color = '#f85149';
         msgEl.textContent = '치명타 최소 제한이 최대 제한보다 클 수 없습니다';
-        return;
+        return false;
     }
 
     // ── 대미지 1차 감소 탭 값 검증
@@ -6203,12 +6355,12 @@ function applyLimitSettings() {
         if (isNaN(cv) || cv < 1) {
             msgEl.style.color = '#f85149';
             msgEl.textContent = `방어력 구간 기준값 ${i}단계가 올바르지 않습니다 (1 이상)`;
-            return;
+            return false;
         }
         if (isNaN(dr) || dr < 0 || dr > 10000) {
             msgEl.style.color = '#f85149';
             msgEl.textContent = `구간별 감소율 ${i}단계가 올바르지 않습니다 (0~10000)`;
-            return;
+            return false;
         }
         newDCV.push(cv);
         newDDR.push(dr);
@@ -6218,7 +6370,7 @@ function applyLimitSettings() {
         if (newDCV[i] <= newDCV[i - 1]) {
             msgEl.style.color = '#f85149';
             msgEl.textContent = `방어력 구간 기준값이 오름차순이어야 합니다 (${i-1}단계: ${newDCV[i-1]}, ${i}단계: ${newDCV[i]})`;
-            return;
+            return false;
         }
     }
     // 1차 감소율 Min/Max 클램프 읽기
@@ -6234,12 +6386,12 @@ function applyLimitSettings() {
         if (isNaN(minV) || minV < 0 || minV > 10000 || isNaN(maxV) || maxV < 0 || maxV > 10000) {
             msgEl.style.color = '#f85149';
             msgEl.textContent = `1차 감소율 Min/Max 값이 올바르지 않습니다 (0~10000)`;
-            return;
+            return false;
         }
         if (minV > maxV) {
             msgEl.style.color = '#f85149';
             msgEl.textContent = '1차 감소율 최소값이 최대값보다 클 수 없습니다';
-            return;
+            return false;
         }
         vals1st.push(minV, maxV);
     }
@@ -6257,7 +6409,7 @@ function applyLimitSettings() {
         if (isNaN(minV) || minV < 0 || minV > 10000 || isNaN(maxV) || maxV < 0 || maxV > 10000) {
             msgEl.style.color = '#f85149';
             msgEl.textContent = '3차 피해 감소율 Min/Max 값이 올바르지 않습니다 (0~10000)';
-            return;
+            return false;
         }
         vals3rd.push(minV, maxV);
     }
@@ -6271,12 +6423,12 @@ function applyLimitSettings() {
     if ([minCritDec, maxCritDec, minSkillDec, maxSkillDec, minDmgCorr].some(v => isNaN(v) || v < 0 || v > 10000)) {
         msgEl.style.color = '#f85149';
         msgEl.textContent = '3차 감소 탭 값 중 올바르지 않은 항목이 있습니다 (0~10000)';
-        return;
+        return false;
     }
     if (isNaN(critDecCorr) || critDecCorr < 1 || isNaN(skillDecCorr) || skillDecCorr < 1) {
         msgEl.style.color = '#f85149';
         msgEl.textContent = '보정 계수는 1 이상이어야 합니다';
-        return;
+        return false;
     }
 
     // ── 게임 변수에 반영
@@ -6304,8 +6456,8 @@ function applyLimitSettings() {
     msgEl.textContent = `✔ 적용 및 저장됨`;
     addLog(`⚙ 제한값 설정 — 회피율 최소: ${minRaw} / 최대: ${maxRaw} | 공격속도 보정: ${corr} | 치명타 ${limitToPct(minCrit)}~${limitToPct(maxCrit)} | 대미지 공식 갱신됨`, 'info');
 
-    // 1.2초 후 팝업 자동 닫기
-    setTimeout(() => closeLimitSettings(), 1200);
+    if (!skipClose) setTimeout(() => closeLimitSettings(), 1200);
+    return true;
 }
 
 // 제한값 설정을 localStorage에 저장
@@ -6857,33 +7009,58 @@ function showLvStatMsg(msg, color) {
 }
 
 // ─── 팩토리 Default 초기화 ───────────────────────────────────────────────────
-// versione_default_* 키가 없을 때만 현재 게임 변수 기준으로 자동 초기화.
+// versione_default_* 키가 없을 때만 팩토리 초깃값으로 자동 세팅.
+// 우선순위: FACTORY_SNAPSHOT(코드 하드코딩) > CLASS_DEFS + 게임 변수 코드 초깃값
 // DOMContentLoaded에서 loadLimitSettings / loadLvStatConfig 실행 후 호출해야 정확함.
 // ① 기존 사용자: versione_default_* 가 이미 존재하면 아무것도 덮어쓰지 않음
-// ② 신규 사용자: 코드에 정의된 팩토리값(CLASS_DEFS + 게임 변수 초깃값)으로 자동 세팅
+// ② 신규 사용자: FACTORY_SNAPSHOT이 null이 아니면 그 값을 사용, null이면 코드 초깃값 사용
 function ensureFactoryDefaults() {
-    // 클래스 Default — CLASS_DEFS의 defaultStats / normalAtkType / AtkRange 기준
+    const fs = FACTORY_SNAPSHOT; // 코드에 하드코딩된 팩토리 스냅샷
+
+    // 클래스 Default
     if (!localStorage.getItem('versione_default_class_all')) {
-        const snap = {};
-        Object.keys(CLASS_DEFS).forEach(classId => {
-            const def = CLASS_DEFS[classId];
-            snap[classId] = {
-                stats:    { ...def.defaultStats },
-                atkType:  { normalAtkType: def.normalAtkType,  skillAtkType:  def.skillAtkType  },
-                atkRange: { normalAtkRange: def.normalAtkRange, skillAtkRange: def.skillAtkRange },
-            };
-        });
-        localStorage.setItem('versione_default_class_all', JSON.stringify(snap));
+        if (fs && fs.classAll) {
+            // FACTORY_SNAPSHOT이 있으면 그 값 그대로 사용
+            localStorage.setItem('versione_default_class_all', JSON.stringify(fs.classAll));
+            // 각 클래스 실제 세팅도 함께 초기화 (신규 사용자 게임 변수 세팅)
+            Object.keys(fs.classAll).forEach(classId => {
+                if (!localStorage.getItem('versione_class_stats_'    + classId)) saveClassBaseStats(classId, fs.classAll[classId].stats);
+                if (!localStorage.getItem('versione_class_atktype_'  + classId)) saveClassAtkType(classId, fs.classAll[classId].atkType.normalAtkType, fs.classAll[classId].atkType.skillAtkType);
+                if (!localStorage.getItem('versione_class_atkrange_' + classId)) saveClassAtkRange(classId, fs.classAll[classId].atkRange.normalAtkRange, fs.classAll[classId].atkRange.skillAtkRange);
+                if (!localStorage.getItem('versione_class_speed_'    + classId)) saveClassSpeed(classId, fs.classAll[classId].speed.atkSpeed, fs.classAll[classId].speed.moveSpeed);
+            });
+            // BASE_STATS 즉시 재적재 (loadBaseStats()는 이미 실행됐지만 당시 localStorage가 비어 있었을 수 있음)
+            loadBaseStats();
+        } else {
+            // 폴백: CLASS_DEFS 코드 초깃값 사용
+            const snap = {};
+            Object.keys(CLASS_DEFS).forEach(classId => {
+                const def = CLASS_DEFS[classId];
+                snap[classId] = {
+                    stats:    { ...def.defaultStats },
+                    atkType:  { normalAtkType: def.normalAtkType,  skillAtkType:  def.skillAtkType  },
+                    atkRange: { normalAtkRange: def.normalAtkRange, skillAtkRange: def.skillAtkRange },
+                    speed:    { atkSpeed: 0, moveSpeed: 0 },
+                };
+            });
+            localStorage.setItem('versione_default_class_all', JSON.stringify(snap));
+        }
     }
 
-    // 레벨 능력치 Default — loadLvStatConfig 이후의 LV_STAT_CONFIG 기준
+    // 레벨 능력치 Default
     if (!localStorage.getItem('versione_default_lvstat')) {
-        localStorage.setItem('versione_default_lvstat', JSON.stringify(LV_STAT_CONFIG));
+        const lvData = (fs && fs.lvStat) ? fs.lvStat : LV_STAT_CONFIG;
+        localStorage.setItem('versione_default_lvstat', JSON.stringify(lvData));
+        // 신규 사용자라면 실제 설정도 함께 초기화
+        if (fs && fs.lvStat && !localStorage.getItem('versione_lv_stat_config')) {
+            LV_STAT_CONFIG = fs.lvStat;
+            localStorage.setItem('versione_lv_stat_config', JSON.stringify(LV_STAT_CONFIG));
+        }
     }
 
-    // 제한값 Default — loadLimitSettings 이후의 게임 변수 기준
+    // 제한값 Default
     if (!localStorage.getItem('versione_default_limit')) {
-        localStorage.setItem('versione_default_limit', JSON.stringify({
+        const limitData = (fs && fs.limit) ? fs.limit : {
             minAvoidance:          MIN_AVOIDANCE,
             maxAvoidance:          MAX_AVOIDANCE,
             attackSpeedCorrection: ATTACK_SPEED_CORRECTION,
@@ -6900,21 +7077,117 @@ function ensureFactoryDefaults() {
             minCritDmgDec:         MIN_CRIT_DMG_DEC,  maxCritDmgDec:  MAX_CRIT_DMG_DEC,  critDmgDecCorr:  CRIT_DMG_DEC_CORR,
             minSkillDmgDec:        MIN_SKILL_DMG_DEC, maxSkillDmgDec: MAX_SKILL_DMG_DEC, skillDmgDecCorr: SKILL_DMG_DEC_CORR,
             minDamageCorrRate:     MIN_DAMAGE_CORR_RATE,
-        }));
+        };
+        localStorage.setItem('versione_default_limit', JSON.stringify(limitData));
+        // 신규 사용자라면 실제 제한값도 함께 초기화
+        if (fs && fs.limit && !localStorage.getItem('versione_limit_settings')) {
+            localStorage.setItem('versione_limit_settings', JSON.stringify(limitData));
+            loadLimitSettings();
+        }
     }
 }
+
+// ─── 팩토리 스냅샷 내보내기 ──────────────────────────────────────────────────
+// 현재 localStorage에 저장된 모든 설정을 읽어 내보내기용 JSON 문자열을 생성한다.
+// 이 문자열을 Claude에게 붙여넣기 하면 ensureFactoryDefaults()에 하드코딩 적용.
+function buildFactorySnapshotJSON() {
+    // 클래스 전체 스냅샷
+    const classAll = {};
+    Object.keys(CLASS_DEFS).forEach(classId => {
+        classAll[classId] = {
+            stats:    loadClassBaseStats(classId),
+            atkType:  loadClassAtkType(classId),
+            atkRange: loadClassAtkRange(classId),
+            speed:    loadClassSpeed(classId),
+        };
+    });
+    // 레벨 능력치
+    const lvStatRaw = localStorage.getItem('versione_lv_stat_config');
+    const lvStat    = lvStatRaw ? JSON.parse(lvStatRaw) : LV_STAT_CONFIG;
+    // 제한값
+    const limitRaw  = localStorage.getItem('versione_limit_settings');
+    const limit     = limitRaw ? JSON.parse(limitRaw) : {
+        minAvoidance: MIN_AVOIDANCE, maxAvoidance: MAX_AVOIDANCE,
+        attackSpeedCorrection: ATTACK_SPEED_CORRECTION,
+        critMinLimit: CRIT_MIN_LIMIT, critMaxLimit: CRIT_MAX_LIMIT,
+        defCorrVal: DEF_CORR_VAL, defDecRate: DEF_DEC_RATE,
+        min1stPhys: MIN_1ST_DEC_PHYS,  max1stPhys:  MAX_1ST_DEC_PHYS,
+        min1stRange: MIN_1ST_DEC_RANGE, max1stRange: MAX_1ST_DEC_RANGE,
+        min1stMagic: MIN_1ST_DEC_MAGIC, max1stMagic: MAX_1ST_DEC_MAGIC,
+        min3rdMelee: MIN_3RD_DEC_MELEE, max3rdMelee: MAX_3RD_DEC_MELEE,
+        min3rdRange: MIN_3RD_DEC_RANGE, max3rdRange: MAX_3RD_DEC_RANGE,
+        min3rdMagic: MIN_3RD_DEC_MAGIC, max3rdMagic: MAX_3RD_DEC_MAGIC,
+        minCritDmgDec: MIN_CRIT_DMG_DEC,  maxCritDmgDec:  MAX_CRIT_DMG_DEC,  critDmgDecCorr:  CRIT_DMG_DEC_CORR,
+        minSkillDmgDec: MIN_SKILL_DMG_DEC, maxSkillDmgDec: MAX_SKILL_DMG_DEC, skillDmgDecCorr: SKILL_DMG_DEC_CORR,
+        minDamageCorrRate: MIN_DAMAGE_CORR_RATE,
+    };
+    return JSON.stringify({ classAll, lvStat, limit }, null, 2);
+}
+
+function openFactoryExport() {
+    const json = buildFactorySnapshotJSON();
+    const ta   = document.getElementById('factory-export-textarea');
+    if (ta) ta.value = json;
+    document.getElementById('factory-export-overlay').style.display = 'flex';
+}
+function closeFactoryExport() {
+    document.getElementById('factory-export-overlay').style.display = 'none';
+}
+function copyFactoryExport() {
+    const ta = document.getElementById('factory-export-textarea');
+    if (!ta) return;
+    ta.select();
+    try {
+        navigator.clipboard.writeText(ta.value).then(() => {
+            const btn = document.querySelector('#factory-export-overlay .limit-btn-apply');
+            if (btn) { btn.textContent = '✔ 복사됨!'; setTimeout(() => { btn.textContent = '📋 전체 복사'; }, 1500); }
+        });
+    } catch (_) {
+        document.execCommand('copy');
+    }
+}
+// 브라우저 콘솔에서도 호출 가능하도록 전역 노출
+window.exportFactoryCode = function() {
+    const json = buildFactorySnapshotJSON();
+    console.log(json);
+    return json;
+};
 
 // ─── Default 세팅 저장·복원 ─────────────────────────────────────────────────
 // localStorage 키: versione_default_class_all / versione_default_lvstat / versione_default_limit
 
-// 클래스 모달: 모든 클래스의 현재 세팅(스탯·공격타입·사거리)을 Default로 스냅샷 저장
+// 클래스 모달: 현재 UI 입력값을 즉시 반영하고 모든 클래스 세팅을 Default로 스냅샷 저장
 function saveAllClassDefault() {
+    // 현재 모달에 표시 중인 클래스는 UI에서 직접 읽어 localStorage에 먼저 저장
+    const editingClass = _cbsTargetClass;
+    if (editingClass && CLASS_DEFS[editingClass]) {
+        const def = CLASS_DEFS[editingClass];
+        const newStats = {};
+        BASE_STAT_DEFS.forEach(d => {
+            const inp = document.getElementById('cbs-num-' + d.key);
+            if (inp) newStats[d.key] = Math.max(1, Math.min(1000, parseInt(inp.value) || 1));
+        });
+        if (Object.keys(newStats).length > 0) saveClassBaseStats(editingClass, newStats);
+        const normalType = document.querySelector('input[name="cbs-normal-atktype"]:checked')?.value || def.normalAtkType;
+        const skillType  = document.querySelector('input[name="cbs-skill-atktype"]:checked')?.value  || def.skillAtkType;
+        saveClassAtkType(editingClass, normalType, skillType);
+        const normalRangeM = Math.max(0.1, Math.min(50,
+            parseFloat(document.getElementById('cbs-num-normal-atkrange')?.value) || (def.normalAtkRange / PX_PER_METER)));
+        const skillRangeM  = Math.max(0.1, Math.min(50,
+            parseFloat(document.getElementById('cbs-num-skill-atkrange')?.value)  || (def.skillAtkRange / PX_PER_METER)));
+        saveClassAtkRange(editingClass, Math.round(normalRangeM * PX_PER_METER), Math.round(skillRangeM * PX_PER_METER));
+        const atkSpeedVal  = Math.max(0, Math.min(9999, parseInt(document.getElementById('cbs-num-atkspeed')?.value)  || 0));
+        const moveSpeedVal = Math.max(0, Math.min(9999, parseInt(document.getElementById('cbs-num-movespeed')?.value) || 0));
+        saveClassSpeed(editingClass, atkSpeedVal, moveSpeedVal);
+    }
+    // 전체 클래스 스냅샷 (위에서 저장된 값 포함)
     const snap = {};
     Object.keys(CLASS_DEFS).forEach(classId => {
         snap[classId] = {
             stats:    loadClassBaseStats(classId),
             atkType:  loadClassAtkType(classId),
             atkRange: loadClassAtkRange(classId),
+            speed:    loadClassSpeed(classId),
         };
     });
     localStorage.setItem('versione_default_class_all', JSON.stringify(snap));
@@ -6937,14 +7210,31 @@ function restoreClassDefault() {
         if (d.stats)    saveClassBaseStats(classId, d.stats);
         if (d.atkType)  saveClassAtkType(classId, d.atkType.normalAtkType, d.atkType.skillAtkType);
         if (d.atkRange) saveClassAtkRange(classId, d.atkRange.normalAtkRange, d.atkRange.skillAtkRange);
+        if (d.speed)    saveClassSpeed(classId, d.speed.atkSpeed, d.speed.moveSpeed);
     });
     renderClassStatPanel(_cbsTargetClass || currentClass);
     if (el) { el.style.color = '#e3b341'; el.textContent = '✔ 모든 클래스 Default로 복원되었습니다.'; }
 }
 
-// 레벨 능력치: 현재 LV_STAT_CONFIG를 Default로 스냅샷 저장
+// 레벨 능력치: UI 입력값을 즉시 읽어 LV_STAT_CONFIG를 갱신하고 Default로 스냅샷 저장
 function saveLvStatDefault() {
+    const rows = document.querySelectorAll('#lvstat-rows .lvstat-row');
+    const cfg  = [];
+    let hasErr = false;
+    rows.forEach(row => {
+        const en      = row.dataset.en;
+        const baseEl  = row.querySelector('.lvstat-base');
+        const perLvEl = row.querySelector('.lvstat-perlv');
+        const base    = parseFloat(baseEl.value);
+        const perLv   = parseFloat(perLvEl.value);
+        if (isNaN(base) || isNaN(perLv)) { hasErr = true; return; }
+        cfg.push({ en, base, perLv });
+    });
+    if (hasErr) { showLvStatMsg('입력값에 오류가 있습니다. 숫자를 확인해 주세요.', '#f85149'); return; }
+    LV_STAT_CONFIG = cfg;
+    localStorage.setItem('versione_lv_stat_config', JSON.stringify(LV_STAT_CONFIG));
     localStorage.setItem('versione_default_lvstat', JSON.stringify(LV_STAT_CONFIG));
+    applyLvStatToCharacter();
     showLvStatMsg('✔ 레벨 능력치 Default 저장 완료', '#58a6ff');
 }
 
@@ -6959,26 +7249,13 @@ function restoreLvStatDefault() {
     showLvStatMsg('✔ Default로 복원되었습니다.', '#e3b341');
 }
 
-// 제한값: 현재 게임 변수 상태를 Default로 스냅샷 저장
+// 제한값: UI 입력값을 즉시 읽어 게임 변수에 반영하고 Default로 스냅샷 저장
 function saveLimitDefault() {
-    localStorage.setItem('versione_default_limit', JSON.stringify({
-        minAvoidance:          MIN_AVOIDANCE,
-        maxAvoidance:          MAX_AVOIDANCE,
-        attackSpeedCorrection: ATTACK_SPEED_CORRECTION,
-        critMinLimit:          CRIT_MIN_LIMIT,
-        critMaxLimit:          CRIT_MAX_LIMIT,
-        defCorrVal:            DEF_CORR_VAL,
-        defDecRate:            DEF_DEC_RATE,
-        min1stPhys:            MIN_1ST_DEC_PHYS,  max1stPhys:  MAX_1ST_DEC_PHYS,
-        min1stRange:           MIN_1ST_DEC_RANGE, max1stRange: MAX_1ST_DEC_RANGE,
-        min1stMagic:           MIN_1ST_DEC_MAGIC, max1stMagic: MAX_1ST_DEC_MAGIC,
-        min3rdMelee:           MIN_3RD_DEC_MELEE, max3rdMelee: MAX_3RD_DEC_MELEE,
-        min3rdRange:           MIN_3RD_DEC_RANGE, max3rdRange: MAX_3RD_DEC_RANGE,
-        min3rdMagic:           MIN_3RD_DEC_MAGIC, max3rdMagic: MAX_3RD_DEC_MAGIC,
-        minCritDmgDec:         MIN_CRIT_DMG_DEC,  maxCritDmgDec:  MAX_CRIT_DMG_DEC,  critDmgDecCorr:  CRIT_DMG_DEC_CORR,
-        minSkillDmgDec:        MIN_SKILL_DMG_DEC, maxSkillDmgDec: MAX_SKILL_DMG_DEC, skillDmgDecCorr: SKILL_DMG_DEC_CORR,
-        minDamageCorrRate:     MIN_DAMAGE_CORR_RATE,
-    }));
+    // applyLimitSettings(skipClose=true) — 유효성 검사·게임변수 반영·versione_limit_settings 저장까지 수행
+    const ok = applyLimitSettings(true);
+    if (!ok) return; // 유효성 오류 시 중단 (오류 메시지는 applyLimitSettings가 표시)
+    const saved = localStorage.getItem('versione_limit_settings');
+    if (saved) localStorage.setItem('versione_default_limit', saved);
     const msgEl = document.getElementById('limit-apply-msg');
     if (msgEl) { msgEl.style.color = '#58a6ff'; msgEl.textContent = '✔ 제한값 Default 저장 완료'; }
 }
