@@ -2317,9 +2317,19 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">85건</span>
+                <span class="pn-month-count">86건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-29 11:50 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-29</span>
+                <span class="pn-ver-time">11:50</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>FACTORY_SNAPSHOT 최초 실행 즉시 반영 버그 수정 — 기존에는 버전 불일치 시 Default 스냅샷 키만 갱신하고 실제 게임 설정(versione_class_stats_* / versione_lv_stat_config / versione_limit_settings)은 건드리지 않아 "Default 복원" 1회가 필요했음. 수정 후: 버전 불일치 시 실제 설정 키도 FACTORY_SNAPSHOT으로 강제 덮어쓰고 loadBaseStats() / loadLimitSettings()를 즉시 재호출하여 게임 변수에 바로 반영</li>
+            </ul>
 
             <!-- ── 2026-04-29 11:36 ── -->
             <div class="pn-ver">
@@ -7030,85 +7040,55 @@ function showLvStatMsg(msg, color) {
 }
 
 // ─── 팩토리 Default 초기화 ───────────────────────────────────────────────────
-// FACTORY_SNAPSHOT.ver가 저장된 버전과 다르면 → 기존 사용자도 강제 갱신
-// 같으면 → 없는 항목만 채우고 기존 값 유지
+// 동작 원칙:
+//   ① 버전이 바뀌었거나 최초 접속 → FACTORY_SNAPSHOT을 실제 게임 설정 + Default 키 양쪽에 모두 반영
+//   ② 버전이 같으면 → 누락된 Default 키만 채움 (기획자가 UI에서 조정한 값 유지)
 // DOMContentLoaded에서 loadLimitSettings / loadLvStatConfig 실행 후 호출해야 정확함.
 function ensureFactoryDefaults() {
     const fs = FACTORY_SNAPSHOT;
+    if (!fs) return;
 
-    // 버전 확인 — FACTORY_SNAPSHOT.ver가 저장값과 다르면 default 키를 모두 삭제하여 강제 갱신
-    const storedVer = localStorage.getItem('versione_factory_ver');
-    const codeVer   = fs ? fs.ver : null;
-    if (codeVer && storedVer !== codeVer) {
-        // 버전이 바뀌었으므로 default 스냅샷 키를 초기화 (실제 게임 데이터는 유지)
-        localStorage.removeItem('versione_default_class_all');
-        localStorage.removeItem('versione_default_lvstat');
-        localStorage.removeItem('versione_default_limit');
-        localStorage.setItem('versione_factory_ver', codeVer);
-    }
+    const storedVer    = localStorage.getItem('versione_factory_ver');
+    const versionFresh = (storedVer !== fs.ver); // true = 버전 불일치(신규·업데이트)
 
-    // 클래스 Default
-    if (!localStorage.getItem('versione_default_class_all')) {
-        if (fs && fs.classAll) {
-            localStorage.setItem('versione_default_class_all', JSON.stringify(fs.classAll));
-            // 신규 사용자 — 실제 클래스 세팅도 함께 초기화 (기존 사용자는 이미 존재하므로 건너뜀)
+    // ── ① 버전이 바뀌었으면: 실제 게임 설정 키를 FACTORY_SNAPSHOT으로 강제 덮어쓰기
+    if (versionFresh) {
+        // 클래스별 실제 설정 (stats / atkType / atkRange / speed) 전부 갱신
+        if (fs.classAll) {
             Object.keys(fs.classAll).forEach(classId => {
-                if (!localStorage.getItem('versione_class_stats_'    + classId)) saveClassBaseStats(classId, fs.classAll[classId].stats);
-                if (!localStorage.getItem('versione_class_atktype_'  + classId)) saveClassAtkType(classId, fs.classAll[classId].atkType.normalAtkType, fs.classAll[classId].atkType.skillAtkType);
-                if (!localStorage.getItem('versione_class_atkrange_' + classId)) saveClassAtkRange(classId, fs.classAll[classId].atkRange.normalAtkRange, fs.classAll[classId].atkRange.skillAtkRange);
-                if (!localStorage.getItem('versione_class_speed_'    + classId)) saveClassSpeed(classId, fs.classAll[classId].speed.atkSpeed, fs.classAll[classId].speed.moveSpeed);
+                const c = fs.classAll[classId];
+                saveClassBaseStats(classId, c.stats);
+                saveClassAtkType(classId, c.atkType.normalAtkType, c.atkType.skillAtkType);
+                saveClassAtkRange(classId, c.atkRange.normalAtkRange, c.atkRange.skillAtkRange);
+                saveClassSpeed(classId, c.speed.atkSpeed, c.speed.moveSpeed);
             });
-            loadBaseStats();
-        } else {
-            const snap = {};
-            Object.keys(CLASS_DEFS).forEach(classId => {
-                const def = CLASS_DEFS[classId];
-                snap[classId] = {
-                    stats:    { ...def.defaultStats },
-                    atkType:  { normalAtkType: def.normalAtkType,  skillAtkType:  def.skillAtkType  },
-                    atkRange: { normalAtkRange: def.normalAtkRange, skillAtkRange: def.skillAtkRange },
-                    speed:    { atkSpeed: 0, moveSpeed: 0 },
-                };
-            });
-            localStorage.setItem('versione_default_class_all', JSON.stringify(snap));
+            loadBaseStats(); // BASE_STATS를 FACTORY_SNAPSHOT 기준으로 즉시 재적재
         }
-    }
 
-    // 레벨 능력치 Default
-    if (!localStorage.getItem('versione_default_lvstat')) {
-        const lvData = (fs && fs.lvStat) ? fs.lvStat : LV_STAT_CONFIG;
-        localStorage.setItem('versione_default_lvstat', JSON.stringify(lvData));
-        if (fs && fs.lvStat && !localStorage.getItem('versione_lv_stat_config')) {
+        // 레벨 능력치 실제 설정 갱신
+        if (fs.lvStat) {
             LV_STAT_CONFIG = fs.lvStat;
             localStorage.setItem('versione_lv_stat_config', JSON.stringify(LV_STAT_CONFIG));
         }
-    }
 
-    // 제한값 Default
-    if (!localStorage.getItem('versione_default_limit')) {
-        const limitData = (fs && fs.limit) ? fs.limit : {
-            minAvoidance:          MIN_AVOIDANCE,
-            maxAvoidance:          MAX_AVOIDANCE,
-            attackSpeedCorrection: ATTACK_SPEED_CORRECTION,
-            critMinLimit:          CRIT_MIN_LIMIT,
-            critMaxLimit:          CRIT_MAX_LIMIT,
-            defCorrVal:            DEF_CORR_VAL,
-            defDecRate:            DEF_DEC_RATE,
-            min1stPhys:            MIN_1ST_DEC_PHYS,  max1stPhys:  MAX_1ST_DEC_PHYS,
-            min1stRange:           MIN_1ST_DEC_RANGE, max1stRange: MAX_1ST_DEC_RANGE,
-            min1stMagic:           MIN_1ST_DEC_MAGIC, max1stMagic: MAX_1ST_DEC_MAGIC,
-            min3rdMelee:           MIN_3RD_DEC_MELEE, max3rdMelee: MAX_3RD_DEC_MELEE,
-            min3rdRange:           MIN_3RD_DEC_RANGE, max3rdRange: MAX_3RD_DEC_RANGE,
-            min3rdMagic:           MIN_3RD_DEC_MAGIC, max3rdMagic: MAX_3RD_DEC_MAGIC,
-            minCritDmgDec:         MIN_CRIT_DMG_DEC,  maxCritDmgDec:  MAX_CRIT_DMG_DEC,  critDmgDecCorr:  CRIT_DMG_DEC_CORR,
-            minSkillDmgDec:        MIN_SKILL_DMG_DEC, maxSkillDmgDec: MAX_SKILL_DMG_DEC, skillDmgDecCorr: SKILL_DMG_DEC_CORR,
-            minDamageCorrRate:     MIN_DAMAGE_CORR_RATE,
-        };
-        localStorage.setItem('versione_default_limit', JSON.stringify(limitData));
-        if (fs && fs.limit && !localStorage.getItem('versione_limit_settings')) {
-            localStorage.setItem('versione_limit_settings', JSON.stringify(limitData));
+        // 제한값 실제 설정 갱신 → loadLimitSettings()로 게임 변수에 즉시 반영
+        if (fs.limit) {
+            localStorage.setItem('versione_limit_settings', JSON.stringify(fs.limit));
             loadLimitSettings();
         }
+
+        localStorage.setItem('versione_factory_ver', fs.ver);
+    }
+
+    // ── ② Default 스냅샷 키 동기화 (버전 무관 — 없으면 항상 채움)
+    if (!localStorage.getItem('versione_default_class_all') && fs.classAll) {
+        localStorage.setItem('versione_default_class_all', JSON.stringify(fs.classAll));
+    }
+    if (!localStorage.getItem('versione_default_lvstat') && fs.lvStat) {
+        localStorage.setItem('versione_default_lvstat', JSON.stringify(fs.lvStat));
+    }
+    if (!localStorage.getItem('versione_default_limit') && fs.limit) {
+        localStorage.setItem('versione_default_limit', JSON.stringify(fs.limit));
     }
 }
 
