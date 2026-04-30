@@ -2869,9 +2869,39 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">133건</span>
+                <span class="pn-month-count">136건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-30 12:21 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">12:21</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>몬스터 인식 범위·로밍 범위 단위 변경 — px → m 표기로 전환 (px ÷ 10 = m, PX_PER_METER=10 기준). 일반: 인식 10.0m / 로밍 30.0m, 보스: 인식 17.5m / 로밍 52.5m. 로밍 범위 설명 괄호도 "× 2" → "× 3"으로 정정</li>
+            </ul>
+
+            <!-- ── 2026-04-30 12:16 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">12:16</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>공격속도·이동속도 단위 표시 추가 — 몬스터 정보 패널의 이동 속도(MoveSpeed)를 px/s → m/s로 변경 (raw/100 = m/s). 공격 간격(AttackSpeed)에 회/초 단위 병기 추가. 로밍 속도도 동일하게 m/s로 변경. 클래스 모달 속도 입력 옆에 공격속도는 초/회, 이동속도는 m/s 환산 힌트를 실시간 표시</li>
+            </ul>
+
+            <!-- ── 2026-04-30 12:06 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">12:06</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>캐릭터가 몬스터와 같은 방향으로 이동 중일 때 이동속도가 몬스터 로밍속도와 동일하게 묶여 따라잡지 못하는 문제 수정 — 이동 스텝 상한을 (dist - atkRange)에서 dist로 변경. 이전 상한은 몬스터 이동량과 같아지는 순간 캐릭터가 동일 속도로 멈춰버리는 부작용이 있었음</li>
+            </ul>
 
             <!-- ── 2026-04-30 10:59 ── -->
             <div class="pn-ver">
@@ -4460,13 +4490,29 @@ function renderClassStatPanel(classId) {
             `<span id="${pxSpanId}" style="font-size:15px;color:#555;white-space:nowrap;">(${curValPx}px)</span>` +
             `</div>`;
         };
-        const makeSpeedRow = (rowLabel, inputId, curVal) =>
+        // 공격속도 힌트: 이 보너스 단독 기준 공격 주기 (실제 공격 주기는 레벨 능력치 합산 후 결정)
+        const atkSpdHint = v => {
+            const corr = ATTACK_SPEED_CORRECTION || 2000;
+            if (!v || v <= 0) return '(미설정)';
+            const ms = Math.max(100, Math.round(1000 / (v / corr)));
+            return `${(ms/1000).toFixed(2)}초/회`;
+        };
+        // 이동속도 힌트: raw → m/s 변환 (MoveSpeed 1단위 = 1/100 m/s)
+        const moveSpdHint = v => v > 0 ? `${(v / 100).toFixed(2)} m/s` : '(미설정)';
+
+        const makeSpeedRow = (rowLabel, inputId, curVal, hintFnName) =>
             `<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">` +
             `<span style="width:34px;font-size:15px;color:#8b949e;flex-shrink:0;">${rowLabel}</span>` +
             `<input type="number" id="${inputId}" min="0" max="9999" step="1" value="${curVal}" ` +
             `style="width:65px;background:#0d1117;border:1px solid #30363d;color:#c9d1d9;` +
-            `border-radius:4px;padding:3px 5px;text-align:center;font-size:15px;">` +
+            `border-radius:4px;padding:3px 5px;text-align:center;font-size:15px;" ` +
+            `oninput="(function(el){var h=document.getElementById('${inputId}-hint');if(h)h.textContent=${hintFnName}(parseInt(el.value)||0);})(this)">` +
+            `<span id="${inputId}-hint" style="font-size:15px;color:#6e7681;white-space:nowrap;">${hintFnName === 'cbs_atkSpdHint' ? atkSpdHint(curVal) : moveSpdHint(curVal)}</span>` +
             `</div>`;
+        // 전역 접근용 (oninput 인라인 핸들러에서 사용)
+        window.cbs_atkSpdHint = atkSpdHint;
+        window.cbs_movSpdHint = moveSpdHint;
+
         // 3열 레이아웃: 공격 타입(flex) | 사거리(fixed) | 속도(fixed)
         atDiv.innerHTML =
             `<div style="display:flex;gap:14px;align-items:flex-start;">` +
@@ -4485,8 +4531,8 @@ function renderClassStatPanel(classId) {
             // ── ③ 속도 (공격속도·이동속도)
             `<div style="flex-shrink:0;border-left:1px solid #21262d;padding-left:14px;">` +
             `<div style="font-size:15px;color:#c9d1d9;font-weight:700;margin-bottom:5px;">⚡ 속도</div>` +
-            makeSpeedRow('공격', 'cbs-num-atkspeed',  spd.atkSpeed) +
-            makeSpeedRow('이동', 'cbs-num-movespeed', spd.moveSpeed) +
+            makeSpeedRow('공격', 'cbs-num-atkspeed',  spd.atkSpeed,  'cbs_atkSpdHint') +
+            makeSpeedRow('이동', 'cbs-num-movespeed', spd.moveSpeed, 'cbs_movSpdHint') +
             `</div>` +
             `</div>`;
     }
@@ -5054,9 +5100,11 @@ function update(rawDelta) {
         const atkRange = character.normalAtkRange || ATK_RANGE; // 평타 사거리 (미설정 시 기본값)
 
         if (dist > atkRange) {
-            // 사거리 밖 → 몬스터에게 이동 (고속에서 atkRange 경계를 초과하지 않도록 스텝 제한)
+            // 사거리 밖 → 몬스터에게 이동
+            // 스텝을 dist로 제한: 몬스터 위치를 초과해서 지나치는 오버슈팅 방지
+            // (dist - atkRange 로 제한하면 몬스터가 같은 방향으로 이동 중일 때 캐릭터가 멈춰버리는 문제 발생)
             const rawSpd = getCharMoveSpeed() * MOVE_SPEED_SCALE * (delta / 1000);
-            const step   = Math.min(rawSpd, dist - atkRange);
+            const step   = Math.min(rawSpd, dist);
             character.x += (dx / dist) * step;
             character.y += (dy / dist) * step;
         } else {
@@ -7173,11 +7221,11 @@ function renderMonsterInfo() {
             </div>
             <div class="mon-stat-row ${bRow}">
                 <span class="mon-stat-lbl">공격 간격 ${en('AttackSpeed')}</span>
-                <span class="mon-stat-val">${atkSec}초 / 회</span>
+                <span class="mon-stat-val">${atkSec}초/회 <span style="font-size:15px;color:#6e7681;">(${(1000/atkMs).toFixed(2)}회/초)</span></span>
             </div>
             <div class="mon-stat-row ${bRow}">
                 <span class="mon-stat-lbl">이동 속도 ${en('MoveSpeed')}</span>
-                <span class="mon-stat-val">${s.moveSpeed} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed * MOVE_SPEED_SCALE).toFixed(1)} px/s)</span></span>
+                <span class="mon-stat-val">${s.moveSpeed} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed / 100).toFixed(2)} m/s)</span></span>
             </div>
         </div>
 
@@ -7446,15 +7494,15 @@ function renderMonsterInfo() {
             </div>
             <div class="mon-stat-row boss-row">
                 <span class="mon-stat-lbl">적 인식 범위 ${en('AggroRange')}</span>
-                <span class="mon-stat-val boss-val">${MONSTER_BOSS_AGGRO_RANGE}px</span>
+                <span class="mon-stat-val boss-val">${(MONSTER_BOSS_AGGRO_RANGE / PX_PER_METER).toFixed(1)}m</span>
             </div>
             <div class="mon-stat-row boss-row">
-                <span class="mon-stat-lbl">로밍 범위 ${en('RoamRange')} <span style="font-size:15px;color:#6e7681;">(인식 범위 × 2)</span></span>
-                <span class="mon-stat-val boss-val">${MONSTER_BOSS_AGGRO_RANGE * 3}px</span>
+                <span class="mon-stat-lbl">로밍 범위 ${en('RoamRange')} <span style="font-size:15px;color:#6e7681;">(인식 범위 × 3)</span></span>
+                <span class="mon-stat-val boss-val">${(MONSTER_BOSS_AGGRO_RANGE * 3 / PX_PER_METER).toFixed(1)}m</span>
             </div>
             <div class="mon-stat-row boss-row">
                 <span class="mon-stat-lbl">로밍 속도 ${en('RoamSpeed')} <span style="font-size:15px;color:#6e7681;">(전투 전 배회)</span></span>
-                <span class="mon-stat-val boss-val">${(s.moveSpeed * 0.5).toFixed(1)} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed * MOVE_SPEED_SCALE * 0.5).toFixed(2)} px/s)</span></span>
+                <span class="mon-stat-val boss-val">${(s.moveSpeed * 0.5).toFixed(1)} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed * 0.5 / 100).toFixed(2)} m/s)</span></span>
             </div>
         </div>` : `
         <div class="mon-section-title">필드 정보</div>
@@ -7469,15 +7517,15 @@ function renderMonsterInfo() {
             </div>
             <div class="mon-stat-row">
                 <span class="mon-stat-lbl">적 인식 범위 ${en('AggroRange')}</span>
-                <span class="mon-stat-val">${MONSTER_AGGRO_RANGE}px</span>
+                <span class="mon-stat-val">${(MONSTER_AGGRO_RANGE / PX_PER_METER).toFixed(1)}m</span>
             </div>
             <div class="mon-stat-row">
-                <span class="mon-stat-lbl">로밍 범위 ${en('RoamRange')} <span style="font-size:15px;color:#6e7681;">(인식 범위 × 2)</span></span>
-                <span class="mon-stat-val">${MONSTER_AGGRO_RANGE * 3}px</span>
+                <span class="mon-stat-lbl">로밍 범위 ${en('RoamRange')} <span style="font-size:15px;color:#6e7681;">(인식 범위 × 3)</span></span>
+                <span class="mon-stat-val">${(MONSTER_AGGRO_RANGE * 3 / PX_PER_METER).toFixed(1)}m</span>
             </div>
             <div class="mon-stat-row">
                 <span class="mon-stat-lbl">로밍 속도 ${en('RoamSpeed')} <span style="font-size:15px;color:#6e7681;">(전투 전 배회)</span></span>
-                <span class="mon-stat-val">${(s.moveSpeed * 0.5).toFixed(1)} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed * MOVE_SPEED_SCALE * 0.5).toFixed(2)} px/s)</span></span>
+                <span class="mon-stat-val">${(s.moveSpeed * 0.5).toFixed(1)} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed * 0.5 / 100).toFixed(2)} m/s)</span></span>
             </div>
         </div>`}
 
