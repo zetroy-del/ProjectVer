@@ -635,6 +635,58 @@ body {
 .qs-slot.auto-active:hover { border-color: #79c0ff; }
 
 /* ══════════════════════════════════════════
+   인게임 우측 하단 액션 버튼 바
+══════════════════════════════════════════ */
+#action-bar {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 20;
+    pointer-events: none;
+    align-items: flex-end;
+}
+.ab-btn {
+    width: 58px;
+    height: 58px;
+    position: relative;
+    background: rgba(13, 17, 23, 0.82);
+    border: 2px solid #30363d;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    pointer-events: auto;
+    transition: border-color 0.15s, background 0.15s;
+    gap: 2px;
+}
+.ab-btn:hover { background: rgba(30, 40, 50, 0.9); }
+.ab-icon { font-size: 22px; line-height: 1; }
+.ab-label {
+    font-size: 15px;
+    color: #8b949e;
+    line-height: 1;
+    white-space: nowrap;
+}
+/* 마을 귀환 버튼 */
+#ab-town { border-color: #238636; }
+#ab-town:hover { border-color: #3fb950; background: rgba(20, 45, 25, 0.9); }
+#ab-town .ab-label { color: #3fb950; }
+/* 전투 재개 버튼 */
+#ab-combat { border-color: #6e3434; }
+#ab-combat:hover { border-color: #f85149; background: rgba(45, 20, 20, 0.9); }
+#ab-combat .ab-label { color: #f85149; }
+/* 인벤토리 버튼 */
+#ab-inventory { border-color: #9e6a03; }
+#ab-inventory:hover { border-color: #d29922; background: rgba(45, 35, 10, 0.9); }
+#ab-inventory .ab-label { color: #d29922; }
+
+/* ══════════════════════════════════════════
    인게임 캐릭터 상태창 (좌측 하단 오버레이)
 ══════════════════════════════════════════ */
 #char-status-panel {
@@ -842,6 +894,98 @@ body {
     color: #fff;
     text-shadow: 0 1px 3px #000;
     white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════
+   인벤토리 팝업
+══════════════════════════════════════════ */
+.inv-modal {
+    width: 720px;
+    max-width: 98vw;
+    max-height: none; /* 본문 고정 높이로 크기가 결정됨 */
+}
+.inv-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px 14px 0;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+}
+.inv-tab {
+    padding: 5px 16px;
+    font-size: 15px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+    color: #8b949e;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+}
+.inv-tab:hover { color: #e6edf3; background: #161b22; }
+.inv-tab.active {
+    color: #d29922;
+    background: #161b22;
+    border-color: #30363d;
+    border-bottom-color: #161b22;
+}
+.inv-info-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px;
+    font-size: 15px;
+    color: #8b949e;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+}
+.inv-info-bar .inv-count { color: #e6edf3; }
+.inv-body {
+    /* 10행 × 52px + 9gap × 4px + 상하 패딩 20px = 576px */
+    height: 576px;
+    overflow-y: auto;
+    padding: 10px 12px;
+    flex-shrink: 0;
+}
+.inv-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 52px);
+    gap: 4px;
+    justify-content: start;
+}
+.inv-slot {
+    width: 52px;
+    height: 52px;
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    position: relative;
+    cursor: default;
+    transition: border-color 0.12s;
+}
+.inv-slot.occupied { border-color: #30363d; cursor: pointer; }
+.inv-slot.occupied:hover { border-color: #58a6ff; background: #161b22; }
+.inv-slot.equipment { border-color: #2d4a2d; }
+.inv-slot.equipment:hover { border-color: #3fb950; }
+.inv-slot .inv-qty {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 15px;
+    color: #e6edf3;
+    font-weight: bold;
+    text-shadow: 0 1px 2px #000;
+    line-height: 1;
+}
+.inv-empty-msg {
+    text-align: center;
+    color: #484f58;
+    font-size: 15px;
+    padding: 40px 0;
 }
 
 /* ══════════════════════════════════════════
@@ -1877,7 +2021,6 @@ body {
         <button class="speed-btn"        onclick="setSpeed(10)"   id="spd-10">×10</button>
         <button class="speed-btn"        onclick="setSpeed(50)"   id="spd-50">×50</button>
         <button class="speed-btn"        onclick="setSpeed(100)"  id="spd-100" style="color:#d29922;border-color:#9e6a03;">×100</button>
-        <button class="speed-btn"        onclick="setSpeed(1000)" id="spd-1000" style="color:#f85149;border-color:#6e3434;">×1000</button>
     </div>
 
     <!-- 일시정지 / 재시작 버튼 -->
@@ -1906,27 +2049,28 @@ body {
     <div id="canvas-col">
         <div id="canvas-wrap">
             <canvas id="gameCanvas"></canvas>
-            <!-- 스테이지 번호 배지 (캔버스 좌측 상단) -->
-            <div id="si-stage-badge">
-                <span class="sib-label">Stage</span>
-                <span class="sib-num" id="sib-stage-num">1</span>
-            </div>
-            <!-- 스테이지 인디케이터 (캔버스 중앙 상단 오버레이) -->
-            <div id="stage-indicator">
-                <div class="si-rounds-row">
-                    <div class="si-node current" id="si-r1"><span>1</span></div>
-                    <div class="si-connector" id="si-c1"></div>
-                    <div class="si-node future" id="si-r2"><span>2</span></div>
-                    <div class="si-connector" id="si-c2"></div>
-                    <div class="si-node future" id="si-r3"><span>3</span></div>
-                    <div class="si-connector" id="si-c3"></div>
-                    <div class="si-node future" id="si-r4"><span>4</span></div>
-                    <div class="si-connector" id="si-c4"></div>
-                    <div class="si-node future boss" id="si-r5"><span>👑</span></div>
+            <!-- 스테이지 래퍼: 번호 배지 + 라운드 인디케이터를 가로로 나란히 배치 -->
+            <div id="stage-wrap">
+                <div id="si-stage-badge">
+                    <span class="sib-label">Stage</span>
+                    <span class="sib-num" id="sib-stage-num">1</span>
                 </div>
-                <div class="si-progress-bg">
-                    <div class="si-progress-fill" id="si-progress-fill" style="width:0%"></div>
-                    <span class="si-progress-text" id="si-progress-text">0 / 10</span>
+                <div id="stage-indicator">
+                    <div class="si-rounds-row">
+                        <div class="si-node current" id="si-r1"><span>1</span></div>
+                        <div class="si-connector" id="si-c1"></div>
+                        <div class="si-node future" id="si-r2"><span>2</span></div>
+                        <div class="si-connector" id="si-c2"></div>
+                        <div class="si-node future" id="si-r3"><span>3</span></div>
+                        <div class="si-connector" id="si-c3"></div>
+                        <div class="si-node future" id="si-r4"><span>4</span></div>
+                        <div class="si-connector" id="si-c4"></div>
+                        <div class="si-node future boss" id="si-r5"><span>👑</span></div>
+                    </div>
+                    <div class="si-progress-bg">
+                        <div class="si-progress-fill" id="si-progress-fill" style="width:0%"></div>
+                        <span class="si-progress-text" id="si-progress-text">0 / 10</span>
+                    </div>
                 </div>
             </div>
             <!-- 인게임 퀵슬롯 바 (캔버스 위에 절대 위치로 표시) -->
@@ -1961,6 +2105,21 @@ body {
                         <span class="cs-bar-text" id="cs-exp-text">0 / 10</span>
                     </div>
                 </div>
+            </div>
+            <!-- 우측 하단 액션 버튼 바 (마을귀환·전투재개·인벤토리) -->
+            <div id="action-bar">
+                <button class="ab-btn" id="ab-inventory" onclick="openInventory()" title="인벤토리 열기 (I키)">
+                    <span class="ab-icon">🎒</span>
+                    <span class="ab-label">가방</span>
+                </button>
+                <button class="ab-btn" id="ab-town" onclick="returnToTown()" title="마을 귀환">
+                    <span class="ab-icon">🏠</span>
+                    <span class="ab-label">귀환</span>
+                </button>
+                <button class="ab-btn" id="ab-combat" onclick="resumeCombat()" title="전투 재개" style="display:none;">
+                    <span class="ab-icon">⚔</span>
+                    <span class="ab-label">재개</span>
+                </button>
             </div>
         </div>
 
@@ -2015,22 +2174,6 @@ body {
             </button>
         </div>
 
-        <!-- 마을 / 전투 -->
-        <div class="section">
-            <div class="section-title">전투 / 마을</div>
-            <div id="town-status-row" style="text-align:center;font-size:15px;padding:4px 0 6px;color:#8b949e;">
-                <span id="town-status-txt">⚔ 전투 중</span>
-            </div>
-            <button class="btn-full" id="btn-return-town" onclick="returnToTown()"
-                    style="background:#1e2d1e;color:#3fb950;border:1px solid #238636;margin-bottom:6px;font-weight:700;">
-                🏠 마을 귀환
-            </button>
-            <button class="btn-full" id="btn-resume-combat" onclick="resumeCombat()"
-                    style="background:#2d1e1e;color:#f85149;border:1px solid #6e3434;margin-bottom:6px;font-weight:700;display:none;">
-                ⚔ 전투 재개
-            </button>
-        </div>
-
         <!-- 캐릭터 정보 -->
         <div class="section">
             <div class="section-title">캐릭터 정보</div>
@@ -2039,18 +2182,6 @@ body {
                 <div class="class-badge-dot" id="class-badge-dot" style="background:#c8e0f8;"></div>
                 <span class="class-badge-name" id="class-badge-name" style="color:#c8e0f8;">나이트</span>
                 <button class="class-badge-change" onclick="openClassModal()">클래스 변경 ▸</button>
-            </div>
-            <div class="info-row">
-                <span class="lbl">레벨</span>
-                <span class="val" id="s-level">1</span>
-            </div>
-            <div class="info-row">
-                <span class="lbl">경험치</span>
-                <span class="val" id="s-exp">0 / 10</span>
-            </div>
-            <div class="info-row">
-                <span class="lbl">총 처치 수</span>
-                <span class="val" id="s-kills">0</span>
             </div>
             <button class="btn-full" onclick="openCharInfo()"
                     style="background:#1f2d3d;color:#58a6ff;border:1px solid #1f6feb;margin-top:6px;margin-bottom:4px;">
@@ -2693,6 +2824,35 @@ body {
 </div>
 
 <!-- ================================================================
+     인벤토리 팝업
+================================================================ -->
+<div id="inventory-overlay" class="limit-overlay">
+    <div class="limit-modal inv-modal">
+        <div class="limit-header">
+            <span class="limit-title" style="color:#d29922;">🎒 인벤토리</span>
+            <button class="limit-close" onclick="closeInventory()">✕</button>
+        </div>
+        <!-- 탭 -->
+        <div class="inv-tabs">
+            <button class="inv-tab active" id="invtab-all"       onclick="switchInvTab('all')">전체</button>
+            <button class="inv-tab"        id="invtab-equipment" onclick="switchInvTab('equipment')">장비</button>
+            <button class="inv-tab"        id="invtab-misc"      onclick="switchInvTab('misc')">기타</button>
+        </div>
+        <!-- 정보 바 -->
+        <div class="inv-info-bar">
+            <span>보유 아이템: <span class="inv-count" id="inv-item-count">0</span> / <span class="inv-count">500</span></span>
+            <span id="inv-tab-label" style="color:#8b949e;">전체</span>
+        </div>
+        <!-- 격자 영역 -->
+        <div class="inv-body">
+            <div class="inv-grid" id="inv-grid">
+                <!-- JS로 채워짐 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
      패치 노트 팝업
 ================================================================ -->
 <div id="patchnote-overlay" class="limit-overlay">
@@ -2709,9 +2869,92 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">112건</span>
+                <span class="pn-month-count">133건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-30 10:59 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">10:59</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 로밍 속도 상향 — 이동속도의 30% → 50%로 변경. 몬스터 능력치 정보 패널 표시값(일반·보스 공통) 동일하게 갱신</li>
+            </ul>
+
+            <!-- ── 2026-04-30 10:58 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">10:58</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 로밍 범위 확대 — 일반·보스 공통으로 인식 범위 × 2 → × 3으로 변경. 몬스터 능력치 정보 패널 표시값도 동일하게 갱신</li>
+            </ul>
+
+            <!-- ── 2026-04-30 10:55 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">10:55</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>10배속 이상에서 캐릭터·몬스터가 서로를 통과(오버슈팅)하여 공격 사거리에 진입하지 못하는 문제 수정 — 이동 스텝을 사거리 경계까지만 이동하도록 제한 (min(이동거리, dist - atkRange) 적용)</li>
+                <li class="pn-item"><span class="pn-tag fix">수정</span>10배속 이상에서 원거리·마법 발사체가 타겟 도달 전에 수명 만료로 소멸하여 대미지가 적용되지 않는 문제 수정 — 수명 감소를 도달 판정 이후로 순서 변경, 수명 만료 시에도 타겟이 살아있으면 명중 처리. 프레임 이동 거리(step)가 잔여 거리를 초과하는 경우도 도달로 처리</li>
+                <li class="pn-item"><span class="pn-tag fix">수정</span>고속 배속에서 공격이 1프레임에 1회로 제한되어 DPS가 급감하는 문제 수정 — 타이머를 = 리셋 방식에서 += 방식으로 전환하고 while 루프로 처리하여 1프레임에 발생해야 할 공격 횟수를 모두 실행</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>×1000 게임 속도 버튼 삭제 — 최대 배속을 ×100으로 제한</li>
+            </ul>
+
+            <!-- ── 2026-04-30 10:27 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">10:27</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>마을 배경 타일 범위 이탈 수정 — 타일 루프 시작 좌표(col=-1)로 인해 마을 영역 밖까지 배경이 그려지던 문제 수정. drawTownZone() 내 ctx.clip()으로 마을 rect 바깥은 렌더링 차단</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 사망 잔상 제거 — 사망한 몬스터를 반투명 회색 원으로 표시하던 잔상 삭제. isDead 플래그 확인 후 즉시 렌더링 스킵으로 사망 시 시각적 흔적 없음</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 로밍 속도 3배 상향 및 로밍 범위 시스템 추가 — 배회 속도를 이동 속도의 10%→30%로 변경. 몬스터별 스폰 위치(spawnX/Y)와 로밍 범위(인식 범위 × 2) 속성 추가. 범위 초과 시 스폰 지점으로 자동 복귀. 몬스터 능력치 정보 패널에 로밍 범위(RoamRange) 및 로밍 속도(RoamSpeed) 항목 추가(일반·보스 공통)</li>
+            </ul>
+
+            <!-- ── 2026-04-30 10:18 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">10:18</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인벤토리 그리드 구조 변경 — 항상 500칸 전체(10열 × 50행)를 렌더링. 빈 슬롯도 격자로 표시되어 전체 구조가 항상 시각적으로 확인 가능. 탭 필터 적용 시 해당 타입 외 아이템 슬롯은 빈 슬롯으로 표시</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인벤토리 모달 세로 크기 고정 — 항상 10행이 표시되는 고정 높이(576px) 적용, 스크롤로 나머지 40행 확인 가능</li>
+            </ul>
+
+            <!-- ── 2026-04-30 10:14 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">10:14</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 능력치 정보 — 일반 몬스터 필드 정보 섹션에 로밍 속도(RoamSpeed) 항목 추가. 전투 전 배회 속도 = 이동 속도의 10%, raw 값과 px/s 변환값 함께 표시</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>일반 몬스터 리스폰 대기 시간 변경 — 5초 → 10초(RESPAWN_DELAY 10000ms)</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>죽은 몬스터 리스폰 남은 시간 표시 제거 — 사망 상태 몬스터에서 "Ns" 카운트다운 텍스트 삭제, 반투명 회색 원으로만 표시</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>사이드바 캐릭터 정보에서 레벨·경험치·총 처치수 항목 삭제 — 해당 정보는 인게임 좌측 하단 캐릭터 상태창에서 확인</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인게임 우측 하단 액션 버튼 바 추가 — 마을귀환(🏠)·전투재개(⚔)·인벤토리(🎒) 3개 슬롯 버튼을 캔버스 우측 하단에 세로 배치. 마을/전투 상태에 따라 귀환↔재개 버튼 자동 전환</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>사이드바 전투/마을 섹션 삭제 — 귀환·재개 기능이 인게임 액션 버튼 바로 이전됨</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>인벤토리 시스템 추가 — 500칸 보관, 전체·장비·기타 3가지 탭. 장비/기타 탭은 아이템 타입으로 필터링. I키 단축키로 열기/닫기. 현재 아이템 드롭 연동 전 기초 구조 완성</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인게임 액션 바에 인벤토리(🎒) 버튼 추가 — 우측 하단 버튼 클릭 또는 I키로 인벤토리 팝업 호출</li>
+            </ul>
+
+            <!-- ── 2026-04-30 09:44 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">09:44</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>스테이지 번호 배지 위치 수정 — 캔버스 좌상단 독립 배치에서 중앙 스테이지 인디케이터 바로 좌측으로 변경. stage-wrap 공통 래퍼(flex 가로 배열)로 묶어 배지와 라운드 인디케이터가 하나의 그룹으로 중앙 정렬되도록 수정</li>
+            </ul>
 
             <!-- ── 2026-04-29 20:55 ── -->
             <div class="pn-ver">
@@ -3307,7 +3550,7 @@ const ATK_RANGE               = 44;   // 공격 사거리 (px)
 const PX_PER_METER            = 10;   // 1미터 = 10px (사거리 단위 변환 기준)
 // 기획서 103_전투_속도: MoveSpeed 1 단위 = 1/100 m/s → px/s = MoveSpeed × PX_PER_METER / 100
 const MOVE_SPEED_SCALE        = PX_PER_METER / 100; // 0.1 — raw MoveSpeed → px/s 변환 계수
-const RESPAWN_DELAY           = 5000; // 몬스터 리스폰 대기 (ms)
+const RESPAWN_DELAY           = 10000; // 몬스터 리스폰 대기 (ms)
 const WANDER_SPEED            = 22;   // 몬스터 배회 속도 (px/s)
 const MONSTER_AGGRO_RANGE     = 100;  // 일반 몬스터 적 인식 범위 (px)
 const MONSTER_BOSS_AGGRO_RANGE= 175;  // 보스 몬스터 적 인식 범위 (px)
@@ -4743,6 +4986,8 @@ function spawnMonster(level, avoidCenter = true, isBoss = false) {
         atkSpeedMs,              // 공격 주기 (ms) — 레벨 무관 고정
         moveSpeedPx: mStats.moveSpeed, // 이동 속도 (px/s) — 레벨 무관 고정
         aggroRange: isBoss ? MONSTER_BOSS_AGGRO_RANGE : MONSTER_AGGRO_RANGE, // 적 인식 범위 (px)
+        roamRange:  (isBoss ? MONSTER_BOSS_AGGRO_RANGE : MONSTER_AGGRO_RANGE) * 3, // 로밍 범위 = 인식 범위 × 3
+        spawnX: x, spawnY: y,    // 스폰 위치 (로밍 범위 기준점)
         alerted: false,          // 피격(대미지/miss) 또는 인식 범위 진입 시 true로 전환
     };
 }
@@ -4809,16 +5054,18 @@ function update(rawDelta) {
         const atkRange = character.normalAtkRange || ATK_RANGE; // 평타 사거리 (미설정 시 기본값)
 
         if (dist > atkRange) {
-            // 사거리 밖 → 몬스터에게 이동 (MoveSpeed × MOVE_SPEED_SCALE → px/s)
-            const spd = getCharMoveSpeed() * MOVE_SPEED_SCALE * (delta / 1000);
-            character.x += (dx / dist) * spd;
-            character.y += (dy / dist) * spd;
+            // 사거리 밖 → 몬스터에게 이동 (고속에서 atkRange 경계를 초과하지 않도록 스텝 제한)
+            const rawSpd = getCharMoveSpeed() * MOVE_SPEED_SCALE * (delta / 1000);
+            const step   = Math.min(rawSpd, dist - atkRange);
+            character.x += (dx / dist) * step;
+            character.y += (dy / dist) * step;
         } else {
-            // 사거리 내 → 제자리에서 공격
+            // 사거리 내 → 공격 (고속에서 여러 번 공격해야 할 경우 루프로 처리)
             character.atkTimer -= delta;
-            if (character.atkTimer <= 0) {
-                character.atkTimer = getCharAttackInterval();
-                doAttack(character.target);
+            while (character.atkTimer <= 0) {
+                character.atkTimer += getCharAttackInterval(); // += 로 초과분 보존
+                if (character.target && !character.target.isDead) doAttack(character.target);
+                if (!character.target || character.target.isDead) break;
             }
         }
     }
@@ -4854,20 +5101,30 @@ function update(rawDelta) {
                 const mdy  = character.y - m.y;
                 const mdist = Math.hypot(mdx, mdy);
                 if (mdist > ATK_RANGE) {
-                    // MoveSpeed × MOVE_SPEED_SCALE → px/s (기획서 103 기준)
-                    const mspd = mSpeedRaw * MOVE_SPEED_SCALE * (delta / 1000);
-                    m.x += (mdx / mdist) * mspd;
-                    m.y += (mdy / mdist) * mspd;
+                    // MoveSpeed × MOVE_SPEED_SCALE → px/s (고속에서 ATK_RANGE 경계 초과 방지)
+                    const rawMspd = mSpeedRaw * MOVE_SPEED_SCALE * (delta / 1000);
+                    const mstep   = Math.min(rawMspd, mdist - ATK_RANGE);
+                    m.x += (mdx / mdist) * mstep;
+                    m.y += (mdy / mdist) * mstep;
                 } else {
                     if (!m.atkTimer) m.atkTimer = mAtkMs;
                     m.atkTimer -= delta;
-                    if (m.atkTimer <= 0) {
-                        m.atkTimer = mAtkMs;
-                        monsterAttack(m);
+                    while (m.atkTimer <= 0) {
+                        m.atkTimer += mAtkMs; // += 로 초과분 보존
+                        if (character.currentHP > 0) monsterAttack(m);
+                        if (character.currentHP <= 0) break;
                     }
                 }
             } else {
-                const wSpd = mSpeedRaw * MOVE_SPEED_SCALE * 0.1 * (delta / 1000); // 배회 = 추적 속도의 10%
+                const wSpd = mSpeedRaw * MOVE_SPEED_SCALE * 0.5 * (delta / 1000); // 배회 = 추적 속도의 50%
+                // 로밍 범위(spawnX/Y 기준) 이탈 시 스폰 위치 방향으로 방향 전환
+                const dFromSpawn = Math.hypot(m.x - m.spawnX, m.y - m.spawnY);
+                if (dFromSpawn > (m.roamRange || MONSTER_AGGRO_RANGE * 3)) {
+                    const ax = m.spawnX - m.x, ay = m.spawnY - m.y;
+                    const al = Math.hypot(ax, ay) || 1;
+                    m.wDx = ax / al;
+                    m.wDy = ay / al;
+                }
                 m.x += m.wDx * wSpd;
                 m.y += m.wDy * wSpd;
             }
@@ -4905,17 +5162,16 @@ function update(rawDelta) {
     // 발사체 이동 업데이트 (화살·소용돌이)
     for (let i = projectiles.length - 1; i >= 0; i--) {
         const p = projectiles[i];
-        p.life -= delta;
-        if (p.life <= 0) { projectiles.splice(i, 1); continue; }
 
         if (p.kind === 'arrow' || p.kind === 'swirl') {
-            // 이동형 발사체: 살아있는 타겟 추적 (미스 발사체도 동일하게 날아감)
+            // 이동형 발사체: 살아있는 타겟 추적
             if (p.targetRef && !p.targetRef.isDead) {
                 const tdx   = p.targetRef.x - p.x;
                 const tdy   = p.targetRef.y - p.y;
                 const tdist = Math.hypot(tdx, tdy);
-                if (tdist < 15) {
-                    // 도달: 페이로드 적용(대미지 or 미스) 후 소멸
+                const step  = p.speed * (delta / 1000); // 이번 프레임 이동 거리
+                // 고속에서 발사체가 타겟을 통과(오버슈팅)하는 경우도 도달로 처리
+                if (tdist < 15 || step >= tdist) {
                     applyProjectilePayload(p);
                     projectiles.splice(i, 1);
                     continue;
@@ -4928,7 +5184,17 @@ function update(rawDelta) {
             p.y += p.vy * (delta / 1000);
             if (p.kind === 'swirl') p.rot += delta * 0.009;
         }
-        // slash(검기)는 위치 고정, life 타이머만 감소
+
+        // 수명 감소: 이동형 발사체는 도달 체크 이후에 처리
+        p.life -= delta;
+        if (p.life <= 0) {
+            // 수명 만료 시 살아있는 타겟을 향하던 발사체면 명중 처리
+            if ((p.kind === 'arrow' || p.kind === 'swirl') &&
+                p.targetRef && !p.targetRef.isDead && p.payload) {
+                applyProjectilePayload(p);
+            }
+            projectiles.splice(i, 1);
+        }
     }
 }
 
@@ -5495,6 +5761,8 @@ function reviveMonster(m) {
     const _rvMSt  = calcMonsterStats(monLv, false);
     const _rvCorr = ATTACK_SPEED_CORRECTION || 2000;
     m.x = x; m.y = y;
+    m.spawnX      = x; m.spawnY = y; // 로밍 기준점 갱신
+    m.roamRange   = MONSTER_AGGRO_RANGE * 3;
     m.level       = monLv;
     m.maxHP       = _rvMSt.maxHP;
     m.hp          = m.maxHP;
@@ -5741,21 +6009,7 @@ function drawDemonSprite(cx, cy, r, bodyColor) {
 }
 
 function drawMonster(m) {
-    if (m.isDead) {
-        ctx.globalAlpha = 0.3;
-        ctx.fillStyle = '#555';
-        ctx.beginPath();
-        ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = '#888';
-        ctx.font = 'bold 11px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        const sec = Math.ceil(m.respawnLeft / 1000 / gameSpeed);
-        ctx.fillText(sec + 's', m.x, m.y);
-        return;
-    }
+    if (m.isDead) return; // 사망 잔상 없음
 
     const isTarget = (character.target === m);
 
@@ -5844,6 +6098,10 @@ function drawMonster(m) {
 // ── 마을 구역 그리기
 function drawTownZone(W, H) {
     ctx.save();
+    // 마을 영역(0,0 ~ TOWN_W×TOWN_H) 밖으로 아무것도 그려지지 않도록 클리핑
+    ctx.beginPath();
+    ctx.rect(0, 0, TOWN_W, TOWN_H);
+    ctx.clip();
 
     // ── 마을 바닥: 따뜻한 돌바닥 갈색 (필드 #1a2a1a 숲 초록과 명확히 대비)
     ctx.fillStyle = '#2b1f10';
@@ -6722,9 +6980,6 @@ function refreshUI() {
     document.getElementById('cs-exp-bar').style.width  = expPct + '%';
     document.getElementById('cs-exp-text').textContent = `${character.exp} / ${need}`;
 
-    document.getElementById('s-level').textContent    = character.level;
-    document.getElementById('s-exp').textContent      = `${character.exp} / ${need}`;
-    document.getElementById('s-kills').textContent    = totalKills;
     document.getElementById('s-monlevel').textContent = stageLevel(currentStage);
     document.getElementById('level-input').value      = character.level;
 
@@ -6783,7 +7038,7 @@ function clearLog() {
 // ────────────────────────────────────────────────
 function setSpeed(spd) {
     gameSpeed = spd;
-    [1, 2, 5, 10, 50, 100, 1000].forEach(s => {
+    [1, 2, 5, 10, 50, 100].forEach(s => {
         const btn = document.getElementById('spd-' + s);
         if (btn) btn.classList.toggle('active', s === spd);
     });
@@ -7193,6 +7448,14 @@ function renderMonsterInfo() {
                 <span class="mon-stat-lbl">적 인식 범위 ${en('AggroRange')}</span>
                 <span class="mon-stat-val boss-val">${MONSTER_BOSS_AGGRO_RANGE}px</span>
             </div>
+            <div class="mon-stat-row boss-row">
+                <span class="mon-stat-lbl">로밍 범위 ${en('RoamRange')} <span style="font-size:15px;color:#6e7681;">(인식 범위 × 2)</span></span>
+                <span class="mon-stat-val boss-val">${MONSTER_BOSS_AGGRO_RANGE * 3}px</span>
+            </div>
+            <div class="mon-stat-row boss-row">
+                <span class="mon-stat-lbl">로밍 속도 ${en('RoamSpeed')} <span style="font-size:15px;color:#6e7681;">(전투 전 배회)</span></span>
+                <span class="mon-stat-val boss-val">${(s.moveSpeed * 0.5).toFixed(1)} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed * MOVE_SPEED_SCALE * 0.5).toFixed(2)} px/s)</span></span>
+            </div>
         </div>` : `
         <div class="mon-section-title">필드 정보</div>
         <div class="mon-stat-grid">
@@ -7207,6 +7470,14 @@ function renderMonsterInfo() {
             <div class="mon-stat-row">
                 <span class="mon-stat-lbl">적 인식 범위 ${en('AggroRange')}</span>
                 <span class="mon-stat-val">${MONSTER_AGGRO_RANGE}px</span>
+            </div>
+            <div class="mon-stat-row">
+                <span class="mon-stat-lbl">로밍 범위 ${en('RoamRange')} <span style="font-size:15px;color:#6e7681;">(인식 범위 × 2)</span></span>
+                <span class="mon-stat-val">${MONSTER_AGGRO_RANGE * 3}px</span>
+            </div>
+            <div class="mon-stat-row">
+                <span class="mon-stat-lbl">로밍 속도 ${en('RoamSpeed')} <span style="font-size:15px;color:#6e7681;">(전투 전 배회)</span></span>
+                <span class="mon-stat-val">${(s.moveSpeed * 0.5).toFixed(1)} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed * MOVE_SPEED_SCALE * 0.5).toFixed(2)} px/s)</span></span>
             </div>
         </div>`}
 
@@ -7749,6 +8020,17 @@ document.addEventListener('keydown', (e) => {
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
     if (gameState !== 'playing') return;
     useHPPotion();
+});
+
+// I 키: 인벤토리 열기/닫기 단축키
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'i' && e.key !== 'I') return;
+    const tag = document.activeElement ? document.activeElement.tagName : '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    if (gameState === 'title') return;
+    const overlay = document.getElementById('inventory-overlay');
+    if (overlay.classList.contains('open')) closeInventory();
+    else openInventory();
 });
 
 // ────────────────────────────────────────────────
@@ -8466,25 +8748,82 @@ function saveCharacterState() {
 // 마을 귀환 / 전투 재개
 // ────────────────────────────────────────────────
 
-// 사이드바의 귀환·재개 버튼 표시 상태를 inTown에 맞춰 업데이트
+// 액션 바의 귀환·재개 버튼 표시 상태를 inTown에 맞춰 업데이트
 function updateTownUI() {
-    const btnReturn = document.getElementById('btn-return-town');
-    const btnResume = document.getElementById('btn-resume-combat');
-    const statusTxt = document.getElementById('town-status-txt');
+    const btnReturn = document.getElementById('ab-town');
+    const btnResume = document.getElementById('ab-combat');
     if (!btnReturn) return;
     if (inTown) {
         btnReturn.style.display = 'none';
         btnResume.style.display = '';
-        statusTxt.textContent   = '🏠 마을 체류 중 (안전)';
-        statusTxt.style.color   = '#3fb950';
     } else {
         btnReturn.style.display = '';
         btnResume.style.display = 'none';
-        statusTxt.textContent   = '⚔ 전투 중';
-        statusTxt.style.color   = '#8b949e';
     }
 }
 
+// ────────────────────────────────────────────────
+// 인벤토리 시스템
+// ────────────────────────────────────────────────
+const INVENTORY_SIZE = 500; // 최대 보관 칸 수
+
+// 인벤토리 배열: null = 빈 슬롯, 아이템 객체 = { id, name, type, icon, quantity, description }
+let inventory = new Array(INVENTORY_SIZE).fill(null);
+
+let _invTab = 'all'; // 현재 선택 탭: 'all' | 'equipment' | 'misc'
+
+// 빈 슬롯에 아이템 1개 추가. 성공 여부 반환
+function addToInventory(item) {
+    const idx = inventory.findIndex(s => s === null);
+    if (idx === -1) return false; // 인벤토리 가득 참
+    inventory[idx] = { ...item };
+    return true;
+}
+
+function openInventory() {
+    document.getElementById('inventory-overlay').classList.add('open');
+    renderInventory();
+}
+function closeInventory() {
+    document.getElementById('inventory-overlay').classList.remove('open');
+}
+function switchInvTab(tab) {
+    _invTab = tab;
+    ['all', 'equipment', 'misc'].forEach(t => {
+        document.getElementById(`invtab-${t}`).classList.toggle('active', t === tab);
+    });
+    const labels = { all: '전체', equipment: '장비', misc: '기타' };
+    document.getElementById('inv-tab-label').textContent = labels[tab];
+    renderInventory();
+}
+function renderInventory() {
+    const totalUsed = inventory.filter(s => s !== null).length;
+    document.getElementById('inv-item-count').textContent = totalUsed;
+
+    // 500칸 전체를 항상 렌더링 (탭 필터에 맞지 않는 슬롯은 빈 슬롯으로 표시)
+    let html = '';
+    for (let i = 0; i < INVENTORY_SIZE; i++) {
+        const item = inventory[i];
+        let show = null;
+        if (item !== null) {
+            if (_invTab === 'all') show = item;
+            else if (_invTab === 'equipment' && item.type === 'equipment') show = item;
+            else if (_invTab === 'misc'      && item.type !== 'equipment') show = item;
+        }
+        if (show) {
+            html += `<div class="inv-slot occupied ${show.type === 'equipment' ? 'equipment' : ''}"
+                title="${show.name}${show.description ? '\n' + show.description : ''}">
+                <span>${show.icon || '📦'}</span>
+                ${show.quantity > 1 ? `<span class="inv-qty">${show.quantity}</span>` : ''}
+            </div>`;
+        } else {
+            html += `<div class="inv-slot"></div>`;
+        }
+    }
+    document.getElementById('inv-grid').innerHTML = html;
+}
+
+// ────────────────────────────────────────────────
 // 마을 귀환: 캐릭터를 마을 구역 중앙으로 이동, 전투 차단
 function returnToTown() {
     if (gameState === 'title') return;
