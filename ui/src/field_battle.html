@@ -2869,9 +2869,20 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">4월</span>
-                <span class="pn-month-count">136건</span>
+                <span class="pn-month-count">138건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-04-30 12:37 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-04-30</span>
+                <span class="pn-ver-time">12:37</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>보스 몬스터 스폰 위치 고정 — 기존 랜덤 위치 등장에서 항상 화면 정중앙(canvas 중심)으로 변경</li>
+                <li class="pn-item"><span class="pn-tag gfx">그래픽</span>보스 몬스터 사이즈 1.5배 확대 — 반지름 22px → 33px (일반 몬스터 13px 대비 약 2.5배 크기)</li>
+            </ul>
 
             <!-- ── 2026-04-30 12:21 ── -->
             <div class="pn-ver">
@@ -4999,19 +5010,26 @@ function initGame() {
 
 // 몬스터 객체 생성 (isBoss: 보스 몬스터 여부)
 function spawnMonster(level, avoidCenter = true, isBoss = false) {
-    let x, y, tries = 0;
-    do {
-        x = 40 + Math.random() * (canvas.width  - 80);
-        y = 40 + Math.random() * (canvas.height - 80);
-        tries++;
-    } while (
-        tries < 40 && (
-            // 마을 구역(좌상단 TOWN_W×TOWN_H) 내에 스폰 금지
-            (x < TOWN_W + 20 && y < TOWN_H + 20) ||
-            // 캐릭터 주변 회피 (avoidCenter 옵션)
-            (avoidCenter && Math.hypot(x - character.x, y - character.y) < 120)
-        )
-    );
+    let x, y;
+    if (isBoss) {
+        // 보스는 항상 화면 중앙에 등장
+        x = canvas.width  / 2;
+        y = canvas.height / 2;
+    } else {
+        let tries = 0;
+        do {
+            x = 40 + Math.random() * (canvas.width  - 80);
+            y = 40 + Math.random() * (canvas.height - 80);
+            tries++;
+        } while (
+            tries < 40 && (
+                // 마을 구역(좌상단 TOWN_W×TOWN_H) 내에 스폰 금지
+                (x < TOWN_W + 20 && y < TOWN_H + 20) ||
+                // 캐릭터 주변 회피 (avoidCenter 옵션)
+                (avoidCenter && Math.hypot(x - character.x, y - character.y) < 120)
+            )
+        );
+    }
 
     const mStats    = calcMonsterStats(level, isBoss);
     const maxHP     = mStats.maxHP;
@@ -5024,7 +5042,7 @@ function spawnMonster(level, avoidCenter = true, isBoss = false) {
         hp:          maxHP,
         isDead:      false,
         respawnLeft: 0,
-        radius:      isBoss ? 22 : 13,
+        radius:      isBoss ? 33 : 13, // 보스 반지름 22 → 33 (일반의 1.5배 × 1.5 스케일)
         wDx: Math.cos(Math.random() * Math.PI * 2),
         wDy: Math.sin(Math.random() * Math.PI * 2),
         wTimer: Math.random() * 3000,
