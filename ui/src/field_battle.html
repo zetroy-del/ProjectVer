@@ -3129,9 +3129,19 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">5월</span>
-                <span class="pn-month-count">63건</span>
+                <span class="pn-month-count">64건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-05-07 14:58 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">14:58</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 능력치 스케일링 기준 변경 — 스탯 레벨(calcMonsterStatLevel 결과) → 영혼 레벨(soul level = 스테이지 번호) 기반으로 전환. calcMonsterStats(soulLv) 함수 파라미터 변경. 모든 호출부(spawnMonster·doAttack·monsterAttack·advanceStage·resetAllMonsters·reviveMonster·renderMonsterInfo·설정 적용) 9곳 일괄 수정. m.level은 표시 전용으로 유지, m.soulLevel이 실제 능력치 스케일링 기준</li>
+            </ul>
 
             <!-- ── 2026-05-07 14:50 ── -->
             <div class="pn-ver">
@@ -4451,12 +4461,12 @@ function buildMonsterBaseStats() {
     };
 }
 
-// 몬스터 능력치 계산 — 레벨·보스 여부에 따른 스케일링 적용
-// 공격속도·이동속도는 레벨 스케일 없음 (설계 의도: 절대 레벨에 의해 상승 금지)
-function calcMonsterStats(lv, isBoss = false) {
+// 몬스터 능력치 계산 — 영혼 레벨(soul level = 스테이지 번호)·보스 여부에 따른 스케일링 적용
+// 공격속도·이동속도는 영혼 레벨 스케일 없음 (설계 의도: 절대값으로 고정)
+function calcMonsterStats(soulLv, isBoss = false) {
     if (!MONSTER_BASE_LV1) buildMonsterBaseStats();
     const b    = MONSTER_BASE_LV1;
-    const mult = 1 + (lv - 1) * 0.1;                          // 레벨 배율: lv1=1.0, lv2=1.1…
+    const mult = 1 + (soulLv - 1) * 0.1;                      // 영혼 레벨 배율: SL1=1.0, SL2=1.1…
     const SC   = (base) => Math.floor(base * mult);            // 정수 스케일
     const SP   = (base) => Math.min(95, base * mult);          // 퍼센트 스케일 (95% 상한)
 
@@ -5560,16 +5570,16 @@ function spawnMonster(level, avoidCenter = true, isBoss = false) {
         );
     }
 
-    // 영혼 레벨(soul level) = 현재 monsterSoulLevel; 스탯 레벨 = calcMonsterStatLevel(soulLevel)
-    const statLv    = isBoss ? level : calcMonsterStatLevel(monsterSoulLevel);
-    const mStats    = calcMonsterStats(statLv, isBoss);
+    // 영혼 레벨(soul level) = 현재 monsterSoulLevel; 스탯 레벨은 표시 전용
+    const statLv    = calcMonsterStatLevel(monsterSoulLevel); // 표시용 스탯 레벨
+    const mStats    = calcMonsterStats(monsterSoulLevel, isBoss); // 영혼 레벨 기반 스케일링
     const maxHP     = mStats.maxHP;
     const corr      = ATTACK_SPEED_CORRECTION || 2000;
     const atkSpeedMs = Math.max(100, Math.round(1000 / (mStats.attackSpeed / corr)));
     return {
         x, y,
-        soulLevel: isBoss ? monsterSoulLevel : monsterSoulLevel, // 영혼 레벨 (항상 monsterSoulLevel)
-        level: statLv,  // 스탯 레벨 (규칙 적용 후)
+        soulLevel: monsterSoulLevel, // 영혼 레벨 (= 스테이지 번호, 능력치 스케일링 기준)
+        level: statLv,               // 스탯 레벨 (표시 전용 — 능력치 계산에는 미사용)
         isBoss,
         maxHP,
         hp:          maxHP,
@@ -6018,7 +6028,7 @@ function findNearest() {
 // 캐릭터 → 몬스터 공격
 function doAttack(m) {
     const cStats  = calcCharStats(character.level);
-    const mStats  = calcMonsterStats(m.level, m.isBoss);
+    const mStats  = calcMonsterStats(m.soulLevel, m.isBoss);
     const atkType = character.normalAtkType || 'melee'; // 평타 공격 타입
     const b       = getAtkBundle(cStats, mStats, atkType); // 타입별 스탯 묶음
 
@@ -6111,7 +6121,7 @@ function doAttack(m) {
 // 몬스터 → 캐릭터 반격
 function monsterAttack(m) {
     const cStats = calcCharStats(character.level);
-    const mStats = calcMonsterStats(m.level, m.isBoss);
+    const mStats = calcMonsterStats(m.soulLevel, m.isBoss);
 
     // ── 명중 판정 (공격자=Monster PVP 명중 vs 방어자=PC 근거리 회피)
     if (!judgeHit(mStats.pvpMeleeAccuracy, cStats.meleeEvasion)) {
@@ -6312,7 +6322,7 @@ function advanceStage() {
         if (monsters[i].isBoss) { monsters.splice(i, 1); }
     }
     // 살아있는 일반 몬스터 영혼 레벨·스탯 레벨·HP·속도 갱신
-    const _nxtMSt  = calcMonsterStats(monLv, false);
+    const _nxtMSt  = calcMonsterStats(monSL, false);
     const _nxtCorr = ATTACK_SPEED_CORRECTION || 2000;
     for (const m of monsters) {
         if (!m.isDead) {
@@ -6346,7 +6356,7 @@ function resetAllMonsters() {
     for (let i = monsters.length - 1; i >= 0; i--) {
         if (monsters[i].isBoss) monsters.splice(i, 1);
     }
-    const _rstMSt  = calcMonsterStats(monLv, false);
+    const _rstMSt  = calcMonsterStats(monSL, false);
     const _rstCorr = ATTACK_SPEED_CORRECTION || 2000;
     for (const m of monsters) {
         m.isDead = false; m.respawnLeft = 0;
@@ -6384,7 +6394,7 @@ function reviveMonster(m) {
 
     const monSL   = monsterSoulLevel;
     const monLv   = calcMonsterStatLevel(monSL);
-    const _rvMSt  = calcMonsterStats(monLv, false);
+    const _rvMSt  = calcMonsterStats(monSL, false);
     const _rvCorr = ATTACK_SPEED_CORRECTION || 2000;
     m.x = x; m.y = y;
     m.spawnX      = x; m.spawnY = y; // 로밍 기준점 갱신
@@ -7776,9 +7786,9 @@ function switchMonInfoSection(sec) {
 function renderMonsterInfo() {
     const raw    = parseInt(document.getElementById('moninfo-stage-input').value, 10);
     const stage  = isNaN(raw) || raw < 1 ? 1 : Math.min(raw, 1000000);
-    const lv     = calcMonsterStatLevel(stage);
+    const lv     = calcMonsterStatLevel(stage); // 표시 전용 스탯 레벨
     const isBoss = (_monInfoTab === 'boss');
-    const s      = calcMonsterStats(lv, isBoss);
+    const s      = calcMonsterStats(stage, isBoss); // 영혼 레벨(= 스테이지 번호) 기반 스케일링
 
     const hp        = s.maxHP;
     const isCurrent = (stage === currentStage);
@@ -9111,8 +9121,9 @@ function applyMonLevelScaleRules() {
     const corr = ATTACK_SPEED_CORRECTION || 2000;
     for (const m of monsters) {
         if (!m.isBoss) {
-            const newLv = calcMonsterStatLevel(m.soulLevel || monsterSoulLevel);
-            const ms    = calcMonsterStats(newLv, false);
+            const sl    = m.soulLevel || monsterSoulLevel;
+            const newLv = calcMonsterStatLevel(sl); // 표시용 스탯 레벨
+            const ms    = calcMonsterStats(sl, false); // 영혼 레벨 기반 스케일링
             m.level       = newLv;
             m.maxHP       = ms.maxHP;
             m.hp          = Math.min(m.hp, m.maxHP);
