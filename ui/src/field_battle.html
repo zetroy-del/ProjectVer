@@ -731,6 +731,10 @@ body {
 #ab-combat { border-color: #6e3434; }
 #ab-combat:hover { border-color: #f85149; background: rgba(45, 20, 20, 0.9); }
 #ab-combat .ab-label { color: #f85149; }
+/* 도감 버튼 */
+#ab-codex { border-color: #1e3a5f; }
+#ab-codex:hover { border-color: #4fc3f7; background: rgba(10, 30, 50, 0.9); }
+#ab-codex .ab-label { color: #4fc3f7; }
 /* 인벤토리 버튼 */
 #ab-inventory { border-color: #9e6a03; }
 #ab-inventory:hover { border-color: #d29922; background: rgba(45, 35, 10, 0.9); }
@@ -1003,10 +1007,12 @@ body {
 /* ══════════════════════════════════════════
    인벤토리 팝업
 ══════════════════════════════════════════ */
-.inv-modal {
-    width: 720px;
+/* .limit-modal.inv-modal: 두 클래스 결합(특이도 0-2-0)으로 .limit-modal(0-1-0)의 width/max-width/max-height를 확실하게 덮어씀 */
+.limit-modal.inv-modal {
+    width: 520px;
     max-width: 98vw;
-    max-height: none; /* 본문 고정 높이로 크기가 결정됨 */
+    max-height: 90vh;
+    overflow: hidden;
 }
 .inv-tabs {
     display: flex;
@@ -1044,15 +1050,16 @@ body {
 }
 .inv-info-bar .inv-count { color: #e6edf3; }
 .inv-body {
-    /* 10행 × 52px + 9gap × 4px + 상하 패딩 20px = 576px */
-    height: 576px;
-    overflow-y: auto;
-    padding: 10px 12px;
+    /* 8행 × 52px + 7gap × 4px + 상하 패딩 20px = 464px — 항상 8행 고정 표시 */
+    height: 464px;
     flex-shrink: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 10px 12px;
 }
 .inv-grid {
     display: grid;
-    grid-template-columns: repeat(10, 52px);
+    grid-template-columns: repeat(5, 52px);
     gap: 4px;
     justify-content: start;
 }
@@ -1075,6 +1082,58 @@ body {
 .inv-slot.occupied:hover { border-color: #58a6ff; background: #161b22; }
 .inv-slot.equipment { border-color: #2d4a2d; }
 .inv-slot.equipment:hover { border-color: #3fb950; }
+/* 분해 모드 — 선택된 슬롯 */
+.inv-slot.dis-selected {
+    border-color: #f85149 !important;
+    background: rgba(248, 81, 73, 0.18) !important;
+}
+.inv-slot.dis-selected:hover { border-color: #f85149 !important; }
+/* 분해 모드 — 착용중이라 선택 불가 */
+.inv-slot.dis-locked { opacity: 0.4; cursor: not-allowed !important; }
+/* 분해 모드 — 체크 표시 */
+.dis-check {
+    position: absolute;
+    top: 2px; right: 4px;
+    font-size: 13px;
+    color: #f85149;
+    font-weight: bold;
+    line-height: 1;
+    pointer-events: none;
+}
+/* 분해 모드 토글 버튼 */
+.inv-tab.dis-toggle {
+    margin-left: auto;
+    color: #8b949e;
+    border-color: transparent;
+}
+.inv-tab.dis-toggle:hover { color: #f85149; background: rgba(248,81,73,0.10); }
+.inv-tab.dis-toggle.active { color: #fff; background: #f85149; border-color: #f85149; }
+/* 분해 모드 하단 액션 바 */
+.inv-dis-bar {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #0d1117;
+    border-top: 2px solid #f85149;
+    flex-shrink: 0;
+}
+.inv-dis-bar.active { display: flex; }
+.inv-dis-count { font-size: 15px; color: #8b949e; }
+.inv-dis-count strong { color: #f85149; }
+.inv-dis-btn-row { display: flex; gap: 8px; align-items: center; }
+.inv-dis-btn {
+    padding: 4px 13px;
+    font-size: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.inv-dis-btn.ghost { background: transparent; color: #8b949e; border: 1px solid #30363d; }
+.inv-dis-btn.ghost:hover { color: #c9d1d9; border-color: #8b949e; }
+.inv-dis-btn.exec { background: #f85149; color: #fff; border: 1px solid #f85149; }
+.inv-dis-btn.exec:hover { background: #da3633; }
+.inv-dis-btn.exec:disabled { background: #21262d; color: #484f58; border-color: #21262d; cursor: default; }
 .inv-slot .inv-qty {
     position: absolute;
     bottom: 2px;
@@ -1091,6 +1150,301 @@ body {
     font-size: 15px;
     padding: 40px 0;
 }
+
+/* ── 인벤토리 + 장비 슬롯 나란히 배치 ── */
+.inv-main-body {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;   /* 자식이 경계 밖으로 나오지 않도록 차단 */
+}
+/* 장비 슬롯 패널 (왼쪽) */
+.eq-panel {
+    /* 3열 그리드(164) + eq-group 패딩(16) + border(2) + eq-panel 패딩(16) = 198 → 200으로 여유 확보 */
+    width: 200px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 8px;
+    border-right: 1px solid #21262d;
+    overflow-y: auto;
+    background: #0d1117;
+}
+/* 슬롯 그룹 박스 */
+.eq-group {
+    background: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 6px;
+    padding: 8px;
+}
+.eq-group-title {
+    font-size: 15px;
+    color: #8b949e;
+    text-align: center;
+    padding-bottom: 5px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #21262d;
+    letter-spacing: 0.3px;
+}
+/* 2열 그리드 (무기 + 방어구) */
+.eq-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 52px);
+    gap: 4px;
+    justify-content: center;
+}
+/* 3열 그리드 (장신구) */
+.eq-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 52px);
+    gap: 4px;
+    justify-content: center;
+}
+/* 장비 착용 슬롯 (인벤토리 슬롯과 동일 크기) */
+.eq-slot {
+    width: 52px;
+    height: 52px;
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: default;
+    transition: border-color 0.12s;
+    overflow: hidden;
+}
+.eq-slot-icon {
+    font-size: 20px;
+    line-height: 1;
+    opacity: 0.3;
+}
+.eq-slot-label {
+    font-size: 15px;
+    color: #484f58;
+    line-height: 1;
+    margin-top: 2px;
+    white-space: nowrap;
+}
+/* 착용 중인 슬롯 */
+.eq-slot.occupied {
+    border-color: #388bfd;
+    cursor: pointer;
+    background: #1c2a3a;
+}
+.eq-slot.occupied:hover { border-color: #58a6ff; background: #1f3050; }
+.eq-slot.occupied .eq-slot-icon { opacity: 1; }
+.eq-slot.occupied .eq-slot-label { color: #58a6ff; }
+.inv-right-panel {
+    flex: 1;
+    min-width: 0;       /* flex shrink가 제대로 작동하도록 min-width 제거 */
+    min-height: 0;      /* 자식의 overflow-y: scroll이 작동하려면 필수 */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+/* 착용중 표시된 인벤토리 슬롯 */
+.inv-slot.inv-equipped {
+    border-color: #388bfd;
+    background: #1c2a3a;
+}
+.inv-slot.inv-equipped:hover { border-color: #58a6ff; background: #1f3050; }
+.inv-equipped-badge {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    font-size: 15px;
+    color: #58a6ff;
+    background: rgba(22, 27, 34, 0.88);
+    border-radius: 2px;
+    padding: 0 2px;
+    line-height: 1.2;
+    pointer-events: none;
+}
+
+/* ══════════════════════════════════════════
+   장비 도감 팝업
+══════════════════════════════════════════ */
+.limit-modal.codex-modal {
+    width: 520px;
+    max-width: 98vw;
+    max-height: 88vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.codex-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+.codex-sel-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.codex-sel-label {
+    color: #8b949e;
+    font-size: 15px;
+    width: 52px;
+    flex-shrink: 0;
+}
+/* 파츠·등급 버튼 그룹 */
+.codex-group-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.codex-group-label {
+    color: #8b949e;
+    font-size: 15px;
+}
+.codex-btn-group {
+    display: grid;
+    gap: 4px;
+}
+/* 파츠 그룹 섹션 */
+.codex-part-section { display: flex; flex-direction: column; gap: 6px; }
+.codex-part-header {
+    font-size: 15px;
+    color: #58a6ff;
+    font-weight: bold;
+    padding: 4px 0 2px;
+    border-bottom: 1px solid #21262d;
+}
+/* 그룹별 열 수: 무기 3열, 방어구 4열, 장신구 3열 */
+.codex-weapon-group    { grid-template-columns: repeat(3, 1fr); }
+.codex-armor-group     { grid-template-columns: repeat(4, 1fr); }
+.codex-accessory-group { grid-template-columns: repeat(3, 1fr); }
+.codex-grade-group { grid-template-columns: repeat(5, 1fr); }
+.codex-sel-btn {
+    padding: 5px 4px;
+    font-size: 15px;
+    background: #161b22;
+    color: #8b949e;
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+.codex-sel-btn:hover { color: #c9d1d9; background: #1c2128; border-color: #8b949e; }
+.codex-sel-btn.active { background: #1a2d4a; color: #58a6ff; border-color: #58a6ff; }
+.codex-power-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.codex-power-row input[type=range] {
+    flex: 1;
+    accent-color: #58a6ff;
+}
+.codex-power-num {
+    width: 56px;
+    text-align: right;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    color: #c9d1d9;
+    font-size: 15px;
+    padding: 2px 6px;
+}
+/* 위력 빠른 조정 버튼 행 */
+.codex-power-btns {
+    display: flex;
+    gap: 5px;
+    padding-left: 46px; /* 왼쪽 '위력' 라벨 너비만큼 들여쓰기 */
+}
+.codex-pbtn {
+    flex: 1;
+    padding: 3px 0;
+    font-size: 15px;
+    background: #161b22;
+    color: #8b949e;
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.codex-pbtn:hover { color: #c9d1d9; border-color: #58a6ff; background: #1c2128; }
+.codex-pbtn.codex-pbtn-edge { color: #58a6ff; border-color: #58a6ff55; }
+.codex-pbtn.codex-pbtn-edge:hover { background: rgba(88,166,255,0.12); }
+.codex-info {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 12px;
+}
+.codex-item-name {
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.codex-grade-badge {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #21262d;
+    margin-bottom: 6px;
+}
+.codex-divider {
+    border: none;
+    border-top: 1px solid #21262d;
+    margin: 6px 0;
+}
+.codex-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    padding: 2px 0;
+}
+.codex-stat-label { color: #8b949e; }
+.codex-stat-val   { color: #c9d1d9; font-weight: bold; }
+.codex-restriction {
+    font-size: 15px;
+    color: #f85149;
+    margin-top: 6px;
+}
+.codex-class-ok { color: #7ee787; }
+.codex-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+.codex-add-btn {
+    background: #1f6feb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 15px;
+    cursor: pointer;
+}
+.codex-add-btn:hover { background: #388bfd; }
+.codex-add-btn:disabled { background: #21262d; color: #8b949e; cursor: default; }
+.codex-close-btn {
+    background: transparent;
+    color: #8b949e;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 15px;
+    cursor: pointer;
+}
+.codex-close-btn:hover { color: #c9d1d9; border-color: #8b949e; }
 
 /* ══════════════════════════════════════════
    레벨 능력치 설정 팝업
@@ -1592,6 +1946,16 @@ body {
 }
 .mon-lv-input:focus { outline: none; border-color: #ff6633; }
 .mon-range-label { font-size: 15px; color: #6e7681; }
+.mon-step-btn {
+    background: #1a1e27; border: 1px solid #30363d; border-radius: 4px;
+    color: #c9d1d9; font-size: 15px; padding: 4px 9px; cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+}
+.mon-step-btn:hover { background: #2a2e3a; border-color: #8b949e; }
+.mon-step-btn.mon-step-edge { color: #79c0ff; border-color: #1f6feb; }
+.mon-step-btn.mon-step-edge:hover { background: #1f2d3d; }
+.mon-step-btn.mon-step-current { color: #ff9966; border-color: #cc3300; background: #1f1510; }
+.mon-step-btn.mon-step-current:hover { background: #2a1a0d; }
 .mon-tabs {
     display: flex;
     gap: 4px;
@@ -1613,6 +1977,86 @@ body {
 .mon-tab:hover { color: #e6edf3; }
 .mon-tab.active { color: #ff9966; border-bottom-color: #ff6633; font-weight: bold; }
 .mon-tab.boss-tab.active { color: #ff4444; border-bottom-color: #cc0000; }
+
+/* ── 스테이지 공략 정보 모달 ─────────────────────────────────────────────── */
+.sg-modal { width: 1200px; max-width: 96vw; max-height: 88vh; display: flex; flex-direction: column; }
+.sg-stage-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-bottom: 1px solid #21262d; flex-shrink: 0; flex-wrap: wrap;
+}
+.sg-stage-label { font-size: 15px; color: #8b949e; white-space: nowrap; }
+.sg-stage-input {
+    width: 90px; background: #0d1117; border: 1px solid #30363d; border-radius: 5px;
+    color: #e6edf3; font-size: 15px; padding: 4px 8px; text-align: center;
+}
+.sg-stage-input:focus { outline: none; border-color: #6d4ac8; }
+.sg-btn {
+    background: #1f2430; border: 1px solid #30363d; border-radius: 5px;
+    color: #a78bfa; font-size: 15px; padding: 4px 10px; cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+}
+.sg-btn:hover { background: #2d2a4a; border-color: #a78bfa; }
+.sg-btn.sg-btn-edge { color: #79c0ff; border-color: #1f6feb; }
+.sg-btn.sg-btn-edge:hover { background: #1f2d3d; }
+.sg-btn.sg-btn-current { color: #ff9966; border-color: #cc3300; background: #1f1510; }
+.sg-btn.sg-btn-current:hover { background: #2a1a0d; }
+.sg-body { overflow-y: auto; flex: 1; padding: 12px 18px; }
+.sg-section-title {
+    font-size: 15px; font-weight: bold; color: #a78bfa;
+    border-bottom: 1px solid #30363d; margin: 12px 0 8px; padding-bottom: 4px;
+}
+.sg-info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 4px; }
+.sg-info-card {
+    background: #0d1117; border: 1px solid #21262d; border-radius: 7px;
+    padding: 9px 12px; text-align: center;
+}
+.sg-info-card-label { font-size: 15px; color: #8b949e; margin-bottom: 3px; }
+.sg-info-card-val { font-size: 17px; font-weight: bold; color: #e6edf3; }
+.sg-eq-grid { display: flex; gap: 4px; flex-wrap: nowrap; margin-bottom: 6px; overflow-x: auto; }
+.sg-eq-item {
+    background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+    padding: 7px 4px; text-align: center; cursor: pointer; flex: 1; min-width: 0;
+    transition: border-color 0.15s, background 0.15s;
+}
+.sg-eq-item:hover, .sg-eq-item.active { border-color: #a78bfa; background: #1a1a2e; }
+.sg-eq-item.type-acc { background: #0a1010; border-color: #1e3830; }
+.sg-eq-item.type-acc:hover, .sg-eq-item.type-acc.active { border-color: #30d0a0; background: #0a1f1a; }
+.sg-eq-cls  { font-size: 15px; color: #a78bfa; font-weight: bold; margin-bottom: 2px; }
+.sg-eq-item.type-acc .sg-eq-cls { color: #30d0a0; }
+.sg-eq-icon { font-size: 22px; margin-bottom: 2px; }
+.sg-eq-name  { font-size: 15px; color: #8b949e; }
+.sg-eq-grade { font-size: 15px; font-weight: bold; }
+.sg-eq-detail {
+    background: #0d1117; border: 1px solid #6d4ac8; border-radius: 7px;
+    padding: 10px 14px; margin-bottom: 8px;
+}
+.sg-eq-stat-row {
+    display: flex; justify-content: space-between;
+    padding: 4px 0; border-bottom: 1px solid #21262d; font-size: 15px;
+}
+.sg-eq-stat-row:last-child { border-bottom: none; }
+.sg-eq-stat-lbl { color: #8b949e; }
+.sg-eq-stat-val { color: #e6edf3; font-weight: bold; }
+.sg-dps-row {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: #0d1117; border: 1px solid #21262d; border-radius: 7px;
+    padding: 9px 14px; margin-bottom: 10px;
+}
+.sg-dps-label { font-size: 15px; color: #8b949e; }
+.sg-dps-val   { font-size: 17px; font-weight: bold; color: #79c0ff; }
+.sg-dps-note  { font-size: 15px; color: #484f58; margin-left: auto; }
+.sg-round-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.sg-round-table th {
+    background: #161b22; color: #8b949e; padding: 7px 10px;
+    border: 1px solid #21262d; text-align: center; font-weight: bold;
+}
+.sg-round-table td {
+    padding: 6px 10px; border: 1px solid #21262d;
+    text-align: center; color: #e6edf3;
+}
+.sg-round-table tr.sg-boss-row td { background: #1a0000; color: #ff6666; }
+.sg-round-table tr:nth-child(even):not(.sg-boss-row) td { background: #0f1117; }
+
 .mon-body {
     overflow-y: auto;
     flex: 1;
@@ -2268,6 +2712,10 @@ body {
                 </div>
                 <!-- 메인 버튼 행 (가로: 가방 → 귀환/재개 → 설정) -->
                 <div id="ab-main-row">
+                    <button class="ab-btn" id="ab-codex" onclick="openCodex()" title="장비 도감 열기">
+                        <span class="ab-icon">📖</span>
+                        <span class="ab-label">도감</span>
+                    </button>
                     <button class="ab-btn" id="ab-inventory" onclick="openInventory()" title="인벤토리 열기 (I키)">
                         <span class="ab-icon">🎒</span>
                         <span class="ab-label">가방</span>
@@ -2343,8 +2791,12 @@ body {
                 <span class="lbl">리스폰 대기</span>
                 <span class="val red" id="s-dead">0</span>
             </div>
+            <button class="btn-full" onclick="openStageGuide()"
+                    style="background:#1a2030;color:#a78bfa;border:1px solid #6d4ac8;margin-top:6px;">
+                🗺 스테이지 공략 정보
+            </button>
             <button class="btn-full" onclick="openMonsterInfo()"
-                    style="background:#1a1a2e;color:#ff9966;border:1px solid #cc3300;margin-top:6px;">
+                    style="background:#1a1a2e;color:#ff9966;border:1px solid #cc3300;margin-top:4px;">
                 👾 몬스터 정보 조회
             </button>
             <button class="btn-full" onclick="openMonsterSettingsModal()"
@@ -2953,6 +3405,36 @@ body {
 <!-- ================================================================
      몬스터 정보 조회 팝업
 ================================================================ -->
+<!-- ────── 스테이지 공략 정보 모달 ────── -->
+<div id="stageguide-overlay" class="limit-overlay">
+    <div class="limit-modal sg-modal">
+
+        <div class="limit-header">
+            <span class="limit-title" style="color:#a78bfa;">🗺 스테이지 공략 정보</span>
+            <button class="limit-close" onclick="closeStageGuide()">✕</button>
+        </div>
+
+        <!-- 스테이지 선택 + 빠른 이동 버튼 -->
+        <div class="sg-stage-row">
+            <span class="sg-stage-label">조회 스테이지</span>
+            <button class="sg-btn sg-btn-edge" onclick="sgSetMin()">MIN</button>
+            <button class="sg-btn" onclick="sgChangeStage(-10)">-10</button>
+            <button class="sg-btn" onclick="sgChangeStage(-1)">-1</button>
+            <input id="sg-stage-input" class="sg-stage-input"
+                   type="number" min="1" max="4615" value="1"
+                   oninput="sgInputChanged()">
+            <button class="sg-btn" onclick="sgChangeStage(1)">+1</button>
+            <button class="sg-btn" onclick="sgChangeStage(10)">+10</button>
+            <button class="sg-btn sg-btn-edge" onclick="sgSetMax()">MAX</button>
+            <button class="sg-btn sg-btn-current" onclick="sgSetCurrentStage()">현재 스테이지</button>
+        </div>
+
+        <!-- 본문 (renderStageGuide()로 채워짐) -->
+        <div class="sg-body" id="sg-body"></div>
+
+    </div>
+</div>
+
 <div id="moninfo-overlay" class="limit-overlay">
     <div class="limit-modal mon-modal">
 
@@ -2961,15 +3443,19 @@ body {
             <button class="limit-close" onclick="closeMonsterInfo()">✕</button>
         </div>
 
-        <!-- 스테이지 번호 입력 -->
+        <!-- 스테이지 번호 입력 + 빠른 조정 버튼 -->
         <div class="mon-search-row">
-            <span class="mon-lv-label">조회 스테이지 번호</span>
+            <span class="mon-lv-label">조회 스테이지</span>
+            <button class="mon-step-btn mon-step-edge" onclick="monInfoSetMin()">MIN</button>
+            <button class="mon-step-btn" onclick="monInfoStep(-10)">-10</button>
+            <button class="mon-step-btn" onclick="monInfoStep(-1)">-1</button>
             <input id="moninfo-stage-input" class="mon-lv-input"
                    type="number" min="1" max="1000000" value="1"
                    oninput="renderMonsterInfo()">
-            <button class="btn" style="background:#1f2d3d;color:#ff9966;border:1px solid #cc3300;padding:4px 10px;border-radius:4px;font-size:15px;cursor:pointer;"
-                    onclick="setMonInfoToCurrentStage()">현재 스테이지</button>
-            <span class="mon-range-label">범위: 1 ~ 1,000,000</span>
+            <button class="mon-step-btn" onclick="monInfoStep(1)">+1</button>
+            <button class="mon-step-btn" onclick="monInfoStep(10)">+10</button>
+            <button class="mon-step-btn mon-step-edge" onclick="monInfoSetMax()">MAX</button>
+            <button class="mon-step-btn mon-step-current" onclick="setMonInfoToCurrentStage()">현재 스테이지</button>
         </div>
 
         <!-- 일반 / 보스 탭 -->
@@ -3092,21 +3578,117 @@ body {
             <span class="limit-title" style="color:#d29922;">🎒 인벤토리</span>
             <button class="limit-close" onclick="closeInventory()">✕</button>
         </div>
-        <!-- 탭 -->
-        <div class="inv-tabs">
-            <button class="inv-tab active" id="invtab-all"       onclick="switchInvTab('all')">전체</button>
-            <button class="inv-tab"        id="invtab-equipment" onclick="switchInvTab('equipment')">장비</button>
-            <button class="inv-tab"        id="invtab-misc"      onclick="switchInvTab('misc')">기타</button>
+        <!-- 메인 본문: 장비 슬롯(왼쪽) + 인벤토리(오른쪽) -->
+        <div class="inv-main-body">
+
+            <!-- ── 왼쪽: 장비 착용 슬롯 패널 ── -->
+            <div class="eq-panel" id="eq-panel">
+
+                <!-- 그룹 1: 무기 + 방어구 (2열 × 4행) -->
+                <div class="eq-group">
+                    <div class="eq-group-title">⚔ 무기 · 방어구</div>
+                    <div class="eq-grid-2" id="eq-grid-armor">
+                        <!-- JS renderEquipPanel()로 채워짐 -->
+                    </div>
+                </div>
+
+                <!-- 그룹 2: 장신구 (3열 × 3행) -->
+                <div class="eq-group">
+                    <div class="eq-group-title">💍 장신구</div>
+                    <div class="eq-grid-3" id="eq-grid-acc">
+                        <!-- JS renderEquipPanel()로 채워짐 -->
+                    </div>
+                </div>
+
+            </div><!-- /eq-panel -->
+
+            <!-- ── 오른쪽: 인벤토리 탭 + 격자 ── -->
+            <div class="inv-right-panel">
+                <!-- 탭 -->
+                <div class="inv-tabs">
+                    <button class="inv-tab active" id="invtab-all"       onclick="switchInvTab('all')">전체</button>
+                    <button class="inv-tab"        id="invtab-equipment" onclick="switchInvTab('equipment')">장비</button>
+                    <button class="inv-tab"        id="invtab-misc"      onclick="switchInvTab('misc')">기타</button>
+                    <button class="inv-tab dis-toggle" id="invtab-dis" onclick="toggleInvDisMode()" title="분해 모드 켜기/끄기">🔨 분해</button>
+                </div>
+                <!-- 정보 바 -->
+                <div class="inv-info-bar">
+                    <span>보유 아이템: <span class="inv-count" id="inv-item-count">0</span> / <span class="inv-count">500</span></span>
+                    <span id="inv-tab-label" style="color:#8b949e;">전체</span>
+                </div>
+                <!-- 격자 영역 -->
+                <div class="inv-body">
+                    <div class="inv-grid" id="inv-grid">
+                        <!-- JS renderInventory()로 채워짐 -->
+                    </div>
+                </div>
+                <!-- 분해 모드 액션 바 (분해 모드일 때만 표시) -->
+                <div class="inv-dis-bar" id="inv-dis-bar">
+                    <span class="inv-dis-count"><strong id="inv-dis-count">0</strong>개 선택됨</span>
+                    <div class="inv-dis-btn-row">
+                        <button class="inv-dis-btn ghost" onclick="selectAllDisassemble()">전체 선택</button>
+                        <button class="inv-dis-btn ghost" onclick="clearDisassembleSelect()">전체 해제</button>
+                        <button class="inv-dis-btn exec" id="inv-dis-exec" onclick="doDisassemble()" disabled>분해하기</button>
+                    </div>
+                </div>
+            </div><!-- /inv-right-panel -->
+
+        </div><!-- /inv-main-body -->
+    </div>
+</div>
+
+<!-- ================================================================
+     장비 도감 팝업
+================================================================ -->
+<div id="codex-overlay" class="limit-overlay">
+    <div class="limit-modal codex-modal">
+        <div class="limit-header">
+            <span class="limit-title" style="color:#4fc3f7;">📖 장비 도감</span>
+            <button class="limit-close" onclick="closeCodex()">✕</button>
         </div>
-        <!-- 정보 바 -->
-        <div class="inv-info-bar">
-            <span>보유 아이템: <span class="inv-count" id="inv-item-count">0</span> / <span class="inv-count">500</span></span>
-            <span id="inv-tab-label" style="color:#8b949e;">전체</span>
-        </div>
-        <!-- 격자 영역 -->
-        <div class="inv-body">
-            <div class="inv-grid" id="inv-grid">
-                <!-- JS로 채워짐 -->
+        <div class="codex-body">
+            <!-- 파츠 선택 -->
+            <div class="codex-group-block">
+                <span class="codex-group-label">파츠</span>
+                <div class="codex-part-section" id="codex-part-section">
+                    <!-- JS openCodex()로 채워짐 -->
+                </div>
+            </div>
+            <!-- 등급 선택 -->
+            <div class="codex-group-block">
+                <span class="codex-group-label">등급</span>
+                <div class="codex-btn-group codex-grade-group" id="codex-grade-group">
+                    <!-- JS openCodex()로 채워짐 -->
+                </div>
+            </div>
+            <!-- 위력 슬라이더 -->
+            <div class="codex-sel-row">
+                <span class="codex-sel-label">위력</span>
+                <div class="codex-power-row" style="flex:1;">
+                    <input type="range" id="codex-power-slider" min="1" max="355" value="1"
+                        oninput="syncCodexPower('slider')">
+                    <input type="number" id="codex-power-num" class="codex-power-num"
+                        min="1" max="355" value="1"
+                        onchange="syncCodexPower('num')">
+                </div>
+            </div>
+            <!-- 위력 빠른 조정 버튼 -->
+            <div class="codex-power-btns">
+                <button class="codex-pbtn codex-pbtn-edge" onclick="setCodexPower(1)">MIN</button>
+                <button class="codex-pbtn" onclick="adjustCodexPower(-10)">-10</button>
+                <button class="codex-pbtn" onclick="adjustCodexPower(-1)">-1</button>
+                <button class="codex-pbtn" onclick="adjustCodexPower(1)">+1</button>
+                <button class="codex-pbtn" onclick="adjustCodexPower(10)">+10</button>
+                <button class="codex-pbtn codex-pbtn-edge" onclick="setCodexPower(355)">MAX</button>
+            </div>
+            <!-- 아이템 정보 -->
+            <div class="codex-info" id="codex-info">
+                <!-- JS renderCodex()로 채워짐 -->
+            </div>
+            <!-- 버튼 -->
+            <div class="codex-actions">
+                <button class="codex-add-btn" id="codex-add-btn" onclick="codexAddToInventory()">인벤토리에 추가</button>
+                <button class="codex-close-btn" onclick="closeCodex()">닫기</button>
             </div>
         </div>
     </div>
@@ -3129,9 +3711,379 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">5월</span>
-                <span class="pn-month-count">64건</span>
+                <span class="pn-month-count">107건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-05-08 22:58 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">22:58</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 공략 정보 기준 장비 아이콘 UI 전면 개편 — ① 아이콘 버튼 4행 구조(클래스명/아이콘/무기명/등급명칭)로 변경. ② 장신구 9종(일반공격 각반·목걸이·귀걸이 / 치명타 팔찌·반지·브로치 / 스킬 견장·팔대·마스크) 아이콘 추가(무기 6 + 장신구 9 = 총 15개 한 줄 표시). ③ 모달 폭 740px → 1200px 확장. ④ 장신구 아이콘 녹색 계열 별도 배경 처리</li>
+            </ul>
+
+            <!-- ── 2026-05-08 22:43 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">22:43</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 공략 정보 장비 아이콘 기본 선택 변경 — 기존에는 아이콘 클릭 시에만 장비 능력치 표시. 모달 최초 오픈 시 나이트 무기(한손검+방패)가 항상 선택된 상태로 열림. 스테이지 변경 시 선택 상태 유지(기존: 변경 시 초기화)</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 공략 정보 장비 아이콘 목록 확장 — 기존 4종(한손검+방패·각반·목걸이·귀걸이)→ 6개 클래스 전용 무기(나이트 한손검+방패·워리어 양손대검·어쌔신 쌍수단검·아처 활·클레릭 오브·소서러 지팡이)로 교체</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 공략 정보 조회 스테이지 입력창 폭 확장 — 60px → 90px (최대 999,999 스테이지까지 숫자 가림 없이 표시)</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 HP 상승폭 완화 — STAGE_TIME_STEP 30초→3초 (기존의 10%). 스테이지 증가에 따른 HP 증가 속도를 대폭 줄여 난이도 곡선 완만화</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 방어력 장비 기반으로 재설계 — calcStageMonsterDef 신설: 해당 스테이지 기준 장비(방어구7+장신구9) 방어력 합산으로 근거리·원거리·마법 방어력을 산출. calcMonsterStats의 meleeDef·rangedDef·magicDef를 PVP 스탯 기반→장비 기반 방어력으로 교체</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>기준 DPS 전 클래스 평균으로 확장 — _calcRefDPS를 나이트 단독→6개 클래스(나이트/워리어/어쌔신/아처/클레릭/소서러) lv1 평균으로 변경. 스테이지 공략 정보 DPS 표를 클래스별 6행+평균 1행 테이블로 개편. 방어력 섹션 신설(근거리·원거리·마법 방어력 표시)</li>
+            </ul>
+
+            <!-- ── 2026-05-08 22:22 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">22:22</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>CLAUDE.md 몬스터 능력치 설계 규칙 수정 — ① 8-1: STAGE_EQUIPMENT_MAP 정렬 기준을 등급·위력 순서→DPS 오름차순(단조 증가 보장)으로 변경, 지연 초기화(lazy init) 방식 근거 추가. ② 8-4: 기준 장비를 무기1+장신구3→무기1+방어구7+장신구9 전체 착용으로 변경, DPS 공식 accAtk=×9로 갱신. ③ 8-7: 검증 예시 재계산(DPS 136→316, R1 HP 82→190, 보스 HP 4,080→9,480)</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 능력치 재설계 — ① DPS 기준 장비를 무기1+방어구7+장신구9 전부로 변경(장신구 9종 합산 accAtk=9×단일값). ② STAGE_EQUIPMENT_MAP을 DPS 오름차순 정렬 방식으로 교체하여 스테이지 증가시 단조 증가 보장. ③ 스테이지 공략 정보 모달 -1등급(−355)·+1등급(+355) 버튼 제거. DPS 표시 "장신구×3"→"장신구×9" 갱신</li>
+            </ul>
+
+            <!-- ── 2026-05-08 21:59 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">21:59</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>CLAUDE.md 스테이지 공략 모달 동기화 규칙 신설 (섹션 8-6) — 자동 반영 항목(STAGE_EQUIPMENT_MAP·STAGE_TIME_BASE 등)과 수동 체크 필수 하드코딩 목록(입력 max 속성·범위 레이블·클램핑·총스테이지 표시) 명시. 몬스터 설계 기준 변경 시 체크리스트로 활용</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 공략 정보 모달 최신화 — ① 총 스테이지 표시 "N / 39" 하드코딩 → "N / STAGE_EQUIPMENT_MAP.length"로 교체(자동 반영). ② 내비게이션 버튼 확장: ◀/▶ 단독→ MIN · -1등급(-355) · -10 · -1 · +1 · +10 · +1등급(+355) · MAX · 현재 스테이지 배열. MIN·MAX 파란 강조, 현재 스테이지 주황 강조</li>
+            </ul>
+
+            <!-- ── 2026-05-08 19:05 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">19:05</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>몬스터 설계 기준 변경 CLAUDE.md 반영 — 섹션 8-1: 스테이지 39개→4,615개(등급 0~12 × 위력 1~355 전체), 공식 gradeIdx=floor((stage-1)/355)·power=((stage-1)%355)+1. 섹션 8-2: 시작 클리어 시간 5분(300초)→2분(120초). 섹션 8-6 검증 예시 갱신(R1 HP 204→82, 보스 HP 10,200→4,080)</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>몬스터 능력치 전체 재설계 — STAGE_EQUIPMENT_MAP을 위력 [1,50,100] 3단계→1~355 전 단계(4,615개)로 확장. STAGE_TIME_BASE 300→120. 스테이지 공략 모달 입력 범위 39→4,615 갱신. 각 스테이지의 몬스터 HP가 해당 스테이지 위력의 장비 기준 DPS에 정확히 대응</li>
+            </ul>
+
+            <!-- ── 2026-05-08 19:00 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">19:00</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>몬스터 정보 조회 스테이지 버튼 개선 — 기존 "현재 스테이지" 버튼 단독에서 MIN · -10 · -1 · [입력] · +1 · +10 · MAX · 현재 스테이지 버튼 배열로 확장. MIN·MAX는 파란 테두리, 현재 스테이지는 주황 테두리로 구분. monInfoStep(delta)·monInfoSetMin()·monInfoSetMax() 함수 신규 추가</li>
+            </ul>
+
+            <!-- ── 2026-05-08 18:52 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">18:52</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>몬스터 설계 규칙 CLAUDE.md 등록 — 39스테이지 장비 매핑(등급 0~12 × 위력 1/50/100), 스테이지 클리어 목표 시간(5분 + 30초/스테이지), 라운드별 시간 비율(R1=5%~R5=25%·보스=25%), 플레이어 기준 DPS 공식(나이트 lv1+한손검방패+장신구×3, APS=0.5), 몬스터 HP 역산 공식 문서화</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>스테이지 기반 몬스터 HP 재설계 — 기존 buildMonsterBaseStats 고정값 방식에서 calcStageMonsterHP(stage, isBoss, roundNum)으로 전환. 플레이어 DPS를 해당 스테이지 기준 장비로 역산하여 각 라운드 배정 시간에 딱 맞는 HP 설정. STAGE_EQUIPMENT_MAP(39개), STAGE_ROUND_RATIOS([0.05~0.25, 0.25]) 상수 추가</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 공략 정보 모달 추가 — 사이드바 "🗺 스테이지 공략 정보" 버튼 신규 추가. 모달에서 스테이지별 기준 장비(등급·위력), 클리어 목표 시간, 기준 DPS, 라운드별 몬스터 HP를 표 형태로 표시. 기준 장비 아이콘(한손검+방패·각반·목걸이·귀걸이) 클릭 시 능력치 펼치기 기능</li>
+            </ul>
+
+            <!-- ── 2026-05-08 15:24 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">15:24</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>장신구 방어력 기준값 재조정 — 타입별 3파츠 합산 1000→450으로 변경, 파츠별 컨셉 차등 제거. 파츠당 균등 150(450÷3). grade 12 목표값 900(150×600%), 위력 기준값 8(≈5%). grade 12 파츠당 방어력: 150+900=1050, 타입별 합=3150</li>
+            </ul>
+
+            <!-- ── 2026-05-08 15:18 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">15:18</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>장신구 기준 능력치 전면 재설계 — 공격력: PVE start 60·PVP start 6(무기 avg 기준), grade 보너스 PVE=30·PVP=6, 위력 기준값 PVE=3. 방어력: 타입별 3파츠 합=1000(방어구 기준) — 일반공격 그룹(greaves·necklace·earring)=메인 400, 치명타(bracelet·ring·brooch)=서브 350, 스킬(epaulette·armband·mask)=보조 250. grade 12 방어력 타입별 합=6000(600%), 위력 기준값 타입별 합=50(5%)</li>
+            </ul>
+
+            <!-- ── 2026-05-08 15:03 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">15:03</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>장신구 능력치 규칙 동기화 — PVE 공격력(일반/치명타/스킬): 무기 규칙과 동일하게 등급별 위력 스케일(grade 0=×1 ~ grade 12=×13) 적용. 방어력(근거리/원거리/마법): 방어구 규칙과 동일하게 grade 12 목표값(기준 25의 600%=150) 선형 보간 + 위력 기준값 1×스케일 적용. PVP 공격력은 기존과 동일(스케일 없음)</li>
+            </ul>
+
+            <!-- ── 2026-05-08 14:54 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">14:54</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>방어구 등급 보너스 재설계 — 등급 1단계 상승 시 기준 방어력(1000)의 50%씩 누적, 절대 등급(grade 12)에서 50%×12=600%(6000) 적용. EQ_ARMOR_GRADE12_BONUS 수치를 타입별 합=6000으로 전체 교체(기존 500). 파츠별 비율(컨셉)은 기본값과 동일하게 유지. grade 1=+500, grade 6=+3000, grade 12=+6000</li>
+            </ul>
+
+            <!-- ── 2026-05-08 14:36 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">14:36</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>방어구 등급 보너스 구조 개선 — grade 12에서 각 방어력 타입 누적 정확히 500 보장. 기존 grade당 고정 정수(×12=504) 방식에서 grade 12 목표값 직접 정의(EQ_ARMOR_GRADE12_BONUS) + 선형 보간(Math.round(목표값×등급/12)) 방식으로 변경. 모든 등급에서 정수 계산 보장, grade 12 합계 = 기준 방어력 1000의 정확히 50%</li>
+            </ul>
+
+            <!-- ── 2026-05-08 14:21 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">14:21</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>방어구 방어력 기준값 재설계 — 이전 "세 타입 합산=1000" 오류를 "각 타입별 7파츠 합산=1000"으로 수정. EQ_STAT_START: 근거리·원거리·마법 방어력 각각 1000(갑옷 메인 300/120/80 등). 등급 보너스: 타입별 grade당 합=42, grade 12 누적=504(≈50%). 위력 보너스: 타입별 grade 0 합=50(5%) → grade 12 합=650(65%). 코드 구조 유지, 수치만 재산출</li>
+            </ul>
+
+            <!-- ── 2026-05-08 14:15 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">14:15</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>방어구 7종 방어력 체계 전면 재설계 — ① 일반 등급·위력 1 착용 합산: 근거리+원거리+마법 방어력 총합=1000. 파츠별 컨셉: 갑옷·장갑·벨트=근거리 메인 / 부츠·망토=원거리 메인 / 투구·셔츠=마법 메인 (메인>서브>보조 수치 배분). ② 등급 보너스: grade당 합산 42, grade 12 누적 504(≈총합의 50%). ③ 위력 보너스: grade 0에서 총합 50(5%), grade 12에서 650(65%). PVE 공격력과 동일 스케일([1~13]) 적용</li>
+            </ul>
+
+            <!-- ── 2026-05-08 13:12 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">13:12</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>무기 PVE 위력 보너스 절대 등급 상향 및 전 등급 재조정 — 절대 등급 50%→65%로 상향. 배율 배열 [1, 2, 3, … , 13](스텝 1, 정수)으로 재설계. 등급별 위력 avg: 일반 3(5%) / 고급 6(10%) / 희귀 9(15%) / … / 절대 39(65%). 5% 균등 간격으로 정렬</li>
+            </ul>
+
+            <!-- ── 2026-05-08 12:56 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">12:56</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>무기 PVE 위력 보너스 등급별 차등 적용 — 기준 평균(60) 대비 일반 등급(grade 0) 5%=avg 3, 절대 등급(grade 12) 50%=avg 30. 13단계 선형 배율(1.00→10.00, 스텝 0.75): 일반 3 / 고급 5.25 / 희귀 7.5 / … / 절대 30. PVP 및 방어력 위력 보너스는 기존과 동일(등급 불문 고정)</li>
+            </ul>
+
+            <!-- ── 2026-05-08 12:38 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">12:38</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>무기 등급 보너스 대폭 상향 — EQ_GRADE_BONUS 수정. PVE: Min 8→24·Max 14→36(등급당 평균 11→30). PVP: Min 2→4·Max 4→8(등급당 평균 3→6). 근거리·원거리·마법 공격력 3계열 동일 적용. 등급 상승에 따른 공격력 성장감 대폭 강화</li>
+            </ul>
+
+            <!-- ── 2026-05-08 12:24 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">12:24</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>장비 도감 4종 개선 — ① 파츠 버튼을 무기(3열·3종)·방어구(4열·7종)·장신구(3열·9종) 3그룹 헤더로 분리. ② 등급 버튼 비활성 시에도 등급 고유 색상 유지(텍스트+테두리 40% 불투명). ③ 무기별 PVP 공격력 차별화 — 한손검+방패 (5,7)→(4,8), 오브 (5,7)→(3,9)로 변경해 6무기 PVP 수치 전부 고유값 확보(평균 6 유지). ④ 한손검+방패 아이콘 🛡→⚜️ (가시성 개선)</li>
+            </ul>
+
+            <!-- ── 2026-05-08 12:01 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">12:01</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag gfx">그래픽</span>장비 아이콘 추가 개선 4종 — 한손검+방패 ⚔️→🛡(방패·나이트 정체성 강조), 쌍수단검 🔪→⚔️(교차 검날·쌍수 개념 정확히 표현), 벨트 🪢→⛓(금속 체인·소형에서도 선명), 망토 🧥→👘(흘러내리는 로브 형태·망토와 유사)</li>
+            </ul>
+
+            <!-- ── 2026-05-08 11:57 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">11:57</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag gfx">그래픽</span>장비 아이콘 8종 교체 — 지팡이 🪄→🔱(삼지창/스태프), 투구 🪖→⛑(헬멧), 갑옷 🛡→🦺(방어 조끼/흉갑), 벨트 🔗→🪢(매듭/버클), 망토 🧣→🧥(외투/망토), 각반 🦵→🦿(다리 방어구), 귀걸이 💎→🌙(초승달/귀고리), 팔찌 ⌚→💠(보석 팔찌). 도감·인벤토리·장비창 모두 자동 반영</li>
+            </ul>
+
+            <!-- ── 2026-05-08 11:34 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">11:34</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>장비 도감 파츠·등급 선택 UI 개선 — 콤보박스(드롭다운)를 버튼 그룹으로 교체. 파츠: 4열 그리드 22개 버튼(아이콘+이름, 선택 시 파란 강조). 등급: 5열 그리드 13개 버튼(선택 시 해당 등급 고유 색상으로 테두리·글자 표시). 한 눈에 전체 목록 확인 가능</li>
+            </ul>
+
+            <!-- ── 2026-05-08 11:20 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">11:20</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>무기 PVP 등급 보너스 평균 1.5 → 3 상향 — EQ_GRADE_BONUS의 pvpMeleeMinAtk·pvpRangedMinAtk·pvpMagicMinAtk를 1→2, pvpMeleeMaxAtk·pvpRangedMaxAtk·pvpMagicMaxAtk를 2→4로 변경. 등급 상승 시 PVP 공격력 증가폭 2배 강화 (min&lt;max·평균 3&lt;6 규칙 유지)</li>
+            </ul>
+
+            <!-- ── 2026-05-08 11:00 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">11:00</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>무기 능력치 수치 전면 재설계 — 일반 등급·위력 1 기준 PVE 평균=60·PVP 평균=6으로 통일. 클래스 컨셉 스프레드: 나이트 중간(48~72), 워리어 광폭(30~90), 어쌔신 초밀집(55~65), 아처 중간(42~78), 클레릭 밀집(54~66), 소서러 극광폭(20~100). 등급 보너스 PVE avg=11/PVP avg=1.5, 위력 보너스 PVE avg=1.5/PVP avg=1 — 모든 규칙(평균<기준값·min<max) 수학적 충족</li>
+            </ul>
+
+            <!-- ── 2026-05-08 10:30 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">10:30</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>장비 도감 UX 개선 3종 — ① 위력 슬라이더 하단에 빠른 조정 버튼 행 추가: MIN·-10·-1·+1·+10·MAX (MIN·MAX는 파란 강조 스타일, 범위 1~355 클램핑). ② 위력 수치 입력 영역 너비 46→56px 확대(세 자리 수 완전 표시). ③ 등급 콤보박스에 등급별 색상 적용 — 드롭다운 각 항목 및 선택된 등급명이 해당 등급 색으로 표시됨</li>
+            </ul>
+
+            <!-- ── 2026-05-08 09:55 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-08</span>
+                <span class="pn-ver-time">09:55</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인벤토리 아이템 분해 기능 추가 — 🔨 분해 버튼으로 분해 모드 전환. 분해 모드에서 아이템 클릭으로 다중 선택(착용 중 아이템은 반투명 표시·선택 불가). 하단 액션 바: 전체 선택·전체 해제·선택 수 표시·분해하기 실행. 분해 확인 다이얼로그 후 선택 아이템 즉시 삭제 및 전투 로그에 분해 결과 출력. 인벤토리 닫기 시 분해 모드 자동 종료</li>
+            </ul>
+
+            <!-- ── 2026-05-07 22:36 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">22:36</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>장비 아이콘 추가 — 무기 6종 고유 아이콘 적용: ⚔️ 한손검+방패(나이트), 🗡️ 양손대검(워리어), 🔪 쌍수단검(어쌔신), 🏹 활(아처), 🔮 오브(클레릭), 🪄 지팡이(소서러). 도감 파츠 선택 드롭다운·정보 패널·인벤토리 슬롯·장비 착용 패널 모두에서 장비 고유 아이콘 확인 가능</li>
+            </ul>
+
+            <!-- ── 2026-05-07 22:25 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">22:25</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>장비 주옵션 재정의 — 무기: PVE·PVP 최소/최대 공격력 4개; 방어구(7종): 근거리·원거리·마법 방어력 3개; 장신구 9종: 일반공격(각반·목걸이·귀걸이)·치명타(팔찌·반지·브로치)·스킬(견장·완장·마스크) 각 PVE·PVP 2개+방어력 1개. 풀셋 보너스 완전 삭제. 스탯 수치 체계 개편: grade 0·power 1에서 비제로 시작, 위력당 증가폭 고정(PVE 공격 3·PVP 공격·방어 2·보조 1), 같은 계열 무기는 동일 평균(PVE 100·PVP 62.5)이나 스프레드 상이(장검 80/120, 대검 65/135, 단검 92/108 등)</li>
+            </ul>
+
+            <!-- ── 2026-05-07 22:06 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">22:06</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>장비 시스템 전체 구현 — 13등급(일반→절대)·위력 1~355·무기 6종(한손검+방패/양손대검/쌍수단검/활/오브/지팡이, 클래스 착용 제한)·방어구·장신구 22개 파츠 정의. 장비 도감 버튼(가방 좌측)·도감 팝업(파츠·등급·위력 선택 후 인벤토리 추가) 추가. 착용 장비의 주옵션(PVE 공격력·방어력·치명타) 스탯이 전투에 실시간 반영됨. 무기 착용 시 공격 타입 자동 전환, 탈착 시 클래스 기본값 복원. 풀셋 착용 시 최저 등급 기준 공격력 10%×(등급+1) 보너스 자동 적용</li>
+            </ul>
+
+            <!-- ── 2026-05-07 21:10 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">21:10</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인벤토리 모달 너비 700 → 520px로 변경</li>
+            </ul>
+
+            <!-- ── 2026-05-07 21:04 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">21:04</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>인벤토리 5열 전체 표시 — CSS 선택자 우선순위 충돌 수정. .inv-modal(줄 1006)보다 나중에 선언된 .limit-modal(줄 1461)의 width:480px가 .inv-modal의 width:700px를 덮어쓰고 있었음. 선택자를 .limit-modal.inv-modal(두 클래스 결합, 특이도 0-2-0)로 변경하여 .limit-modal(0-1-0) 대비 항상 우선 적용되도록 수정</li>
+            </ul>
+
+            <!-- ── 2026-05-07 21:01 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">21:01</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인벤토리 보관 슬롯 8행 고정 표시 — inv-body 높이를 8행×52px + 7간격×4px + 상하 패딩 20px = 464px로 고정. 화면에는 항상 8행(40칸)만 표시되고 나머지 92행(460칸)은 세로 스크롤로 탐색 가능</li>
+            </ul>
+
+            <!-- ── 2026-05-07 20:32 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">20:32</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>인벤토리 UI 오버플로우 근본 원인 수정 — flex 레이아웃에서 스크롤 컨테이너가 올바르게 작동하려면 모든 조상 요소에 높이 제약이 있어야 함. ① inv-modal에 max-height:90vh + overflow:hidden 추가(높이 제한·시각 차단), ② inv-main-body·inv-right-panel에 overflow:hidden 추가, ③ inv-right-panel에 min-height:0 추가(flex shrink 허용), ④ inv-body를 고정 height:576px → flex:1 + min-height:0으로 변경하여 부모 높이에 맞게 자동 조절되도록 수정</li>
+            </ul>
+
+            <!-- ── 2026-05-07 20:19 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">20:19</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>인벤토리 슬롯 구성 변경 — 가로 10열×세로 50행 → 가로 5열×세로 100행(총 500칸 동일). 모달 너비 900→700px, 우측 패널(inv-right-panel) 최소 너비 640→360px로 축소하여 UI 적정 크기로 조정</li>
+            </ul>
+
+            <!-- ── 2026-05-07 20:10 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">20:10</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>인벤토리 가로 스크롤 완전 제거 — ① 모달 너비 830→900px, ② inv-body overflow-x: hidden(가로 스크롤 원천 차단), ③ inv-right-panel min-width: 640px 설정(그리드 556px + 패딩 24px + 스크롤바 여유 60px 합산). 10열 슬롯이 항상 전부 표시되며 좌우 스크롤 불필요</li>
+            </ul>
+
+            <!-- ── 2026-05-07 20:04 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">20:04</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>인벤토리 가로 10열 슬롯 잘림 수정 — ① 모달 너비 800 → 830px (eq-panel+패딩+스크롤바+그리드 합산 802px에 여유 확보), ② eq-panel 너비 196 → 200px (3열 그리드 164px가 컨테이너 162px를 2px 초과하던 문제 해결), ③ inv-body overflow-y: auto → scroll (스크롤바 공간 항상 예약하여 열 잘림 재발 방지)</li>
+            </ul>
+
+            <!-- ── 2026-05-07 19:53 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-07</span>
+                <span class="pn-ver-time">19:53</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>장비 착용 슬롯 패널 추가 — 인벤토리 왼쪽에 총 17개 슬롯 배치. 무기·방어구 그룹(⚔무기/🪖투구/🛡갑옷/🧤장갑/👟신발/👕티셔츠/🔗벨트/🧣망토, 2열×4행)과 장신구 그룹(🦵각반/📿목걸이/💎귀걸이/⌚팔찌/💍반지/🌸브로치/🎖견장/🎗완장/😷마스크, 3열×3행) 2그룹 분리. 인벤토리 모달 너비 720→800px. 착용 시 인벤토리 슬롯은 "착용" 뱃지·파란 테두리로 착용중 표시 + 최상단 정렬. 슬롯 클릭으로 착용/탈착, 이미 착용된 슬롯에 다른 장비 착용 시 자동 교체</li>
+            </ul>
 
             <!-- ── 2026-05-07 14:58 ── -->
             <div class="pn-ver">
@@ -4353,47 +5305,151 @@ function calcCharStats(lv) {
     const spd = loadClassSpeed(currentClass);
     lvBonuses.AttackSpeed = (lvBonuses.AttackSpeed || 0) + spd.atkSpeed;
     lvBonuses.MoveSpeed   = (lvBonuses.MoveSpeed   || 0) + spd.moveSpeed;
-    const s = computeStats(lvBonuses, BASE_STATS);
+    const s  = computeStats(lvBonuses, BASE_STATS);
+    const eq = getEquipmentBonuses(); // 착용 장비 보너스 합산
     return {
         maxHP:         s.MaxHP,
         maxMP:         s.MaxMP,
         hpRegen:       s.HPRegen,
         mpRegen:       s.MPRegen,
-        meleeMinAtk:   s.MeleeMinAttack,
-        meleeMaxAtk:   s.MeleeMaxAttack,
-        meleeDef:      s.MeleeDefense,
-        rangedDef:     s.RangedDefense,
+        // 근거리: 무기 공격력 + 장신구 일반공격 보너스
+        meleeMinAtk:   s.MeleeMinAttack + eq.pveMeleeMinAtk + eq.pveNormalAtk,
+        meleeMaxAtk:   s.MeleeMaxAttack + eq.pveMeleeMaxAtk + eq.pveNormalAtk,
+        meleeDef:      s.MeleeDefense   + eq.meleeDef,
+        rangedDef:     s.RangedDefense  + eq.rangedDef,
         meleeAccuracy: s.MeleeAccuracy,
         meleeEvasion:  s.MeleeEvasion,
         critRate:            s.MeleeCritRate,
-        critMeleeAtk:        s.CritMeleeAtk,  // 근거리 치명타 추가 공격력 (절대값)
+        critMeleeAtk:        s.CritMeleeAtk + eq.pveCritAtk, // 근거리 치명타 추가 공격력
         critResist:          s.MeleeCritResist / 100,
-        meleeCritDmgReduc:   s.MeleeCriticalDamageReduction, // 치명타 피해 감소율 (10000 단위, 방어자 적용)
-        defPenetrationMelee: s.PVETargetMeleeDefense,        // PVE 근거리 방어력 관통 (raw)
+        meleeCritDmgReduc:   s.MeleeCriticalDamageReduction,
+        defPenetrationMelee: s.PVETargetMeleeDefense,
         attackSpeed:         s.AttackSpeed,
         moveSpeed:           s.MoveSpeed,
-        // 원거리 공격 스탯
-        rangedMinAtk:         s.RangedMinAttack,
-        rangedMaxAtk:         s.RangedMaxAttack,
-        magicDef:             s.MagicDefense,
+        // 원거리: 무기 공격력 + 장신구 일반공격 보너스
+        rangedMinAtk:         s.RangedMinAttack + eq.pveRangedMinAtk + eq.pveNormalAtk,
+        rangedMaxAtk:         s.RangedMaxAttack + eq.pveRangedMaxAtk + eq.pveNormalAtk,
+        magicDef:             s.MagicDefense    + eq.magicDef,
         rangedAccuracy:       s.RangedAccuracy,
         rangedEvasion:        s.RangedEvasion,
         rangedCritRate:       s.RangedCritRate,
-        critRangedAtk:        s.CritRangedAtk, // 원거리 치명타 추가 공격력 (절대값)
+        critRangedAtk:        s.CritRangedAtk + eq.pveCritAtk, // 원거리 치명타 추가 공격력
         rangedCritResist:     s.RangedCritResist / 100,
         rangedCritDmgReduc:   s.RangedCriticalDamageReduction,
         defPenetrationRanged: s.PVETargetRangedDefense,
-        // 마법 공격 스탯
-        magicMinAtk:          s.MagicMinAttack,
-        magicMaxAtk:          s.MagicMaxAttack,
+        // 마법: 무기 공격력 + 장신구 일반공격 보너스
+        magicMinAtk:          s.MagicMinAttack + eq.pveMagicMinAtk + eq.pveNormalAtk,
+        magicMaxAtk:          s.MagicMaxAttack + eq.pveMagicMaxAtk + eq.pveNormalAtk,
         magicAccuracy:        s.MagicAccuracy,
         magicEvasion:         s.MagicEvasion,
         magicCritRate:        s.MagicCritRate,
-        critMagicAtk:         s.CritMagicAtk, // 마법 치명타 추가 공격력 (절대값)
+        critMagicAtk:         s.CritMagicAtk + eq.pveCritAtk, // 마법 치명타 추가 공격력
         magicCritResist:      s.MagicCritResist / 100,
         magicCritDmgReduc:    s.MagicCriticalDamageReduction,
         defPenetrationMagic:  s.PVETargetMagicDefense,
     };
+}
+
+// ─── 스테이지 장비 매핑 테이블 ───────────────────────────────────────────────
+// 4,615스테이지 = 등급 0~12(13단계) × 위력 1~355(355단계)
+// 순서: 참조 DPS 오름차순 정렬 — 등급·위력 순서가 아니라 실제 강도 순
+// ※ calcEqStatValue가 의존하는 const(EQ_STAT_START 등)가 아직 선언 전이므로
+//   IIFE 대신 null로 선언하고, 최초 접근 시 _initStageEquipmentMap()으로 지연 초기화
+let STAGE_EQUIPMENT_MAP = null;
+
+const STAGE_TIME_BASE   = 120;  // 스테이지 1 클리어 목표 시간 (초) — 2분
+const STAGE_TIME_STEP   = 3;    // 스테이지마다 추가되는 시간 (초) — 기존 30s의 10% (HP 상승폭 완화)
+// 라운드별 시간 비율: [R1, R2, R3, R4, R5, Boss] — 합계 = 1.0
+const STAGE_ROUND_RATIOS = [0.05, 0.10, 0.15, 0.20, 0.25, 0.25];
+
+// 기준 DPS 계산: 6개 클래스 lv1 평균, APS=0.5
+// 장비 구성: 클래스별 전용 무기 1 + 방어구 7(공격력 기여 없음) + 장신구 9
+//   - 장신구 9종 합산: accAtk = 9 × calcEqStatValue(g, p, 'greaves', 'pveNormalAtk')
+//   - 기본 공격력: STR→근거리(min=STR, max=3×STR), DEX→원거리, INT→마법
+// 클래스별 참조 정보:
+//   나이트(STR=16, sword_shield 근거리), 워리어(STR=20, greatsword 근거리)
+//   어쌔신(STR=12, dagger 근거리), 아처(DEX=20, bow 원거리)
+//   클레릭(INT=16, orb 마법), 소서러(INT=20, staff 마법)
+function _calcRefDPS(gradeIdx, power) {
+    const accAtk = 9 * calcEqStatValue(gradeIdx, power, 'greaves', 'pveNormalAtk');
+    // [기본 공격 스탯값, 무기 optKey, 최소 공격력 statKey, 최대 공격력 statKey]
+    const CLS = [
+        [16, 'sword_shield', 'pveMeleeMinAtk',  'pveMeleeMaxAtk' ],  // 나이트
+        [20, 'greatsword',   'pveMeleeMinAtk',  'pveMeleeMaxAtk' ],  // 워리어
+        [12, 'dagger',       'pveMeleeMinAtk',  'pveMeleeMaxAtk' ],  // 어쌔신
+        [20, 'bow',          'pveRangedMinAtk', 'pveRangedMaxAtk'],  // 아처
+        [16, 'orb',          'pveMagicMinAtk',  'pveMagicMaxAtk' ],  // 클레릭
+        [20, 'staff',        'pveMagicMinAtk',  'pveMagicMaxAtk' ],  // 소서러
+    ];
+    let totalDPS = 0;
+    for (const [statVal, wKey, minKey, maxKey] of CLS) {
+        const charMin = statVal, charMax = statVal * 3;              // STR/DEX/INT → min/max
+        const weapMin = calcEqStatValue(gradeIdx, power, wKey, minKey);
+        const weapMax = calcEqStatValue(gradeIdx, power, wKey, maxKey);
+        const avgAtk  = ((charMin + weapMin + accAtk) + (charMax + weapMax + accAtk)) / 2;
+        totalDPS += avgAtk * 0.5;
+    }
+    return totalDPS / 6; // 6개 클래스 평균 DPS
+}
+
+// STAGE_EQUIPMENT_MAP 지연 초기화
+// 모든 4,615개 (등급, 위력) 조합을 _calcRefDPS 오름차순으로 정렬하여 단조 증가 보장
+function _initStageEquipmentMap() {
+    if (STAGE_EQUIPMENT_MAP !== null) return;
+    const entries = [];
+    for (let g = 0; g <= 12; g++) {
+        for (let p = 1; p <= 355; p++) {
+            entries.push({ gradeIdx: g, power: p, _dps: _calcRefDPS(g, p) });
+        }
+    }
+    entries.sort((a, b) => a._dps - b._dps);
+    STAGE_EQUIPMENT_MAP = entries.map(({ gradeIdx, power }) => ({ gradeIdx, power }));
+}
+
+// 스테이지 번호(1~4,615)에 해당하는 장비 등급·위력 반환
+function getStageEquipment(stage) {
+    _initStageEquipmentMap();
+    const idx = Math.max(0, Math.min(stage - 1, STAGE_EQUIPMENT_MAP.length - 1));
+    return STAGE_EQUIPMENT_MAP[idx];
+}
+
+// 스테이지 기준 플레이어 DPS 계산 (전체 장비 착용 기준)
+function calcStagePlayerDPS(stage) {
+    const { gradeIdx, power } = getStageEquipment(stage);
+    return _calcRefDPS(gradeIdx, power);
+}
+
+// 스테이지·라운드·보스 여부에 따른 몬스터 HP 계산
+// 설계 근거: CLAUDE.md 섹션 8 참조
+function calcStageMonsterHP(stage, isBoss, roundNum) {
+    const dps        = calcStagePlayerDPS(stage);
+    const totalTime  = STAGE_TIME_BASE + (stage - 1) * STAGE_TIME_STEP;
+    // isBoss이면 ratioIdx=5(보스), 아니면 roundNum(1~5) → 0~4 인덱스
+    const ratioIdx   = isBoss ? 5 : Math.max(0, Math.min(4, roundNum - 1));
+    const ratio      = STAGE_ROUND_RATIOS[ratioIdx];
+    const kills      = isBoss ? 1 : ROUND_KILLS; // 보스는 1마리, 일반은 ROUND_KILLS마리
+    return Math.max(1, Math.round(dps * totalTime * ratio / kills));
+}
+
+// 스테이지 기준 몬스터 방어력 계산
+// 기준 장비(방어구 7 + 장신구 9) 전체의 meleeDef / rangedDef / magicDef 합산
+// 근거리·원거리·마법 공격에 각각 대응하는 방어 수치로 설계
+function calcStageMonsterDef(stage) {
+    const { gradeIdx, power } = getStageEquipment(stage);
+    const armorParts = ['helmet','armor','gloves','boots','shirt','belt','cloak'];
+    const accParts   = ['greaves','necklace','earring','bracelet','ring','brooch','epaulette','armband','mask'];
+    let mel = 0, ran = 0, mag = 0;
+    for (const pt of armorParts) {
+        mel += calcEqStatValue(gradeIdx, power, pt, 'meleeDef');
+        ran += calcEqStatValue(gradeIdx, power, pt, 'rangedDef');
+        mag += calcEqStatValue(gradeIdx, power, pt, 'magicDef');
+    }
+    for (const pt of accParts) {
+        mel += calcEqStatValue(gradeIdx, power, pt, 'meleeDef');
+        ran += calcEqStatValue(gradeIdx, power, pt, 'rangedDef');
+        mag += calcEqStatValue(gradeIdx, power, pt, 'magicDef');
+    }
+    return { meleeDef: mel, rangedDef: ran, magicDef: mag };
 }
 
 // ─── 몬스터 능력치 시스템 (57종) ─────────────────────────────────────────────
@@ -4465,13 +5521,16 @@ function buildMonsterBaseStats() {
 // 공격속도·이동속도는 영혼 레벨 스케일 없음 (설계 의도: 절대값으로 고정)
 function calcMonsterStats(soulLv, isBoss = false) {
     if (!MONSTER_BASE_LV1) buildMonsterBaseStats();
-    const b    = MONSTER_BASE_LV1;
-    const mult = 1 + (soulLv - 1) * 0.1;                      // 영혼 레벨 배율: SL1=1.0, SL2=1.1…
-    const SC   = (base) => Math.floor(base * mult);            // 정수 스케일
-    const SP   = (base) => Math.min(95, base * mult);          // 퍼센트 스케일 (95% 상한)
+    const b       = MONSTER_BASE_LV1;
+    const mult    = 1 + (soulLv - 1) * 0.1;                   // 영혼 레벨 배율: SL1=1.0, SL2=1.1…
+    const SC      = (base) => Math.floor(base * mult);         // 정수 스케일
+    const SP      = (base) => Math.min(95, base * mult);       // 퍼센트 스케일 (95% 상한)
+    // 방어력: 스테이지 기준 장비(방어구7+장신구9) 전체 방어력 합산 (PVP 기반 대신 장비 기반)
+    const stageDef = calcStageMonsterDef(soulLv);
 
     return {
-        maxHP:                    Math.max(1, Math.floor((isBoss ? b.bossHP : b.normalHP) * mult)),
+        // HP는 스테이지 기준 플레이어 DPS 역산 — soulLv = 현재 스테이지 번호
+        maxHP:                    calcStageMonsterHP(soulLv, isBoss, currentRound),
         pvpMeleeMinAtk:           SC(b.pvpMeleeMinAtk),
         pvpMeleeMaxAtk:           SC(b.pvpMeleeMaxAtk),
         pvpRangedMinAtk:          SC(b.pvpRangedMinAtk),
@@ -4496,9 +5555,9 @@ function calcMonsterStats(soulLv, isBoss = false) {
         pvpMeleeDefPen:           SC(b.pvpMeleeDefPen),
         pvpRangedDefPen:          SC(b.pvpRangedDefPen),
         pvpMagicDefPen:           SC(b.pvpMagicDefPen),
-        meleeDef:                 SC(b.meleeDef),
-        rangedDef:                SC(b.rangedDef),
-        magicDef:                 SC(b.magicDef),
+        meleeDef:                 stageDef.meleeDef,  // 스테이지 기준 장비 방어력 합산
+        rangedDef:                stageDef.rangedDef,
+        magicDef:                 stageDef.magicDef,
         pvpMeleeCritDmgDecIgnore: SC(b.pvpMeleeCritDmgDecIgnore),
         pvpRangedCritDmgDecIgnore:SC(b.pvpRangedCritDmgDecIgnore),
         pvpMagicCritDmgDecIgnore: SC(b.pvpMagicCritDmgDecIgnore),
@@ -7716,6 +8775,223 @@ function applySoulLevel(newLv) {
 let _monInfoTab     = 'normal'; // 현재 선택 탭: 'normal' | 'boss'
 let _monInfoSection = 'stats';  // 현재 섹션: 'stats' | 'reward'
 
+// ────────────────────────────────────────────────
+// 스테이지 공략 정보 모달
+// ────────────────────────────────────────────────
+let _sgPaused = false;
+let _sgEquipActiveIdx = -1; // 현재 펼쳐진 장비 상세 인덱스 (-1 = 없음)
+
+// 공략 모달 기준 장비 — 무기 6종 + 장신구 9종 (DPS 산출에 사용한 장비와 동일)
+const SG_EQ_ITEMS = [
+    // 무기 6종 (클래스별 전용 무기)
+    { type:'weapon', cls:'나이트', icon:'⚔️', name:'검+방패',  key:'sword_shield', stats:['pveMeleeMinAtk','pveMeleeMaxAtk'] },
+    { type:'weapon', cls:'워리어', icon:'🗡️', name:'양손검',   key:'greatsword',   stats:['pveMeleeMinAtk','pveMeleeMaxAtk'] },
+    { type:'weapon', cls:'어쌔신', icon:'🔪', name:'단검',     key:'dagger',       stats:['pveMeleeMinAtk','pveMeleeMaxAtk'] },
+    { type:'weapon', cls:'아처',   icon:'🏹', name:'활',       key:'bow',          stats:['pveRangedMinAtk','pveRangedMaxAtk'] },
+    { type:'weapon', cls:'클레릭', icon:'🔮', name:'오브',     key:'orb',          stats:['pveMagicMinAtk','pveMagicMaxAtk'] },
+    { type:'weapon', cls:'소서러', icon:'🪄', name:'지팡이',   key:'staff',        stats:['pveMagicMinAtk','pveMagicMaxAtk'] },
+    // 장신구 9종 (pveNormalAtk×3 + pveCritAtk×3 + pveSkillAtk×3)
+    { type:'acc', cls:'일반공격', icon:'🦿', name:'각반',   key:'greaves',   stats:['pveNormalAtk','meleeDef'] },
+    { type:'acc', cls:'일반공격', icon:'📿', name:'목걸이', key:'necklace',  stats:['pveNormalAtk','rangedDef'] },
+    { type:'acc', cls:'일반공격', icon:'🌙', name:'귀걸이', key:'earring',   stats:['pveNormalAtk','magicDef'] },
+    { type:'acc', cls:'치명타',   icon:'💎', name:'팔찌',   key:'bracelet',  stats:['pveCritAtk','meleeDef'] },
+    { type:'acc', cls:'치명타',   icon:'💍', name:'반지',   key:'ring',      stats:['pveCritAtk','rangedDef'] },
+    { type:'acc', cls:'치명타',   icon:'🏅', name:'브로치', key:'brooch',    stats:['pveCritAtk','magicDef'] },
+    { type:'acc', cls:'스킬',     icon:'🎖️', name:'견장',   key:'epaulette', stats:['pveSkillAtk','meleeDef'] },
+    { type:'acc', cls:'스킬',     icon:'🎗️', name:'팔대',   key:'armband',   stats:['pveSkillAtk','rangedDef'] },
+    { type:'acc', cls:'스킬',     icon:'🎭', name:'마스크', key:'mask',      stats:['pveSkillAtk','magicDef'] },
+];
+
+function openStageGuide() {
+    _initStageEquipmentMap(); // 지연 초기화 (최초 호출 시 DPS 정렬 수행)
+    const maxStage = STAGE_EQUIPMENT_MAP.length;
+    const inp = document.getElementById('sg-stage-input');
+    inp.max = maxStage;
+    inp.value = Math.max(1, Math.min(currentStage, maxStage));
+    _sgEquipActiveIdx = 0; // 기본값: 나이트 무기 선택 (항상 장비 능력치 표시)
+    renderStageGuide();
+    document.getElementById('stageguide-overlay').classList.add('open');
+    if (gameState === 'playing') { gameState = 'paused'; _sgPaused = true; }
+    else { _sgPaused = false; }
+}
+
+function closeStageGuide() {
+    document.getElementById('stageguide-overlay').classList.remove('open');
+    if (_sgPaused) { gameState = 'playing'; lastTime = performance.now(); _sgPaused = false; }
+}
+
+function sgInputChanged() {
+    renderStageGuide();
+}
+
+function sgChangeStage(delta) {
+    const inp = document.getElementById('sg-stage-input');
+    inp.value = Math.max(1, Math.min(STAGE_EQUIPMENT_MAP.length, (parseInt(inp.value, 10) || 1) + delta));
+    renderStageGuide();
+}
+
+function sgSetCurrentStage() {
+    document.getElementById('sg-stage-input').value = Math.max(1, Math.min(currentStage, STAGE_EQUIPMENT_MAP.length));
+    renderStageGuide();
+}
+
+function sgSetMin() {
+    document.getElementById('sg-stage-input').value = 1;
+    renderStageGuide();
+}
+function sgSetMax() {
+    document.getElementById('sg-stage-input').value = STAGE_EQUIPMENT_MAP.length;
+    renderStageGuide();
+}
+
+function sgToggleEquipDetail(idx) {
+    _sgEquipActiveIdx = (_sgEquipActiveIdx === idx) ? -1 : idx;
+    renderStageGuide();
+}
+
+function renderStageGuide() {
+    const raw   = parseInt(document.getElementById('sg-stage-input').value, 10);
+    const stage = Math.max(1, Math.min(isNaN(raw) ? 1 : raw, STAGE_EQUIPMENT_MAP.length));
+    const { gradeIdx, power } = getStageEquipment(stage);
+
+    // 등급 이름·색상
+    const grade      = EQ_GRADES[gradeIdx];
+    const gradeName  = grade ? grade.label : `등급 ${gradeIdx}`;
+    const gradeColor = grade ? grade.color : '#e6edf3';
+
+    // 클리어 목표 시간
+    const totalTime = STAGE_TIME_BASE + (stage - 1) * STAGE_TIME_STEP;
+    const totalMin  = Math.floor(totalTime / 60);
+    const totalSec  = totalTime % 60;
+    const timeStr   = totalMin > 0 ? `${totalMin}분 ${totalSec ? totalSec + '초' : ''}` : `${totalSec}초`;
+
+    // 6개 클래스 기준 DPS 계산 (각 클래스별 lv1 스탯 + 전용 무기 + 장신구9 기준)
+    const accVal  = calcEqStatValue(gradeIdx, power, 'greaves', 'pveNormalAtk');
+    const accAtk  = accVal * 9;
+    const SG_CLS_DEFS = [
+        { label:'나이트', statVal:16, wKey:'sword_shield', minKey:'pveMeleeMinAtk',  maxKey:'pveMeleeMaxAtk',  type:'근거리' },
+        { label:'워리어', statVal:20, wKey:'greatsword',   minKey:'pveMeleeMinAtk',  maxKey:'pveMeleeMaxAtk',  type:'근거리' },
+        { label:'어쌔신', statVal:12, wKey:'dagger',       minKey:'pveMeleeMinAtk',  maxKey:'pveMeleeMaxAtk',  type:'근거리' },
+        { label:'아처',   statVal:20, wKey:'bow',          minKey:'pveRangedMinAtk', maxKey:'pveRangedMaxAtk', type:'원거리' },
+        { label:'클레릭', statVal:16, wKey:'orb',          minKey:'pveMagicMinAtk',  maxKey:'pveMagicMaxAtk',  type:'마법'   },
+        { label:'소서러', statVal:20, wKey:'staff',        minKey:'pveMagicMinAtk',  maxKey:'pveMagicMaxAtk',  type:'마법'   },
+    ];
+    const dpsList = SG_CLS_DEFS.map(cls => {
+        const wMin = calcEqStatValue(gradeIdx, power, cls.wKey, cls.minKey);
+        const wMax = calcEqStatValue(gradeIdx, power, cls.wKey, cls.maxKey);
+        const avg  = ((cls.statVal + wMin + accAtk) + (cls.statVal * 3 + wMax + accAtk)) / 2;
+        return { ...cls, wMin, wMax, avg, dpsVal: avg * 0.5 };
+    });
+    const dps    = dpsList.reduce((s, c) => s + c.dpsVal, 0) / 6;
+    // 몬스터 방어력 (스테이지 기준 전체 장비 방어력 합산)
+    const monDef = calcStageMonsterDef(stage);
+
+    // 기준 장비 아이콘 그리드 (무기 6 + 장신구 9 = 15개 한 줄 표시)
+    let eqHtml = '<div class="sg-eq-grid">';
+    SG_EQ_ITEMS.forEach((item, idx) => {
+        const isActive = (_sgEquipActiveIdx === idx);
+        const accCls   = item.type === 'acc' ? ' type-acc' : '';
+        eqHtml += `<div class="sg-eq-item${isActive ? ' active' : ''}${accCls}" onclick="sgToggleEquipDetail(${idx})">
+            <div class="sg-eq-cls">${item.cls}</div>
+            <div class="sg-eq-icon">${item.icon}</div>
+            <div class="sg-eq-name">${item.name}</div>
+            <div class="sg-eq-grade" style="color:${gradeColor};">${gradeName}</div>
+        </div>`;
+    });
+    eqHtml += '</div>';
+
+    // 선택된 장비 상세 펼침
+    let eqDetailHtml = '';
+    if (_sgEquipActiveIdx >= 0 && _sgEquipActiveIdx < SG_EQ_ITEMS.length) {
+        const item = SG_EQ_ITEMS[_sgEquipActiveIdx];
+        eqDetailHtml = `<div class="sg-eq-detail">
+            <div style="font-size:15px;color:#a78bfa;font-weight:bold;margin-bottom:6px;">
+                ${item.icon} ${item.cls} ${item.name} — <span style="color:${gradeColor};">${gradeName}</span> · 위력 ${power}
+            </div>`;
+        item.stats.forEach(sk => {
+            const val = calcEqStatValue(gradeIdx, power, item.key, sk);
+            const lbl = EQ_STAT_LABELS[sk] || sk;
+            eqDetailHtml += `<div class="sg-eq-stat-row">
+                <span class="sg-eq-stat-lbl">${lbl}</span>
+                <span class="sg-eq-stat-val">${val.toLocaleString()}</span>
+            </div>`;
+        });
+        eqDetailHtml += '</div>';
+    }
+
+    // 라운드별 HP 테이블
+    const roundLabels = ['1라운드', '2라운드', '3라운드', '4라운드', '5라운드', '보스'];
+    let tableHtml = `<table class="sg-round-table">
+        <thead><tr>
+            <th>라운드</th><th>비율</th><th>배정 시간</th>
+            <th>몬스터 HP</th><th>처치 수</th>
+        </tr></thead><tbody>`;
+    STAGE_ROUND_RATIOS.forEach((ratio, i) => {
+        const isBoss = (i === 5);
+        const hp     = calcStageMonsterHP(stage, isBoss, isBoss ? 5 : i + 1);
+        const time   = Math.round(totalTime * ratio);
+        const kills  = isBoss ? '1마리 (보스)' : `${ROUND_KILLS}마리`;
+        tableHtml += `<tr${isBoss ? ' class="sg-boss-row"' : ''}>
+            <td>${roundLabels[i]}</td>
+            <td>${Math.round(ratio * 100)}%</td>
+            <td>${time}초</td>
+            <td>${hp.toLocaleString()}</td>
+            <td>${kills}</td>
+        </tr>`;
+    });
+    tableHtml += '</tbody></table>';
+
+    document.getElementById('sg-body').innerHTML = `
+        <div class="sg-info-grid">
+            <div class="sg-info-card">
+                <div class="sg-info-card-label">스테이지</div>
+                <div class="sg-info-card-val">${stage} / ${STAGE_EQUIPMENT_MAP.length.toLocaleString()}</div>
+            </div>
+            <div class="sg-info-card">
+                <div class="sg-info-card-label">클리어 목표 시간</div>
+                <div class="sg-info-card-val">${timeStr}</div>
+            </div>
+            <div class="sg-info-card">
+                <div class="sg-info-card-label">기준 장비</div>
+                <div class="sg-info-card-val" style="color:${gradeColor};">${gradeName} · 위력 ${power}</div>
+            </div>
+        </div>
+
+        <div class="sg-section-title">기준 장비 — 무기 6종 · 장신구 9종 (아이콘 클릭 → 능력치 확인)</div>
+        ${eqHtml}
+        ${eqDetailHtml}
+
+        <div class="sg-section-title">기준 플레이어 DPS — 6개 클래스 평균 (lv1, APS 0.5, 장신구×9 합산 ${accAtk.toLocaleString()})</div>
+        <table class="sg-round-table">
+            <thead><tr><th>클래스</th><th>공격 유형</th><th>캐릭터</th><th>무기 PVE</th><th>평균 공격력</th><th>DPS</th></tr></thead>
+            <tbody>
+            ${dpsList.map(c => `<tr>
+                <td>${c.label}</td>
+                <td>${c.type}</td>
+                <td>${c.statVal}~${c.statVal * 3}</td>
+                <td>${c.wMin}~${c.wMax}</td>
+                <td>${Math.round(c.avg).toLocaleString()}</td>
+                <td>${Math.round(c.dpsVal).toLocaleString()}</td>
+            </tr>`).join('')}
+            <tr class="sg-boss-row"><td colspan="5" style="text-align:right;font-weight:bold;">6개 클래스 평균 DPS</td><td><strong>${Math.round(dps).toLocaleString()}</strong></td></tr>
+            </tbody>
+        </table>
+
+        <div class="sg-section-title">몬스터 방어력 (기준 장비 방어구7 + 장신구9 방어력 합산)</div>
+        <div class="sg-dps-row">
+            <span class="sg-dps-label">근거리 방어력</span>
+            <span class="sg-dps-val">${monDef.meleeDef.toLocaleString()}</span>
+            <span class="sg-dps-label">원거리 방어력</span>
+            <span class="sg-dps-val">${monDef.rangedDef.toLocaleString()}</span>
+            <span class="sg-dps-label">마법 방어력</span>
+            <span class="sg-dps-val">${monDef.magicDef.toLocaleString()}</span>
+        </div>
+
+        <div class="sg-section-title">라운드별 몬스터 HP</div>
+        ${tableHtml}
+    `;
+}
+
 function openMonsterInfo() {
     // 현재 스테이지로 초기화
     document.getElementById('moninfo-stage-input').value = currentStage;
@@ -7766,6 +9042,23 @@ function closeMonsterInfo() {
 
 function setMonInfoToCurrentStage() {
     document.getElementById('moninfo-stage-input').value = currentStage;
+    renderMonsterInfo();
+}
+
+// 스테이지 번호를 delta만큼 증감 (1 ~ 1,000,000 범위 클램핑)
+function monInfoStep(delta) {
+    const inp = document.getElementById('moninfo-stage-input');
+    inp.value = Math.max(1, Math.min(1000000, (parseInt(inp.value, 10) || 1) + delta));
+    renderMonsterInfo();
+}
+
+// 최솟값(1) / 최댓값(1,000,000) 바로 이동
+function monInfoSetMin() {
+    document.getElementById('moninfo-stage-input').value = 1;
+    renderMonsterInfo();
+}
+function monInfoSetMax() {
+    document.getElementById('moninfo-stage-input').value = 1000000;
     renderMonsterInfo();
 }
 
@@ -9634,10 +10927,581 @@ function updateTownUI() {
 // ────────────────────────────────────────────────
 const INVENTORY_SIZE = 500; // 최대 보관 칸 수
 
-// 인벤토리 배열: null = 빈 슬롯, 아이템 객체 = { id, name, type, icon, quantity, description }
+// 인벤토리 배열: null = 빈 슬롯, 아이템 객체 = { id, name, type, icon, quantity, description, slot?, equipped?, equippedSlot? }
 let inventory = new Array(INVENTORY_SIZE).fill(null);
 
-let _invTab = 'all'; // 현재 선택 탭: 'all' | 'equipment' | 'misc'
+let _invTab = 'all';           // 현재 선택 탭: 'all' | 'equipment' | 'misc'
+let _invDisMode = false;       // 분해 모드 활성화 여부
+const _invDisSelected = new Set(); // 분해 선택된 인벤토리 인덱스 집합
+
+// ── 장비 착용 슬롯 정의 ─────────────────────────────────────────────────────
+// slot: 아이템의 .slot 필드와 매칭되는 key
+// group: 'armor' = 무기/방어구 그룹(2열), 'accessory' = 장신구 그룹(3열)
+const EQ_SLOT_DEFS = [
+    // ── 무기/방어구 그룹 (2열 × 4행) ──
+    { key: 'weapon',    label: '무기',   icon: '⚔',  group: 'armor' },
+    { key: 'helmet',    label: '투구',   icon: '⛑',  group: 'armor' },
+    { key: 'armor',     label: '갑옷',   icon: '🦺',  group: 'armor' },
+    { key: 'gloves',    label: '장갑',   icon: '🧤',  group: 'armor' },
+    { key: 'boots',     label: '신발',   icon: '👟',  group: 'armor' },
+    { key: 'shirt',     label: '티셔츠', icon: '👕',  group: 'armor' },
+    { key: 'belt',      label: '벨트',   icon: '⛓',  group: 'armor' },
+    { key: 'cloak',     label: '망토',   icon: '👘',  group: 'armor' },
+    // ── 장신구 그룹 (3열 × 3행) ──
+    { key: 'greaves',   label: '각반',   icon: '🦿',  group: 'accessory' },
+    { key: 'necklace',  label: '목걸이', icon: '📿',  group: 'accessory' },
+    { key: 'earring',   label: '귀걸이', icon: '🌙',  group: 'accessory' },
+    { key: 'bracelet',  label: '팔찌',   icon: '💠',  group: 'accessory' },
+    { key: 'ring',      label: '반지',   icon: '💍',  group: 'accessory' },
+    { key: 'brooch',    label: '브로치', icon: '🌸',  group: 'accessory' },
+    { key: 'epaulette', label: '견장',   icon: '🎖',  group: 'accessory' },
+    { key: 'armband',   label: '완장',   icon: '🎗',  group: 'accessory' },
+    { key: 'mask',      label: '마스크', icon: '😷',  group: 'accessory' },
+];
+
+// 현재 착용 중인 아이템 슬롯: key → 인벤토리 배열 인덱스 (null = 비어 있음)
+let equippedItems = {};
+EQ_SLOT_DEFS.forEach(s => { equippedItems[s.key] = null; });
+
+// ── 장비 시스템 상수 ─────────────────────────────────────────────────────────
+// 13등급 정의 (index 0 = 일반 ... 12 = 절대)
+const EQ_GRADES = [
+    { id: 'normal',      label: '일반',  color: '#9e9e9e' },
+    { id: 'advanced',    label: '고급',  color: '#4caf50' },
+    { id: 'rare',        label: '희귀',  color: '#2196f3' },
+    { id: 'hero',        label: '영웅',  color: '#9c27b0' },
+    { id: 'legend',      label: '전설',  color: '#ff9800' },
+    { id: 'myth',        label: '신화',  color: '#f44336' },
+    { id: 'transcend',   label: '초월',  color: '#00bcd4' },
+    { id: 'abyss',       label: '심연',  color: '#7b1fa2' },
+    { id: 'celestial',   label: '천상',  color: '#e91e63' },
+    { id: 'dimensional', label: '차원',  color: '#3f51b5' },
+    { id: 'creation',    label: '창조',  color: '#ff5722' },
+    { id: 'eternal',     label: '영원',  color: '#ffc107' },
+    { id: 'absolute',    label: '절대',  color: '#e8d5b7' },
+];
+
+// 무기 6종: 클래스 착용 제한 + 공격 타입 연동
+const EQ_WEAPON_TYPES = [
+    { id: 'sword_shield', label: '한손검+방패', icon: '⚜️', classes: ['knight'],   atkType: 'melee'  },
+    { id: 'greatsword',   label: '양손대검',    icon: '🗡️',  classes: ['warrior'],  atkType: 'melee'  },
+    { id: 'dagger',       label: '쌍수단검',    icon: '⚔️',  classes: ['assassin'], atkType: 'melee'  },
+    { id: 'bow',          label: '활',          icon: '🏹',  classes: ['archer'],   atkType: 'ranged' },
+    { id: 'orb',          label: '오브',        icon: '🔮',  classes: ['cleric'],   atkType: 'magic'  },
+    { id: 'staff',        label: '지팡이',      icon: '🔱',  classes: ['sorcerer'], atkType: 'magic'  },
+];
+
+// 도감 파츠 목록: 무기 6종 × 1 + 비무기 슬롯 16개 = 22개
+const EQ_CODEX_PARTS = [
+    { slot: 'weapon', weaponTypeId: 'sword_shield', label: '한손검+방패' },
+    { slot: 'weapon', weaponTypeId: 'greatsword',   label: '양손대검'    },
+    { slot: 'weapon', weaponTypeId: 'dagger',        label: '쌍수단검'    },
+    { slot: 'weapon', weaponTypeId: 'bow',           label: '활'          },
+    { slot: 'weapon', weaponTypeId: 'orb',           label: '오브'        },
+    { slot: 'weapon', weaponTypeId: 'staff',         label: '지팡이'      },
+    { slot: 'helmet',    weaponTypeId: null, label: '투구'   },
+    { slot: 'armor',     weaponTypeId: null, label: '갑옷'   },
+    { slot: 'gloves',    weaponTypeId: null, label: '장갑'   },
+    { slot: 'boots',     weaponTypeId: null, label: '신발'   },
+    { slot: 'shirt',     weaponTypeId: null, label: '티셔츠' },
+    { slot: 'belt',      weaponTypeId: null, label: '벨트'   },
+    { slot: 'cloak',     weaponTypeId: null, label: '망토'   },
+    { slot: 'greaves',   weaponTypeId: null, label: '각반'   },
+    { slot: 'necklace',  weaponTypeId: null, label: '목걸이' },
+    { slot: 'earring',   weaponTypeId: null, label: '귀걸이' },
+    { slot: 'bracelet',  weaponTypeId: null, label: '팔찌'   },
+    { slot: 'ring',      weaponTypeId: null, label: '반지'   },
+    { slot: 'brooch',    weaponTypeId: null, label: '브로치' },
+    { slot: 'epaulette', weaponTypeId: null, label: '견장'   },
+    { slot: 'armband',   weaponTypeId: null, label: '완장'   },
+    { slot: 'mask',      weaponTypeId: null, label: '마스크' },
+];
+
+// 슬롯별 주옵션 stat key 목록
+// 무기: weaponTypeId를 key / 비무기: slotKey를 key — 슬롯별 주옵션 목록
+const EQ_SLOT_MAIN_OPTIONS = {
+    // ── 무기 (PVE·PVP 각 최소/최대 4개) ──
+    sword_shield: ['pveMeleeMinAtk', 'pveMeleeMaxAtk', 'pvpMeleeMinAtk', 'pvpMeleeMaxAtk'],
+    greatsword:   ['pveMeleeMinAtk', 'pveMeleeMaxAtk', 'pvpMeleeMinAtk', 'pvpMeleeMaxAtk'],
+    dagger:       ['pveMeleeMinAtk', 'pveMeleeMaxAtk', 'pvpMeleeMinAtk', 'pvpMeleeMaxAtk'],
+    bow:          ['pveRangedMinAtk', 'pveRangedMaxAtk', 'pvpRangedMinAtk', 'pvpRangedMaxAtk'],
+    orb:          ['pveMagicMinAtk',  'pveMagicMaxAtk',  'pvpMagicMinAtk',  'pvpMagicMaxAtk'],
+    staff:        ['pveMagicMinAtk',  'pveMagicMaxAtk',  'pvpMagicMinAtk',  'pvpMagicMaxAtk'],
+    // ── 방어구 (근거리·원거리·마법 방어력 3개) ──
+    helmet:    ['meleeDef', 'rangedDef', 'magicDef'],
+    armor:     ['meleeDef', 'rangedDef', 'magicDef'],
+    gloves:    ['meleeDef', 'rangedDef', 'magicDef'],
+    boots:     ['meleeDef', 'rangedDef', 'magicDef'],
+    shirt:     ['meleeDef', 'rangedDef', 'magicDef'],
+    belt:      ['meleeDef', 'rangedDef', 'magicDef'],
+    cloak:     ['meleeDef', 'rangedDef', 'magicDef'],
+    // ── 장신구 (공격력 계열 PVE·PVP + 방어력 1종 = 3개) ──
+    greaves:   ['pveNormalAtk', 'pvpNormalAtk', 'meleeDef'],
+    necklace:  ['pveNormalAtk', 'pvpNormalAtk', 'rangedDef'],
+    earring:   ['pveNormalAtk', 'pvpNormalAtk', 'magicDef'],
+    bracelet:  ['pveCritAtk',   'pvpCritAtk',   'meleeDef'],
+    ring:      ['pveCritAtk',   'pvpCritAtk',   'rangedDef'],
+    brooch:    ['pveCritAtk',   'pvpCritAtk',   'magicDef'],
+    epaulette: ['pveSkillAtk',  'pvpSkillAtk',  'meleeDef'],
+    armband:   ['pveSkillAtk',  'pvpSkillAtk',  'rangedDef'],
+    mask:      ['pveSkillAtk',  'pvpSkillAtk',  'magicDef'],
+};
+
+// 스탯 키 → 한글 레이블
+const EQ_STAT_LABELS = {
+    pveMeleeMinAtk:  'PVE 근거리 최소 공격력',
+    pveMeleeMaxAtk:  'PVE 근거리 최대 공격력',
+    pvpMeleeMinAtk:  'PVP 근거리 최소 공격력',
+    pvpMeleeMaxAtk:  'PVP 근거리 최대 공격력',
+    pveRangedMinAtk: 'PVE 원거리 최소 공격력',
+    pveRangedMaxAtk: 'PVE 원거리 최대 공격력',
+    pvpRangedMinAtk: 'PVP 원거리 최소 공격력',
+    pvpRangedMaxAtk: 'PVP 원거리 최대 공격력',
+    pveMagicMinAtk:  'PVE 마법 최소 공격력',
+    pveMagicMaxAtk:  'PVE 마법 최대 공격력',
+    pvpMagicMinAtk:  'PVP 마법 최소 공격력',
+    pvpMagicMaxAtk:  'PVP 마법 최대 공격력',
+    pveNormalAtk:    'PVE 일반 공격 공격력',
+    pvpNormalAtk:    'PVP 일반 공격 공격력',
+    pveCritAtk:      'PVE 치명타 공격력',
+    pvpCritAtk:      'PVP 치명타 공격력',
+    pveSkillAtk:     'PVE 스킬 공격력',
+    pvpSkillAtk:     'PVP 스킬 공격력',
+    meleeDef:        '근거리 방어력',
+    rangedDef:       '원거리 방어력',
+    magicDef:        '마법 방어력',
+};
+
+// ── 스탯 수치 테이블 ──────────────────────────────────────────────────────────
+// 공식: stat = EQ_STAT_START[optKey][statKey]
+//            + EQ_GRADE_BONUS[statKey] × gradeIdx      ← 등급당 기초값 증가
+//            + EQ_PER_POWER[statKey]   × (power − 1)  ← 위력당 증가 (등급 불문 동일)
+//
+// • EQ_STAT_START: grade 0·power 1 초기값 (옵션 키별 개별 설정, 반드시 > 0)
+// • EQ_GRADE_BONUS: 등급 1칸당 추가되는 기초값 (stat 종류별)
+// • EQ_PER_POWER  : 위력 1 증가당 추가값 (stat 종류별, ≥ 1 보장)
+//   → 가치 순위: PVE 공격력 > PVP 공격력 = 방어력 > PVP 보조 공격력
+
+const EQ_STAT_START = {
+    // ── 무기: 일반 등급·위력 1 기준 PVE (min+max)/2 = 60, PVP (min+max)/2 = 6 ──
+    // 나이트(한손검+방패) — 방어형 탱커: PVE 안정적 중간 스프레드, PVP 중간 스프레드(방어 후 반격)
+    sword_shield: { pveMeleeMinAtk: 48, pveMeleeMaxAtk: 72, pvpMeleeMinAtk: 4, pvpMeleeMaxAtk: 8 },
+    // 워리어(양손대검) — 공격형 버스터: PVE 폭발적 편차, PVP 높은 버스트 가능성
+    greatsword:   { pveMeleeMinAtk: 30, pveMeleeMaxAtk: 90, pvpMeleeMinAtk: 3, pvpMeleeMaxAtk: 9 },
+    // 어쌔신(쌍수단검) — 빠른 연타: PVE 매우 좁은 스프레드(일정한 연속 딜), PVP 일관 딜
+    dagger:       { pveMeleeMinAtk: 55, pveMeleeMaxAtk: 65, pvpMeleeMinAtk: 5, pvpMeleeMaxAtk: 7 },
+    // 아처(활) — 원거리 중거리: PVE 중간 스프레드, PVP 균형형
+    bow:          { pveRangedMinAtk: 42, pveRangedMaxAtk: 78, pvpRangedMinAtk: 4, pvpRangedMaxAtk: 8 },
+    // 클레릭(오브) — 힐/서포트: PVE 좁은 스프레드(서포트 안정 딜), PVP 넓은 스프레드(불규칙 마법 폭발)
+    orb:          { pveMagicMinAtk: 54, pveMagicMaxAtk: 66, pvpMagicMinAtk: 3, pvpMagicMaxAtk: 9 },
+    // 소서러(지팡이) — 폭발형 마법: PVE 극단적 스프레드(고위험·고보상), PVP 최고 버스트
+    staff:        { pveMagicMinAtk: 20, pveMagicMaxAtk: 100, pvpMagicMinAtk: 2, pvpMagicMaxAtk: 10 },
+    // ── 방어구: 일반 등급·위력 1 기준, 근거리/원거리/마법 방어력 타입별 7파츠 합산=1000 ──
+    // 컨셉 (각 타입에서 메인>서브>보조): 근거리메인=armor·gloves·belt / 원거리메인=boots·cloak / 마법메인=helmet·shirt
+    armor:     { meleeDef: 300, rangedDef: 160, magicDef:  70 }, // 근거리메인·원거리서브·마법보조
+    helmet:    { meleeDef: 120, rangedDef:  80, magicDef: 310 }, // 마법메인·근거리서브·원거리보조
+    boots:     { meleeDef: 110, rangedDef: 280, magicDef:  50 }, // 원거리메인·근거리서브·마법보조
+    gloves:    { meleeDef: 200, rangedDef:  50, magicDef: 160 }, // 근거리메인·마법서브·원거리보조
+    cloak:     { meleeDef:  70, rangedDef: 260, magicDef: 130 }, // 원거리메인·마법서브·근거리보조
+    shirt:     { meleeDef:  50, rangedDef: 140, magicDef: 250 }, // 마법메인·원거리서브·근거리보조
+    belt:      { meleeDef: 150, rangedDef:  30, magicDef:  30 }, // 근거리메인·마법서브·원거리보조
+    // 타입별 7파츠 합계: meleeDef=1000 rangedDef=1000 magicDef=1000
+    // ── 장신구: 공격력(PVE avg=60/PVP avg=6, 무기 기준) + 방어력 1종(타입별 3파츠 합=450, 파츠 균등) ──
+    // 방어력: 파츠당 균등 150 (450÷3), 공격력 유형으로만 파츠 구분
+    greaves:   { pveNormalAtk: 60, pvpNormalAtk: 6, meleeDef:  150 }, // 일반공격·근거리방어
+    necklace:  { pveNormalAtk: 60, pvpNormalAtk: 6, rangedDef: 150 }, // 일반공격·원거리방어
+    earring:   { pveNormalAtk: 60, pvpNormalAtk: 6, magicDef:  150 }, // 일반공격·마법방어
+    bracelet:  { pveCritAtk:   60, pvpCritAtk:   6, meleeDef:  150 }, // 치명타·근거리방어
+    ring:      { pveCritAtk:   60, pvpCritAtk:   6, rangedDef: 150 }, // 치명타·원거리방어
+    brooch:    { pveCritAtk:   60, pvpCritAtk:   6, magicDef:  150 }, // 치명타·마법방어
+    epaulette: { pveSkillAtk:  60, pvpSkillAtk:  6, meleeDef:  150 }, // 스킬·근거리방어
+    armband:   { pveSkillAtk:  60, pvpSkillAtk:  6, rangedDef: 150 }, // 스킬·원거리방어
+    mask:      { pveSkillAtk:  60, pvpSkillAtk:  6, magicDef:  150 }, // 스킬·마법방어
+    // 방어력 타입별 3파츠 합: meleeDef=450 rangedDef=450 magicDef=450
+};
+
+// 등급 1칸당 기초값 증가 (grade 0 → grade 1: +gradeBonus)
+// 무기 PVE: avg=(8+14)/2=11 < 60 ✓   PVP: avg=(2+4)/2=3 < 6 ✓   min < max ✓
+const EQ_GRADE_BONUS = {
+    // 무기 PVE: avg=(24+36)/2=30 ✓   PVP: avg=(4+8)/2=6 ✓   min<max ✓
+    pveMeleeMinAtk:  24, pveMeleeMaxAtk: 36,
+    pvpMeleeMinAtk:   4, pvpMeleeMaxAtk:  8,
+    pveRangedMinAtk: 24, pveRangedMaxAtk: 36,
+    pvpRangedMinAtk:  4, pvpRangedMaxAtk:  8,
+    pveMagicMinAtk:  24, pveMagicMaxAtk:  36,
+    pvpMagicMinAtk:   4, pvpMagicMaxAtk:   8,
+    // 장신구 공격력: 무기 avg 기준 (PVE avg=30, PVP avg=6)
+    pveNormalAtk: 30,    pvpNormalAtk:  6,
+    pveCritAtk:   30,    pvpCritAtk:    6,
+    pveSkillAtk:  30,    pvpSkillAtk:   6,
+    // 방어력은 EQ_ARMOR_GRADE12_BONUS 선형 보간으로 처리 → EQ_GRADE_BONUS 참조 안 함
+};
+
+// 위력 1 증가당 수치 상승 (기준값)
+// PVE 공격력: 등급별 스케일(EQ_PER_POWER_GRADE_SCALE) 추가 적용
+//   - 기준값(일반, grade 0): avg=(2+4)/2=3  = 기준 평균 60의 5%
+//   - 절대 등급(grade 12):   avg=3×10=30    = 기준 평균 60의 50%
+// PVP·방어력: 등급 불문 동일 (scale=1)
+const EQ_PER_POWER = {
+    pveMeleeMinAtk:  2,  pveMeleeMaxAtk:  4,   // 등급별 스케일 적용
+    pvpMeleeMinAtk:  1,  pvpMeleeMaxAtk:  1,
+    pveRangedMinAtk: 2,  pveRangedMaxAtk: 4,   // 등급별 스케일 적용
+    pvpRangedMinAtk: 1,  pvpRangedMaxAtk: 1,
+    pveMagicMinAtk:  2,  pveMagicMaxAtk:  4,   // 등급별 스케일 적용
+    pvpMagicMinAtk:  1,  pvpMagicMaxAtk:  1,
+    // 장신구 PVE: 기준 60의 5%=3, PVP=1 (스케일 없음)
+    pveNormalAtk: 3,     pvpNormalAtk: 1,
+    pveCritAtk:   3,     pvpCritAtk:   1,
+    pveSkillAtk:  3,     pvpSkillAtk:  1,
+    // 방어력은 EQ_ARMOR_PER_POWER로 이관 → 여기서 참조 안 함
+};
+
+// PVE 공격력 위력 보너스 등급별 배율 (13등급, 선형, 스텝=1)
+// grade 0(일반)=1 → grade 12(절대)=13
+// 위력 avg = 기준 avg(3) × scale  →  3 / 6 / 9 / … / 39 (= 5% ~ 65%, 5%씩 증가)
+const EQ_PER_POWER_GRADE_SCALE = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+];
+// 스케일 적용 대상 스탯 키 (PVE 공격력 — 무기 6종 + 장신구 3종)
+const PVE_ATK_PER_POWER_KEYS = new Set([
+    'pveMeleeMinAtk', 'pveMeleeMaxAtk',
+    'pveRangedMinAtk', 'pveRangedMaxAtk',
+    'pveMagicMinAtk',  'pveMagicMaxAtk',
+    'pveNormalAtk', 'pveCritAtk', 'pveSkillAtk',  // 장신구 PVE 공격력
+]);
+// 방어력 스탯 키 집합 (방어구·장신구 grade scale 적용 대상)
+const DEF_STAT_KEYS   = new Set(['meleeDef', 'rangedDef', 'magicDef']);
+// 방어구 파츠 집합 (EQ_ARMOR_* 테이블 사용)
+const ARMOR_PART_KEYS = new Set(['helmet','armor','gloves','boots','shirt','belt','cloak']);
+// 장신구 파츠 집합 (공격력=무기 규칙, 방어력=방어구 규칙)
+const ACC_PART_KEYS   = new Set(['greaves','necklace','earring','bracelet','ring','brooch','epaulette','armband','mask']);
+
+// 방어구 파츠별 grade 12 누적 등급 보너스 (각 타입별 합=6000 = 기준 1000의 600%)
+// grade 1당 기준 방어력 1000의 50%(=500) 누적 → grade 12에서 500×12=6000
+// 중간 등급: Math.round(grade12Target × gradeIdx / 12)로 선형 보간 → 모든 grade 정수 보장
+const EQ_ARMOR_GRADE12_BONUS = {
+    // ── 방어구: 컨셉 (메인>서브>보조), 각 타입별 합=6000 (기본값 비율 그대로 ×6) ──
+    armor:  { meleeDef: 1800, rangedDef:  960, magicDef:  420 }, // 근거리메인
+    helmet: { meleeDef:  720, rangedDef:  480, magicDef: 1860 }, // 마법메인
+    boots:  { meleeDef:  660, rangedDef: 1680, magicDef:  300 }, // 원거리메인
+    gloves: { meleeDef: 1200, rangedDef:  300, magicDef:  960 }, // 근거리메인
+    cloak:  { meleeDef:  420, rangedDef: 1560, magicDef:  780 }, // 원거리메인
+    shirt:  { meleeDef:  300, rangedDef:  840, magicDef: 1500 }, // 마법메인
+    belt:   { meleeDef:  900, rangedDef:  180, magicDef:  180 }, // 근거리메인
+    // 방어구 타입별 합계: meleeDef=6000  rangedDef=6000  magicDef=6000
+    // ── 장신구: grade 12 목표=150×600%=900, 파츠 균등 ──
+    greaves:   { meleeDef:   900 },
+    necklace:  { rangedDef:  900 },
+    earring:   { magicDef:   900 },
+    bracelet:  { meleeDef:   900 },
+    ring:      { rangedDef:  900 },
+    brooch:    { magicDef:   900 },
+    epaulette: { meleeDef:   900 },
+    armband:   { rangedDef:  900 },
+    mask:      { magicDef:   900 },
+    // 장신구 타입별 3파츠 합: meleeDef=2700  rangedDef=2700  magicDef=2700
+};
+
+// 방어구·장신구 파츠별 위력 기준값 (grade 0, EQ_PER_POWER_GRADE_SCALE[0]=1 적용 시)
+// 방어구: 타입별 grade 0 합=50(5%), grade 12 합=50×13=650(65%)
+// 장신구: 파츠당 1 (기준 25의 ≈4%), grade 12=1×13=13
+const EQ_ARMOR_PER_POWER = {
+    // ── 방어구 ──
+    armor:  { meleeDef: 15, rangedDef:  8, magicDef:  3 }, // 근거리메인
+    helmet: { meleeDef:  6, rangedDef:  4, magicDef: 16 }, // 마법메인
+    boots:  { meleeDef:  5, rangedDef: 14, magicDef:  2 }, // 원거리메인
+    gloves: { meleeDef: 10, rangedDef:  3, magicDef:  8 }, // 근거리메인
+    cloak:  { meleeDef:  4, rangedDef: 13, magicDef:  7 }, // 원거리메인
+    shirt:  { meleeDef:  3, rangedDef:  7, magicDef: 13 }, // 마법메인
+    belt:   { meleeDef:  7, rangedDef:  1, magicDef:  1 }, // 근거리메인
+    // 방어구 타입별 합계: meleeDef=50  rangedDef=50  magicDef=50
+    // ── 장신구: 위력 기준값=8 (기준 150의 ≈5%), 파츠 균등, 타입별 합=24 ──
+    greaves:   { meleeDef:   8 },
+    necklace:  { rangedDef:  8 },
+    earring:   { magicDef:   8 },
+    bracelet:  { meleeDef:   8 },
+    ring:      { rangedDef:  8 },
+    brooch:    { magicDef:   8 },
+    epaulette: { meleeDef:   8 },
+    armband:   { rangedDef:  8 },
+    mask:      { magicDef:   8 },
+    // 장신구 타입별 합: meleeDef=24  rangedDef=24  magicDef=24
+};
+
+// 장비 스탯 계산
+// stat = start + gradeCumBonus + perPower × gradeScale × (power−1)
+// ┌─────────────┬────────────────┬──────────────────────┬────────────────────┐
+// │             │ gradeCumBonus  │ pInc                 │ scale              │
+// ├─────────────┼────────────────┼──────────────────────┼────────────────────┤
+// │ 방어구 방어력│ 선형 보간      │ EQ_ARMOR_PER_POWER   │ EQ_PER_POWER_GRADE │
+// │ 장신구 방어력│ 선형 보간      │ EQ_ARMOR_PER_POWER   │ EQ_PER_POWER_GRADE │
+// │ 무기/장신구  │ GRADE_BONUS×n  │ EQ_PER_POWER         │ PVE만 GRADE_SCALE  │
+// │  공격력      │               │                      │  PVP는 1           │
+// │ 방어구 기타  │ 0             │ EQ_ARMOR_PER_POWER   │ 1                  │
+// └─────────────┴────────────────┴──────────────────────┴────────────────────┘
+function calcEqStatValue(gradeIdx, power, optKey, statKey) {
+    const start     = (EQ_STAT_START[optKey] || {})[statKey] || 0;
+    const isArmor   = ARMOR_PART_KEYS.has(optKey);
+    const isAcc     = ACC_PART_KEYS.has(optKey);
+    const isDefStat = DEF_STAT_KEYS.has(statKey);
+    // 등급 누적 보너스
+    let gradeCumBonus;
+    if ((isArmor || isAcc) && isDefStat) {
+        // 방어구·장신구 방어력: grade 12 목표값 → 선형 보간
+        const grade12Target = ((EQ_ARMOR_GRADE12_BONUS[optKey] || {})[statKey] || 0);
+        gradeCumBonus = Math.round(grade12Target * gradeIdx / 12);
+    } else if (isArmor) {
+        // 방어구의 비-방어력 스탯: 등급 보너스 없음
+        gradeCumBonus = 0;
+    } else {
+        // 무기·장신구 공격력: grade당 고정 보너스 누적
+        gradeCumBonus = (EQ_GRADE_BONUS[statKey] || 0) * gradeIdx;
+    }
+    // 위력 기준값
+    const useArmorTable = isArmor || (isAcc && isDefStat);
+    const pInc = useArmorTable
+                 ? ((EQ_ARMOR_PER_POWER[optKey] || {})[statKey] ?? 0)
+                 : (EQ_PER_POWER[statKey] || 1);
+    // 등급 스케일: PVE 공격력 or 방어구·장신구의 방어력
+    const scale = PVE_ATK_PER_POWER_KEYS.has(statKey)
+                  || (isDefStat && (isArmor || isAcc))
+                  ? EQ_PER_POWER_GRADE_SCALE[gradeIdx] : 1;
+    return start + gradeCumBonus + pInc * scale * (power - 1);
+}
+
+// 슬롯 key → 옵션 key (무기는 weaponTypeId, 나머지는 slotKey)
+function getEqOptionKey(slotKey, weaponTypeId) {
+    return slotKey === 'weapon' ? weaponTypeId : slotKey;
+}
+
+// 착용 장비 전체 보너스 합산
+function getEquipmentBonuses() {
+    const result = {
+        pveMeleeMinAtk: 0,  pveMeleeMaxAtk: 0,
+        pvpMeleeMinAtk: 0,  pvpMeleeMaxAtk: 0,
+        pveRangedMinAtk: 0, pveRangedMaxAtk: 0,
+        pvpRangedMinAtk: 0, pvpRangedMaxAtk: 0,
+        pveMagicMinAtk: 0,  pveMagicMaxAtk: 0,
+        pvpMagicMinAtk: 0,  pvpMagicMaxAtk: 0,
+        pveNormalAtk: 0, pvpNormalAtk: 0,
+        pveCritAtk: 0,   pvpCritAtk: 0,
+        pveSkillAtk: 0,  pvpSkillAtk: 0,
+        meleeDef: 0, rangedDef: 0, magicDef: 0,
+    };
+    EQ_SLOT_DEFS.forEach(sl => {
+        const invIdx = equippedItems[sl.key];
+        if (invIdx === null || invIdx < 0 || !inventory[invIdx]) return;
+        const item = inventory[invIdx];
+        if (!item.eqStats) return;
+        Object.keys(item.eqStats).forEach(k => {
+            if (result[k] !== undefined) result[k] += item.eqStats[k];
+        });
+    });
+    return result;
+}
+
+// 장비 아이템 생성 (도감에서 추가할 때 사용)
+function createEquipItem(slotKey, weaponTypeId, gradeIdx, power) {
+    const optKey    = getEqOptionKey(slotKey, weaponTypeId);
+    const mainStats = EQ_SLOT_MAIN_OPTIONS[optKey] || [];
+    const eqStats   = {};
+    mainStats.forEach(k => { eqStats[k] = calcEqStatValue(gradeIdx, power, optKey, k); });
+
+    const slotDef = EQ_SLOT_DEFS.find(s => s.key === slotKey);
+    const grade   = EQ_GRADES[gradeIdx];
+    let partLabel = slotDef ? slotDef.label : slotKey;
+    let icon      = slotDef ? slotDef.icon  : '📦';
+
+    if (slotKey === 'weapon') {
+        const wt = EQ_WEAPON_TYPES.find(w => w.id === weaponTypeId);
+        if (wt) { partLabel = wt.label; icon = wt.icon; }
+    }
+    const name = `[${grade.label}] ${partLabel}`;
+    const descLines = mainStats.map(k => `${EQ_STAT_LABELS[k]}: +${calcEqStatValue(gradeIdx, power, optKey, k).toLocaleString()}`);
+    const description = `위력 ${power}  |  ${grade.label} 등급\n` + descLines.join('\n');
+
+    return {
+        type: 'equipment', slot: slotKey, weaponTypeId: slotKey === 'weapon' ? weaponTypeId : null,
+        gradeIdx, power, name, icon, description, gradeColor: grade.color,
+        eqStats, equipped: false, equippedSlot: null,
+    };
+}
+
+// ── 도감 UI 함수 ──────────────────────────────────────────────────────────────
+let _codexPower    = 1;
+let _codexPartIdx  = 0; // 현재 선택된 파츠 인덱스
+let _codexGradeIdx = 0; // 현재 선택된 등급 인덱스
+
+function openCodex() {
+    const partSection = document.getElementById('codex-part-section');
+    const gradeGroup  = document.getElementById('codex-grade-group');
+    if (!partSection.children.length) {
+        // ── 파츠 버튼: 무기/방어구/장신구 3그룹 ──────────────────────────────
+        const PART_GROUPS = [
+            { label: '무기',   gridCls: 'codex-weapon-group',
+              match: p => p.slot === 'weapon' },
+            { label: '방어구', gridCls: 'codex-armor-group',
+              match: p => ['helmet','armor','gloves','boots','shirt','belt','cloak'].includes(p.slot) },
+            { label: '장신구', gridCls: 'codex-accessory-group',
+              match: p => ['greaves','necklace','earring','bracelet','ring','brooch','epaulette','armband','mask'].includes(p.slot) },
+        ];
+        PART_GROUPS.forEach(group => {
+            const header = document.createElement('div');
+            header.className = 'codex-part-header';
+            header.textContent = group.label;
+            partSection.appendChild(header);
+
+            const grid = document.createElement('div');
+            grid.className = `codex-btn-group ${group.gridCls}`;
+            partSection.appendChild(grid);
+
+            EQ_CODEX_PARTS.forEach((p, i) => {
+                if (!group.match(p)) return;
+                const slotDef = EQ_SLOT_DEFS.find(s => s.key === p.slot);
+                let partIcon  = slotDef ? slotDef.icon : '';
+                if (p.weaponTypeId) {
+                    const wt = EQ_WEAPON_TYPES.find(w => w.id === p.weaponTypeId);
+                    if (wt) partIcon = wt.icon;
+                }
+                const btn = document.createElement('button');
+                btn.className = 'codex-sel-btn' + (i === _codexPartIdx ? ' active' : '');
+                btn.textContent = `${partIcon} ${p.label}`;
+                btn.title = p.label;
+                btn.onclick = () => selectCodexPart(i);
+                grid.appendChild(btn);
+            });
+        });
+
+        // ── 등급 버튼: 비활성 상태에도 등급 색상 표시 ───────────────────────
+        EQ_GRADES.forEach((g, i) => {
+            const isActive = (i === _codexGradeIdx);
+            const btn = document.createElement('button');
+            btn.className = 'codex-sel-btn' + (isActive ? ' active' : '');
+            btn.textContent = g.label;
+            btn.title = g.label;
+            btn.dataset.gradeColor = g.color;
+            btn.style.color       = g.color;
+            btn.style.borderColor = isActive ? g.color : `${g.color}66`;
+            btn.style.background  = isActive ? `${g.color}22` : '';
+            btn.onclick = () => selectCodexGrade(i);
+            gradeGroup.appendChild(btn);
+        });
+    }
+    document.getElementById('codex-overlay').classList.add('open');
+    renderCodex();
+}
+
+// 파츠 버튼 선택 (3그룹 전체 순회)
+function selectCodexPart(idx) {
+    _codexPartIdx = idx;
+    document.querySelectorAll('#codex-part-section .codex-sel-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === idx);
+    });
+    renderCodex();
+}
+
+// 등급 버튼 선택 (비활성도 등급 색상 유지)
+function selectCodexGrade(idx) {
+    _codexGradeIdx = idx;
+    document.querySelectorAll('#codex-grade-group .codex-sel-btn').forEach((b, i) => {
+        const active = (i === idx);
+        const color  = b.dataset.gradeColor;
+        b.classList.toggle('active', active);
+        b.style.color       = color;
+        b.style.borderColor = active ? color : `${color}66`;
+        b.style.background  = active ? `${color}22` : '';
+    });
+    renderCodex();
+}
+
+function closeCodex() {
+    document.getElementById('codex-overlay').classList.remove('open');
+}
+
+function syncCodexPower(from) {
+    if (from === 'slider') {
+        _codexPower = parseInt(document.getElementById('codex-power-slider').value, 10);
+        document.getElementById('codex-power-num').value = _codexPower;
+    } else {
+        let v = parseInt(document.getElementById('codex-power-num').value, 10);
+        if (isNaN(v)) v = 1;
+        _codexPower = Math.max(1, Math.min(355, v));
+        document.getElementById('codex-power-slider').value = _codexPower;
+        document.getElementById('codex-power-num').value    = _codexPower;
+    }
+    renderCodex();
+}
+
+// 위력 직접 지정 (MIN/MAX 버튼)
+function setCodexPower(v) {
+    _codexPower = Math.max(1, Math.min(355, v));
+    document.getElementById('codex-power-slider').value = _codexPower;
+    document.getElementById('codex-power-num').value    = _codexPower;
+    renderCodex();
+}
+
+// 위력 상대 조정 (+1/-1/+10/-10 버튼)
+function adjustCodexPower(delta) {
+    setCodexPower(_codexPower + delta);
+}
+
+function renderCodex() {
+    const partIdx  = _codexPartIdx;
+    const gradeIdx = _codexGradeIdx;
+    const part     = EQ_CODEX_PARTS[partIdx];
+    const grade    = EQ_GRADES[gradeIdx];
+    const optKey   = getEqOptionKey(part.slot, part.weaponTypeId);
+    const mainStats = EQ_SLOT_MAIN_OPTIONS[optKey] || [];
+
+    // 파츠 아이콘 결정
+    const slotDef = EQ_SLOT_DEFS.find(s => s.key === part.slot);
+    let partIcon  = slotDef ? slotDef.icon : '📦';
+    let restrictHtml = '';
+    if (part.slot === 'weapon' && part.weaponTypeId) {
+        const wt = EQ_WEAPON_TYPES.find(w => w.id === part.weaponTypeId);
+        if (wt) {
+            partIcon = wt.icon;
+            const canEquip   = wt.classes.includes(currentClass);
+            const classNames = wt.classes.map(c => CLASS_DEFS[c]?.label || c).join(', ');
+            restrictHtml = `<div class="codex-restriction${canEquip ? ' codex-class-ok' : ''}">착용 클래스: ${classNames}${canEquip ? ' ✓' : ' ✗'}</div>`;
+        }
+    } else {
+        restrictHtml = `<div class="codex-restriction codex-class-ok">착용 클래스: 전체 ✓</div>`;
+    }
+
+    // 주옵션 스탯 목록
+    const statsHtml = mainStats.map(k => {
+        const val = calcEqStatValue(gradeIdx, _codexPower, optKey, k);
+        return `<div class="codex-stat-row"><span class="codex-stat-label">${EQ_STAT_LABELS[k] || k}</span><span class="codex-stat-val">+${val.toLocaleString()}</span></div>`;
+    }).join('');
+
+    document.getElementById('codex-info').innerHTML = `
+        <div class="codex-item-name" style="color:${grade.color};">${partIcon} [${grade.label}] ${part.label}</div>
+        <div class="codex-grade-badge" style="color:${grade.color};">위력 ${_codexPower} / 355</div>
+        <hr class="codex-divider">
+        ${statsHtml}
+        <hr class="codex-divider">
+        ${restrictHtml}
+    `;
+
+    const canAdd = inventory.some(s => s === null);
+    document.getElementById('codex-add-btn').disabled = !canAdd;
+}
+
+function codexAddToInventory() {
+    const partIdx  = _codexPartIdx;
+    const gradeIdx = _codexGradeIdx;
+    const part = EQ_CODEX_PARTS[partIdx];
+    const item = createEquipItem(part.slot, part.weaponTypeId, gradeIdx, _codexPower);
+    if (!addToInventory(item)) {
+        addLog('⚠ 인벤토리가 가득 찼습니다. 공간을 확보하세요.', 'info');
+        return;
+    }
+    addLog(`📦 도감: ${item.name} (위력 ${_codexPower}) → 인벤토리에 추가됨`, 'info');
+    // 인벤토리 팝업이 열려 있으면 갱신
+    if (document.getElementById('inventory-overlay').classList.contains('open')) renderInventory();
+    renderCodex(); // 추가 가능 여부 버튼 상태 갱신
+}
 
 // 빈 슬롯에 아이템 1개 추가. 성공 여부 반환
 function addToInventory(item) {
@@ -9649,11 +11513,168 @@ function addToInventory(item) {
 
 function openInventory() {
     document.getElementById('inventory-overlay').classList.add('open');
+    renderEquipPanel();
     renderInventory();
 }
 function closeInventory() {
+    // 인벤토리를 닫을 때 분해 모드도 함께 종료
+    if (_invDisMode) exitInvDisMode();
     document.getElementById('inventory-overlay').classList.remove('open');
 }
+
+// ── 분해 모드 켜기/끄기 ────────────────────────────────────────────────────
+function toggleInvDisMode() {
+    if (_invDisMode) exitInvDisMode();
+    else enterInvDisMode();
+}
+function enterInvDisMode() {
+    _invDisMode = true;
+    _invDisSelected.clear();
+    document.getElementById('invtab-dis').classList.add('active');
+    document.getElementById('inv-dis-bar').classList.add('active');
+    updateDisBar();
+    renderInventory();
+}
+function exitInvDisMode() {
+    _invDisMode = false;
+    _invDisSelected.clear();
+    document.getElementById('invtab-dis').classList.remove('active');
+    document.getElementById('inv-dis-bar').classList.remove('active');
+    renderInventory();
+}
+
+// 분해 아이템 선택 토글 (착용 중인 아이템은 선택 불가)
+function toggleDisassembleItem(invIdx) {
+    const item = inventory[invIdx];
+    if (!item || item.equipped) return;
+    if (_invDisSelected.has(invIdx)) _invDisSelected.delete(invIdx);
+    else _invDisSelected.add(invIdx);
+    updateDisBar();
+    renderInventory();
+}
+
+// 전체 선택 (착용 중 제외, 현재 탭 필터 기준)
+function selectAllDisassemble() {
+    inventory.forEach((item, i) => {
+        if (!item) return;
+        if (item.equipped) return;
+        if (_invTab === 'equipment' && item.type !== 'equipment') return;
+        if (_invTab === 'misc'      && item.type === 'equipment') return;
+        _invDisSelected.add(i);
+    });
+    updateDisBar();
+    renderInventory();
+}
+
+// 전체 해제
+function clearDisassembleSelect() {
+    _invDisSelected.clear();
+    updateDisBar();
+    renderInventory();
+}
+
+// 분해 액션 바 카운트 갱신
+function updateDisBar() {
+    const cnt = _invDisSelected.size;
+    document.getElementById('inv-dis-count').textContent = cnt;
+    const execBtn = document.getElementById('inv-dis-exec');
+    execBtn.disabled = (cnt === 0);
+}
+
+// 선택된 아이템 분해 실행
+function doDisassemble() {
+    const targets = [..._invDisSelected];
+    if (targets.length === 0) return;
+    if (!confirm(`선택한 아이템 ${targets.length}개를 분해하시겠습니까?\n분해된 아이템은 복구할 수 없습니다.`)) return;
+    targets.forEach(i => { inventory[i] = null; });
+    _invDisSelected.clear();
+    updateDisBar();
+    renderInventory();
+    addLog(`🔨 아이템 ${targets.length}개를 분해했습니다.`, 'info');
+}
+
+// 장비 슬롯 패널 렌더링
+function renderEquipPanel() {
+    const renderSlot = (sl) => {
+        const invIdx = equippedItems[sl.key];
+        const item   = (invIdx !== null && invIdx >= 0) ? inventory[invIdx] : null;
+        if (item) {
+            const gc = item.gradeColor || '';
+            const borderStyle = gc ? ` style="border-color:${gc}80;"` : '';
+            const iconStyle   = gc ? ` style="color:${gc};"` : '';
+            return `<div class="eq-slot occupied"${borderStyle} onclick="unequipSlot('${sl.key}')"
+                title="${item.name}\n[${sl.label}] 클릭 → 탈착">
+                <span class="eq-slot-icon"${iconStyle}>${item.icon || sl.icon}</span>
+                <span class="eq-slot-label">${sl.label}</span>
+            </div>`;
+        }
+        return `<div class="eq-slot" title="${sl.label} (비어 있음)">
+            <span class="eq-slot-icon">${sl.icon}</span>
+            <span class="eq-slot-label">${sl.label}</span>
+        </div>`;
+    };
+    const armor = EQ_SLOT_DEFS.filter(s => s.group === 'armor');
+    const acc   = EQ_SLOT_DEFS.filter(s => s.group === 'accessory');
+    document.getElementById('eq-grid-armor').innerHTML = armor.map(renderSlot).join('');
+    document.getElementById('eq-grid-acc').innerHTML   = acc.map(renderSlot).join('');
+}
+
+// 인벤토리 아이템 착용 (invIdx: 인벤토리 배열 인덱스)
+function equipItem(invIdx) {
+    const item = inventory[invIdx];
+    if (!item || item.type !== 'equipment' || !item.slot) return;
+
+    // 무기 클래스 착용 제한 체크
+    if (item.slot === 'weapon' && item.weaponTypeId) {
+        const wt = EQ_WEAPON_TYPES.find(w => w.id === item.weaponTypeId);
+        if (wt && !wt.classes.includes(currentClass)) {
+            const classNames = wt.classes.map(c => CLASS_DEFS[c]?.label || c).join(', ');
+            addLog(`⚠ [${item.name}]은 ${classNames} 전용 무기입니다. 현재 클래스(${CLASS_DEFS[currentClass]?.label || currentClass})는 착용 불가.`, 'info');
+            return;
+        }
+    }
+
+    const slotKey = item.slot;
+    // 해당 슬롯에 이미 착용 중인 아이템이 있으면 먼저 탈착
+    const prevIdx = equippedItems[slotKey];
+    if (prevIdx !== null && prevIdx >= 0 && inventory[prevIdx]) {
+        inventory[prevIdx].equipped     = false;
+        inventory[prevIdx].equippedSlot = null;
+    }
+
+    equippedItems[slotKey] = invIdx;
+    item.equipped           = true;
+    item.equippedSlot       = slotKey;
+
+    // 무기 착용 시 공격 타입을 무기에 맞게 전환
+    if (slotKey === 'weapon' && item.weaponTypeId) {
+        const wt = EQ_WEAPON_TYPES.find(w => w.id === item.weaponTypeId);
+        if (wt) character.normalAtkType = wt.atkType;
+    }
+
+    renderEquipPanel();
+    renderInventory();
+}
+
+// 착용 슬롯 탈착 (slotKey: 'weapon' | 'helmet' | ... )
+function unequipSlot(slotKey) {
+    const invIdx = equippedItems[slotKey];
+    if (invIdx === null || invIdx < 0) return;
+    if (inventory[invIdx]) {
+        inventory[invIdx].equipped     = false;
+        inventory[invIdx].equippedSlot = null;
+    }
+    equippedItems[slotKey] = null;
+
+    // 무기 탈착 시 공격 타입을 클래스 기본값으로 복원
+    if (slotKey === 'weapon') {
+        character.normalAtkType = CLASS_DEFS[currentClass]?.normalAtkType || 'melee';
+    }
+
+    renderEquipPanel();
+    renderInventory();
+}
+
 function switchInvTab(tab) {
     _invTab = tab;
     ['all', 'equipment', 'misc'].forEach(t => {
@@ -9667,22 +11688,66 @@ function renderInventory() {
     const totalUsed = inventory.filter(s => s !== null).length;
     document.getElementById('inv-item-count').textContent = totalUsed;
 
-    // 500칸 전체를 항상 렌더링 (탭 필터에 맞지 않는 슬롯은 빈 슬롯으로 표시)
-    let html = '';
+    // 착용중 → 일반 → 빈 슬롯 순으로 시각 정렬
+    const equipped = [], regular = [], empties = [];
     for (let i = 0; i < INVENTORY_SIZE; i++) {
         const item = inventory[i];
+        if (!item) { empties.push(-1); continue; }
+        if (item.equipped) equipped.push(i);
+        else regular.push(i);
+    }
+    const order = [...equipped, ...regular, ...empties];
+
+    let html = '';
+    for (const idx of order) {
+        const item = idx >= 0 ? inventory[idx] : null;
         let show = null;
-        if (item !== null) {
+        if (item) {
             if (_invTab === 'all') show = item;
             else if (_invTab === 'equipment' && item.type === 'equipment') show = item;
             else if (_invTab === 'misc'      && item.type !== 'equipment') show = item;
         }
         if (show) {
-            html += `<div class="inv-slot occupied ${show.type === 'equipment' ? 'equipment' : ''}"
-                title="${show.name}${show.description ? '\n' + show.description : ''}">
-                <span>${show.icon || '📦'}</span>
-                ${show.quantity > 1 ? `<span class="inv-qty">${show.quantity}</span>` : ''}
-            </div>`;
+            const isEq = !!show.equipped;
+            const gc   = show.gradeColor || '';
+
+            if (_invDisMode) {
+                // ── 분해 모드 렌더링 ─────────────────────────────────
+                const locked   = isEq;
+                const selected = _invDisSelected.has(idx);
+                const lockCls  = locked   ? ' dis-locked'   : '';
+                const selCls   = selected ? ' dis-selected' : '';
+                const checkMk  = selected ? '<span class="dis-check">✓</span>' : '';
+                const click    = locked ? '' : `onclick="toggleDisassembleItem(${idx})"`;
+                const titleHint = locked ? '\n[착용중] 분해 불가' : (selected ? '\n✓ 선택됨 — 클릭으로 해제' : '\n클릭으로 분해 선택');
+                const borderStyle = selected ? '' : (gc ? ` style="border-color:${gc}80;"` : '');
+                const iconStyle   = gc ? ` style="color:${gc};"` : '';
+                html += `<div class="inv-slot occupied ${show.type === 'equipment' ? 'equipment' : ''}${lockCls}${selCls}"
+                    ${click}${borderStyle}
+                    title="${show.name}${show.description ? '\n' + show.description : ''}${titleHint}">
+                    <span${iconStyle}>${show.icon || '📦'}</span>
+                    ${isEq ? '<span class="inv-equipped-badge">착용</span>' : ''}
+                    ${checkMk}
+                    ${show.quantity > 1 ? `<span class="inv-qty">${show.quantity}</span>` : ''}
+                </div>`;
+            } else {
+                // ── 일반 모드 렌더링 ─────────────────────────────────
+                const badge   = isEq ? '<span class="inv-equipped-badge">착용</span>' : '';
+                const eqClass = isEq ? 'inv-equipped' : '';
+                const eqHint  = isEq ? '\n[착용중] 클릭 → 탈착' : (show.slot ? '\n클릭 → 착용' : '');
+                const click   = isEq
+                    ? `onclick="unequipSlot('${show.equippedSlot}')"`
+                    : (show.type === 'equipment' && show.slot ? `onclick="equipItem(${idx})"` : '');
+                const borderStyle = gc ? ` style="border-color:${gc}80;"` : '';
+                const iconStyle   = gc ? ` style="color:${gc};"` : '';
+                html += `<div class="inv-slot occupied ${show.type === 'equipment' ? 'equipment' : ''} ${eqClass}"
+                    ${click}${borderStyle}
+                    title="${show.name}${show.description ? '\n' + show.description : ''}${eqHint}">
+                    <span${iconStyle}>${show.icon || '📦'}</span>
+                    ${badge}
+                    ${show.quantity > 1 ? `<span class="inv-qty">${show.quantity}</span>` : ''}
+                </div>`;
+            }
         } else {
             html += `<div class="inv-slot"></div>`;
         }
