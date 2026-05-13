@@ -613,6 +613,15 @@ body {
     font-size: 15px;
     background: rgba(0,0,0,0.25);
 }
+.drop-log-icon-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    margin-right: 2px;
+    font-size: 14px;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
 
 /* ── 인게임 장비 획득 토스트 (캔버스 좌측 상단 영역) ─────────────────── */
 /* 좌측 하단의 #char-status-panel(bottom:14px, ~210px 높이) 위로 올려 겹침 방지 */
@@ -664,7 +673,11 @@ body {
     font-size: 15px;
     line-height: 1.3;
 }
-.drop-toast-icon  { font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
+.drop-toast-icon  {
+    font-size: 17px; width: 24px; height: 24px; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 4px; box-sizing: border-box;
+}
 .drop-toast-name  { color: #e6edf3; font-weight: bold; }
 .drop-toast-grade { font-size: 15px; font-weight: bold; }
 @keyframes dropToastIn {
@@ -832,10 +845,189 @@ body {
 #ab-combat { border-color: #6e3434; }
 #ab-combat:hover { border-color: #f85149; background: rgba(45, 20, 20, 0.9); }
 #ab-combat .ab-label { color: #f85149; }
+/* 기록 버튼 (도감 좌측) */
+#ab-record { border-color: #2d4f6f; }
+#ab-record:hover { border-color: #79c0ff; background: rgba(15, 35, 55, 0.9); }
+#ab-record .ab-label { color: #79c0ff; }
 /* 도감 버튼 */
 #ab-codex { border-color: #1e3a5f; }
 #ab-codex:hover { border-color: #4fc3f7; background: rgba(10, 30, 50, 0.9); }
 #ab-codex .ab-label { color: #4fc3f7; }
+
+/* ══════════════════════════════════════════
+   진행 초기화 확인 모달
+══════════════════════════════════════════ */
+.reset-confirm-modal {
+    width: 480px; max-width: 92vw;
+    display: flex; flex-direction: column;
+}
+.reset-confirm-body {
+    padding: 22px 26px;
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.reset-warn-icon {
+    font-size: 44px; line-height: 1;
+    margin-bottom: 4px;
+}
+.reset-warn-title {
+    font-size: 17px; font-weight: bold; color: #ff9966;
+    text-align: center;
+}
+.reset-warn-desc {
+    font-size: 15px; color: #c9d1d9;
+    text-align: center; line-height: 1.5;
+    margin: 4px 0 8px;
+}
+.reset-warn-desc strong { color: #f85149; }
+.reset-warn-list {
+    align-self: stretch;
+    margin: 4px 0 8px; padding: 10px 14px 10px 30px;
+    background: rgba(248, 81, 73, 0.08);
+    border: 1px solid rgba(248, 81, 73, 0.3);
+    border-radius: 6px;
+    color: #c9d1d9; font-size: 15px;
+    line-height: 1.7;
+}
+.reset-warn-note {
+    font-size: 15px; color: #8b949e;
+    text-align: center;
+    padding: 8px 4px 4px;
+    line-height: 1.5;
+}
+.reset-warn-note strong { color: #79c0ff; }
+.reset-confirm-btn-row {
+    display: flex; gap: 10px;
+    align-self: stretch;
+    margin-top: 10px; padding-top: 14px;
+    border-top: 1px solid #21262d;
+}
+.reset-btn-cancel, .reset-btn-danger {
+    flex: 1;
+    font-size: 15px; font-weight: bold;
+    padding: 10px 14px;
+    border-radius: 6px; cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+}
+.reset-btn-cancel {
+    background: #1f2430; border: 1px solid #30363d;
+    color: #c9d1d9;
+}
+.reset-btn-cancel:hover { background: #2d3243; border-color: #6e7681; }
+.reset-btn-danger {
+    background: #2e1a1a; border: 1px solid #cc3300;
+    color: #ff9966;
+}
+.reset-btn-danger:hover {
+    background: #4a1818; border-color: #f85149; color: #ff6633;
+}
+
+/* ══════════════════════════════════════════
+   기록 모달 (스테이지 클리어 기록)
+══════════════════════════════════════════ */
+.record-modal { width: 1100px; max-width: 96vw; max-height: 88vh; display: flex; flex-direction: column; }
+.record-body { overflow-y: auto; flex: 1; padding: 14px 18px; }
+.record-empty {
+    text-align: center; color: #8b949e; padding: 60px 20px;
+    font-size: 15px;
+}
+.record-toolbar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0 12px;
+    border-bottom: 1px solid #21262d; margin-bottom: 12px;
+}
+.record-toolbar .rec-back-btn {
+    background: #1f2430; border: 1px solid #30363d; border-radius: 5px;
+    color: #79c0ff; font-size: 15px; padding: 5px 12px; cursor: pointer;
+}
+.record-toolbar .rec-back-btn:hover { background: #2d3a4f; border-color: #79c0ff; }
+.record-toolbar .rec-title { font-size: 17px; font-weight: bold; color: #c9d1d9; }
+.record-toolbar .rec-meta  { font-size: 15px; color: #8b949e; margin-left: auto; }
+
+/* ── 기록 리스트 (스테이지별 카드) ─────────────────────────────────────── */
+.record-list { display: flex; flex-direction: column; gap: 8px; }
+.record-card {
+    background: #0d1117; border: 1px solid #30363d; border-radius: 7px;
+    padding: 10px 14px; cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+    display: grid;
+    grid-template-columns: 80px 1fr 120px 140px 140px;
+    align-items: center; gap: 12px;
+}
+.record-card:hover { border-color: #79c0ff; background: #161b22; }
+.record-card .rec-stage-num {
+    font-size: 17px; font-weight: bold; color: #a78bfa;
+}
+.record-card .rec-info-col { font-size: 15px; color: #8b949e; }
+.record-card .rec-info-col strong { color: #e6edf3; }
+.record-card .rec-time { font-family: monospace; color: #79c0ff; font-weight: bold; }
+.record-card .rec-date { font-size: 15px; color: #6e7681; font-family: monospace; }
+
+/* ── 기록 상세 ─────────────────────────────────────────────────────────── */
+.record-section-title {
+    font-size: 15px; font-weight: bold; color: #a78bfa;
+    border-bottom: 1px solid #30363d; margin: 14px 0 8px; padding-bottom: 4px;
+}
+.record-kv-table { width: 100%; border-collapse: collapse; font-size: 15px; margin-bottom: 4px; }
+.record-kv-table td {
+    padding: 6px 10px; border: 1px solid #21262d; color: #e6edf3;
+}
+.record-kv-table td:first-child { color: #8b949e; width: 200px; }
+.record-kv-table tr:nth-child(even) td { background: #0f1117; }
+
+.record-round-table { width: 100%; border-collapse: collapse; font-size: 15px; margin-bottom: 4px; }
+.record-round-table th {
+    background: #161b22; color: #8b949e; padding: 7px 10px;
+    border: 1px solid #21262d; text-align: center; font-weight: bold;
+}
+.record-round-table td {
+    padding: 6px 10px; border: 1px solid #21262d; text-align: center; color: #e6edf3;
+}
+.record-round-table tr:nth-child(even) td { background: #0f1117; }
+.record-round-table tr.boss-row td { background: #1a0000; color: #ff6666; }
+.record-round-table .rec-avg-cell { color: #79c0ff; font-weight: bold; font-family: monospace; }
+
+/* 라운드별 개별 처치 시간 표 */
+.record-kill-times-row {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    padding: 4px 6px;
+}
+.record-kill-time-chip {
+    background: rgba(167, 139, 250, 0.12);
+    border: 1px solid rgba(167, 139, 250, 0.4);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-family: monospace;
+    font-size: 15px;
+    color: #c9d1d9;
+}
+
+/* 장비 스냅샷 그리드 */
+.record-eq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.record-eq-slot {
+    background: #0d1117; border: 2px solid #30363d; border-radius: 6px;
+    padding: 8px 10px;
+    display: flex; align-items: center; gap: 8px;
+    min-width: 0;
+}
+.record-eq-slot.empty {
+    background: #0a0d12; border-color: #1c2128; opacity: 0.6;
+}
+.record-eq-slot-icon {
+    font-size: 22px; flex-shrink: 0;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px;
+}
+.record-eq-slot-info { min-width: 0; flex: 1; }
+.record-eq-slot-name { font-size: 15px; font-weight: bold; color: #e6edf3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.record-eq-slot-sub  { font-size: 15px; color: #8b949e; }
 /* 인벤토리 버튼 */
 #ab-inventory { border-color: #9e6a03; }
 #ab-inventory:hover { border-color: #d29922; background: rgba(45, 35, 10, 0.9); }
@@ -1177,12 +1369,15 @@ body {
     font-size: 22px;
     position: relative;
     cursor: default;
-    transition: border-color 0.12s;
+    transition: filter 0.12s, transform 0.08s;
 }
 .inv-slot.occupied { border-color: #30363d; cursor: pointer; }
 .inv-slot.occupied:hover { border-color: #58a6ff; background: #161b22; }
-.inv-slot.equipment { border-color: #2d4a2d; }
-.inv-slot.equipment:hover { border-color: #3fb950; }
+/* 장비 아이템 슬롯 — 인라인 style의 등급색 테두리(2px)·배경 그라데이션이 적용됨.
+   인라인 style이 :hover의 border-color/background를 덮으므로 hover 피드백은
+   filter(밝기)·transform(확대)으로 처리하여 등급색을 항상 유지한다. */
+.inv-slot.equipment { border-width: 2px; border-color: #2d4a2d; }
+.inv-slot.equipment:hover { filter: brightness(1.25); transform: scale(1.04); }
 /* 분해 모드 — 선택된 슬롯 */
 .inv-slot.dis-selected {
     border-color: #f85149 !important;
@@ -1201,14 +1396,153 @@ body {
     line-height: 1;
     pointer-events: none;
 }
-/* 분해 모드 토글 버튼 */
-.inv-tab.dis-toggle {
-    margin-left: auto;
-    color: #8b949e;
-    border-color: transparent;
+/* (구) 인벤토리 탭의 자동 장착·분해 버튼 — 좌측 패널 하단(.eq-icon-btn)으로 이전됨 */
+
+/* ══════════════════════════════════════════
+   장비 툴팁 (인벤토리/장착 슬롯 클릭 시)
+══════════════════════════════════════════ */
+.item-tooltip-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 700; /* 인벤토리 오버레이(500) 위에 표시 */
 }
-.inv-tab.dis-toggle:hover { color: #f85149; background: rgba(248,81,73,0.10); }
-.inv-tab.dis-toggle.active { color: #fff; background: #f85149; border-color: #f85149; }
+.item-tooltip-overlay.open { display: flex; }
+.item-tooltip-panel {
+    background: linear-gradient(160deg, #0f1117, #14182a);
+    border: 2px solid #30363d;
+    border-radius: 10px;
+    padding: 16px 20px;
+    min-width: 360px;
+    max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 6px 36px rgba(0,0,0,0.7);
+    color: #c9d1d9;
+    font-size: 15px;
+}
+.tt-header {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 8px; margin-bottom: 8px;
+    border-bottom: 1px solid #21262d;
+}
+.tt-icon { font-size: 28px; }
+.tt-name { font-size: 17px; font-weight: bold; }
+.tt-grade-row { font-size: 15px; color: #8b949e; margin-bottom: 8px; }
+.tt-section-title {
+    font-size: 15px; color: #a78bfa; font-weight: bold;
+    margin: 10px 0 4px; padding-bottom: 3px;
+    border-bottom: 1px solid #21262d;
+}
+.tt-stats { display: flex; flex-direction: column; gap: 3px; }
+.tt-stat-row {
+    display: flex; justify-content: space-between;
+    padding: 3px 0; font-size: 15px;
+}
+.tt-stat-lbl { color: #8b949e; }
+.tt-stat-val { color: #e6edf3; font-weight: bold; }
+.tt-error {
+    color: #f85149; background: rgba(248,81,73,0.10);
+    padding: 6px 10px; border-radius: 5px; margin: 8px 0;
+    font-size: 15px;
+}
+.tt-info {
+    color: #58a6ff; background: rgba(88,166,255,0.08);
+    padding: 6px 10px; border-radius: 5px; margin: 8px 0;
+    font-size: 15px;
+}
+.tt-buttons {
+    display: flex; gap: 8px; margin-top: 14px;
+    border-top: 1px solid #21262d; padding-top: 12px;
+}
+.tt-btn {
+    flex: 1;
+    background: #1f2430; border: 1px solid #30363d; border-radius: 5px;
+    color: #c9d1d9; font-size: 15px; font-weight: bold;
+    padding: 9px 14px; cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+}
+.tt-btn:hover { background: #2d3243; }
+.tt-btn-equip { color: #3fb950; border-color: #2d4a2d; }
+.tt-btn-equip:hover { background: #0d2418; border-color: #3fb950; }
+.tt-btn-unequip { color: #f85149; border-color: #4a2d2d; }
+.tt-btn-unequip:hover { background: #2a0d0d; border-color: #f85149; }
+.tt-btn-swap { color: #d29922; border-color: #4a3d2d; }
+.tt-btn-swap:hover { background: #2a1d0d; border-color: #d29922; }
+.tt-btn-cancel { color: #8b949e; }
+.tt-btn-cancel:hover { background: #161b22; border-color: #6e7681; }
+/* 비교 표시 (구 인라인 비교 — 듀얼 레이아웃에서는 사용 안 함) */
+.tt-compare-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto;
+    gap: 6px; align-items: center;
+    padding: 3px 6px; font-size: 15px;
+}
+.tt-compare-row .tt-cmp-prev { color: #8b949e; text-align: right; }
+.tt-compare-row .tt-cmp-arrow { color: #6e7681; }
+.tt-compare-row .tt-cmp-new  { color: #e6edf3; font-weight: bold; }
+.tt-cmp-up   { color: #3fb950; font-weight: bold; }
+.tt-cmp-down { color: #f85149; font-weight: bold; }
+.tt-cmp-eq   { color: #6e7681; }
+
+/* ── 듀얼 툴팁 레이아웃 (현재 착용 vs 새 선택) ────────────────────────── */
+.item-tooltip-panel.dual {
+    min-width: 760px;
+    max-width: 920px;
+}
+.tt-dual-row {
+    display: grid;
+    grid-template-columns: 1fr 28px 1fr;
+    gap: 6px;
+    align-items: stretch;
+}
+.tt-dual-col {
+    background: rgba(13, 17, 23, 0.5);
+    border: 1px solid #21262d;
+    border-radius: 8px;
+    padding: 10px 12px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+.tt-dual-col.current { border-color: #30363d; }
+.tt-dual-col.new     { border-color: #6d4ac8; box-shadow: 0 0 0 1px rgba(167,139,250,0.25); }
+.tt-dual-col-header {
+    display: flex; align-items: center; gap: 8px;
+    padding-bottom: 6px; margin-bottom: 6px;
+    border-bottom: 1px dashed #21262d;
+}
+.tt-dual-col-tag {
+    font-size: 15px; font-weight: bold; letter-spacing: 0.5px;
+    padding: 2px 7px; border-radius: 3px;
+    flex-shrink: 0;
+}
+.tt-dual-col.current .tt-dual-col-tag { color: #c9d1d9; background: #21262d; }
+.tt-dual-col.new     .tt-dual-col-tag { color: #fff;    background: #6d4ac8; }
+.tt-dual-col-icon { font-size: 22px; }
+.tt-dual-col-name { font-size: 15px; font-weight: bold; line-height: 1.2; }
+.tt-dual-col-sub  { font-size: 15px; color: #8b949e; margin-top: 1px; }
+.tt-dual-arrow {
+    display: flex; align-items: center; justify-content: center;
+    color: #6d4ac8; font-size: 24px; font-weight: bold;
+    user-select: none;
+}
+/* 듀얼 우측 카드 — 각 스탯 라인의 변화량 인디케이터 */
+.tt-stat-row .tt-stat-delta {
+    margin-left: 6px; font-size: 15px; font-weight: bold;
+}
+.tt-stat-delta.up   { color: #3fb950; }
+.tt-stat-delta.down { color: #f85149; }
+.tt-stat-delta.eq   { color: #6e7681; }
+/* 듀얼 하단 합계 차이 강조 라인 */
+.tt-dual-total-row {
+    margin-top: 10px; padding-top: 8px;
+    border-top: 1px solid #21262d;
+    font-size: 15px; text-align: center;
+}
 /* 분해 모드 하단 액션 바 */
 .inv-dis-bar {
     display: none;
@@ -1267,11 +1601,79 @@ body {
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 10px 8px;
     border-right: 1px solid #21262d;
-    overflow-y: auto;
     background: #0d1117;
+    overflow: hidden; /* eq-panel-scroll만 스크롤, 액션 바는 고정 */
+}
+/* 스크롤 영역 — 슬롯 그룹만 스크롤 */
+.eq-panel-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+}
+/* 하단 액션 바 (자동 장착·분해 아이콘 버튼) */
+.eq-action-bar {
+    flex-shrink: 0;
+    display: flex;
+    gap: 6px;
+    padding: 8px;
+    border-top: 1px solid #21262d;
+    background: #0d1117;
+}
+.eq-icon-btn {
+    flex: 1;
+    background: #1f2430;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    color: #c9d1d9;
+    font-size: 20px;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.eq-icon-btn:hover { background: #2d3243; border-color: #58a6ff; }
+.eq-icon-btn-glyph { line-height: 1; }
+/* 분해 토글 활성 상태 */
+.eq-icon-btn.dis-toggle:hover { background: rgba(248,81,73,0.10); border-color: #f85149; }
+.eq-icon-btn.dis-toggle.active {
+    background: #f85149;
+    border-color: #f85149;
+    color: #fff;
+}
+/* 마우스오버 부동 툴팁 — body 직속, 인벤토리 영역 overflow:hidden 우회 */
+.eq-tooltip-floating {
+    position: fixed;
+    background: #161b22;
+    border: 1px solid #30363d;
+    color: #e6edf3;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: normal;
+    line-height: 1.4;
+    max-width: 240px;           /* 가로 사이즈 제한 */
+    word-wrap: break-word;      /* 길면 줄바꿈 */
+    white-space: normal;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s, transform 0.15s;
+    transform: translateY(0);
+    z-index: 10000;             /* 모든 오버레이 위에 표시 */
+    box-shadow: 0 4px 14px rgba(0,0,0,0.7);
+    visibility: hidden;
+}
+.eq-tooltip-floating.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-2px);
 }
 /* 슬롯 그룹 박스 */
 .eq-group {
@@ -1316,7 +1718,7 @@ body {
     justify-content: center;
     position: relative;
     cursor: default;
-    transition: border-color 0.12s;
+    transition: filter 0.12s, transform 0.08s;
     overflow: hidden;
 }
 .eq-slot-icon {
@@ -1331,13 +1733,14 @@ body {
     margin-top: 2px;
     white-space: nowrap;
 }
-/* 착용 중인 슬롯 */
+/* 착용 중인 슬롯 — 인라인 style의 등급색 테두리(2px)·배경 그라데이션이 우선 적용됨 */
 .eq-slot.occupied {
+    border-width: 2px;
     border-color: #388bfd;
     cursor: pointer;
     background: #1c2a3a;
 }
-.eq-slot.occupied:hover { border-color: #58a6ff; background: #1f3050; }
+.eq-slot.occupied:hover { filter: brightness(1.25); transform: scale(1.04); }
 .eq-slot.occupied .eq-slot-icon { opacity: 1; }
 .eq-slot.occupied .eq-slot-label { color: #58a6ff; }
 .inv-right-panel {
@@ -2188,7 +2591,7 @@ body {
 .sg-item-table .sg-item-icon  { font-size: 18px; }
 .sg-item-table .sg-item-grade { font-weight: bold; font-size: 15px; }
 .sg-item-table .sg-item-stats {
-    font-size: 14px; color: #8b949e; text-align: left;
+    font-size: 15px; color: #8b949e; text-align: left;
     white-space: normal;          /* 능력치는 줄바꿈 허용 */
     word-break: break-word;
     line-height: 1.35;
@@ -2821,6 +3224,11 @@ body {
                 style="background:#1a1f2e;color:#8b949e;border:1px solid #30363d;">
             📋 패치 노트
         </button>
+        <button class="hud-btn" onclick="resetGameProgress()"
+                style="background:#2e1a1a;color:#ff9966;border:1px solid #cc3300;"
+                title="저장된 진행 상황을 초기화하고 처음부터 시작">
+            🗑 진행 초기화
+        </button>
         <button class="hud-btn hud-btn-restart" onclick="goToTitle()">
             ↩ 재시작
         </button>
@@ -2907,8 +3315,12 @@ body {
                         <span class="ab-sub-label" id="ab-hp-label">HP바 OFF</span>
                     </button>
                 </div>
-                <!-- 메인 버튼 행 (가로: 가방 → 귀환/재개 → 설정) -->
+                <!-- 메인 버튼 행 (가로: 기록 → 도감 → 가방 → 귀환/재개 → 설정) -->
                 <div id="ab-main-row">
+                    <button class="ab-btn" id="ab-record" onclick="openRecord()" title="스테이지 클리어 기록 보기">
+                        <span class="ab-icon">📜</span>
+                        <span class="ab-label">기록</span>
+                    </button>
                     <button class="ab-btn" id="ab-codex" onclick="openCodex()" title="장비 도감 열기">
                         <span class="ab-icon">📖</span>
                         <span class="ab-label">도감</span>
@@ -3005,13 +3417,11 @@ body {
                 <span class="lbl">리스폰 대기</span>
                 <span class="val red" id="s-dead">0</span>
             </div>
+            <!-- 🗺 스테이지 공략 정보 — 내부 탭으로 [공략 정보 / 👾 몬스터 정보 / 🎁 드랍 정보] 모두 포함 -->
             <button class="btn-full" onclick="openStageGuide()"
-                    style="background:#1a2030;color:#a78bfa;border:1px solid #6d4ac8;margin-top:6px;">
+                    style="background:#1a2030;color:#a78bfa;border:1px solid #6d4ac8;margin-top:6px;"
+                    title="공략 정보 · 몬스터 정보 · 드랍 정보 통합 모달">
                 🗺 스테이지 공략 정보
-            </button>
-            <button class="btn-full" onclick="openMonsterInfo()"
-                    style="background:#1a1a2e;color:#ff9966;border:1px solid #cc3300;margin-top:4px;">
-                👾 몬스터 정보 조회
             </button>
             <button class="btn-full" onclick="openMonsterSettingsModal()"
                     style="background:#1a2a1a;color:#7ee787;border:1px solid #2ea043;margin-top:4px;">
@@ -3645,8 +4055,9 @@ body {
 
         <!-- 메인 탭 네비 -->
         <div class="sg-tab-row">
-            <button class="sg-tab active" id="sg-tab-guide" onclick="sgSwitchTab('guide')">🗺 공략 정보</button>
-            <button class="sg-tab"        id="sg-tab-drop"  onclick="sgSwitchTab('drop')">🎁 드랍 정보</button>
+            <button class="sg-tab active" id="sg-tab-guide"   onclick="sgSwitchTab('guide')">🗺 공략 정보</button>
+            <button class="sg-tab"        id="sg-tab-monster" onclick="sgSwitchTab('monster')">👾 몬스터 정보</button>
+            <button class="sg-tab"        id="sg-tab-drop"    onclick="sgSwitchTab('drop')">🎁 드랍 정보</button>
         </div>
 
         <!-- 본문 (renderStageGuide()로 채워짐) -->
@@ -3655,48 +4066,57 @@ body {
     </div>
 </div>
 
-<div id="moninfo-overlay" class="limit-overlay">
-    <div class="limit-modal mon-modal">
+<!-- (구) 몬스터 정보 조회 모달 — 스테이지 공략 모달의 "👾 몬스터 정보" 탭으로 통합됨 -->
 
+<!-- ================================================================
+     진행 초기화 확인 모달
+================================================================ -->
+<div id="reset-confirm-overlay" class="limit-overlay">
+    <div class="limit-modal reset-confirm-modal">
         <div class="limit-header">
-            <span class="limit-title" style="color:#ff9966;">👾 몬스터 정보 조회</span>
-            <button class="limit-close" onclick="closeMonsterInfo()">✕</button>
+            <span class="limit-title" style="color:#ff9966;">⚠ 진행 초기화 확인</span>
+            <button class="limit-close" onclick="closeResetConfirm()">✕</button>
         </div>
-
-        <!-- 스테이지 번호 입력 + 빠른 조정 버튼 -->
-        <div class="mon-search-row">
-            <span class="mon-lv-label">조회 스테이지</span>
-            <button class="mon-step-btn mon-step-edge" onclick="monInfoSetMin()">MIN</button>
-            <button class="mon-step-btn" onclick="monInfoStep(-10)">-10</button>
-            <button class="mon-step-btn" onclick="monInfoStep(-1)">-1</button>
-            <input id="moninfo-stage-input" class="mon-lv-input"
-                   type="number" min="1" max="1000000" value="1"
-                   oninput="renderMonsterInfo()">
-            <button class="mon-step-btn" onclick="monInfoStep(1)">+1</button>
-            <button class="mon-step-btn" onclick="monInfoStep(10)">+10</button>
-            <button class="mon-step-btn mon-step-edge" onclick="monInfoSetMax()">MAX</button>
-            <button class="mon-step-btn mon-step-current" onclick="setMonInfoToCurrentStage()">현재 스테이지</button>
+        <div class="reset-confirm-body">
+            <div class="reset-warn-icon">🗑</div>
+            <div class="reset-warn-title">정말 진행을 초기화하시겠습니까?</div>
+            <div class="reset-warn-desc">
+                아래 데이터가 모두 <strong>영구 삭제</strong>되고 1스테이지부터 다시 시작됩니다.
+            </div>
+            <ul class="reset-warn-list">
+                <li>📦 인벤토리 아이템 전체</li>
+                <li>⚔ 장착 중인 모든 장비</li>
+                <li>🗺 현재 스테이지 / 라운드 / 진행 상태</li>
+                <li>⬆ 캐릭터 레벨 / 영혼 레벨 / EXP</li>
+                <li>📜 모든 스테이지 클리어 기록</li>
+                <li>📜 전투 로그 / 아이템 로그</li>
+            </ul>
+            <div class="reset-warn-note">
+                ※ 캐릭터 클래스 설정·레벨 능력치 설정·몬스터 스케일 규칙 등 <strong>설정 데이터는 유지</strong>됩니다.
+            </div>
+            <div class="reset-confirm-btn-row">
+                <button class="reset-btn-cancel" onclick="closeResetConfirm()">취소</button>
+                <button class="reset-btn-danger" onclick="confirmResetGameProgress()">🗑 초기화 진행</button>
+            </div>
         </div>
-
-        <!-- 일반 / 보스 탭 -->
-        <div class="mon-tabs">
-            <button class="mon-tab active" id="montab-normal" onclick="switchMonTab('normal')">⚔ 일반 몬스터</button>
-            <button class="mon-tab boss-tab" id="montab-boss"   onclick="switchMonTab('boss')">💀 보스 몬스터</button>
-        </div>
-
-        <!-- 능력치 정보 / 보상 정보 섹션 탭 -->
-        <div class="mon-sec-tabs">
-            <button class="mon-sec-tab active" id="monsectab-stats"  onclick="switchMonInfoSection('stats')">📊 능력치 정보</button>
-            <button class="mon-sec-tab"        id="monsectab-reward" onclick="switchMonInfoSection('reward')">🎁 보상 정보</button>
-        </div>
-
-        <!-- 정보 표시 영역 -->
-        <div class="mon-body" id="moninfo-body">
-            <!-- JS로 채워짐 -->
-        </div>
-
     </div>
 </div>
+
+<!-- ================================================================
+     스테이지 클리어 기록 모달
+================================================================ -->
+<div id="record-overlay" class="limit-overlay">
+    <div class="limit-modal record-modal">
+        <div class="limit-header">
+            <span class="limit-title" style="color:#79c0ff;">📜 스테이지 클리어 기록</span>
+            <button class="limit-close" onclick="closeRecord()">✕</button>
+        </div>
+        <div class="record-body" id="record-body">
+            <!-- JS로 렌더 -->
+        </div>
+    </div>
+</div>
+
 
 <!-- ================================================================
      캐릭터 능력치 상세 팝업 (character_info.html을 iframe으로 표시)
@@ -3804,20 +4224,39 @@ body {
             <!-- ── 왼쪽: 장비 착용 슬롯 패널 ── -->
             <div class="eq-panel" id="eq-panel">
 
-                <!-- 그룹 1: 무기 + 방어구 (2열 × 4행) -->
-                <div class="eq-group">
-                    <div class="eq-group-title">⚔ 무기 · 방어구</div>
-                    <div class="eq-grid-2" id="eq-grid-armor">
-                        <!-- JS renderEquipPanel()로 채워짐 -->
+                <!-- 스크롤 가능한 슬롯 영역 -->
+                <div class="eq-panel-scroll">
+                    <!-- 그룹 1: 무기 + 방어구 (2열 × 4행) -->
+                    <div class="eq-group">
+                        <div class="eq-group-title">⚔ 무기 · 방어구</div>
+                        <div class="eq-grid-2" id="eq-grid-armor">
+                            <!-- JS renderEquipPanel()로 채워짐 -->
+                        </div>
+                    </div>
+
+                    <!-- 그룹 2: 장신구 (3열 × 3행) -->
+                    <div class="eq-group">
+                        <div class="eq-group-title">💍 장신구</div>
+                        <div class="eq-grid-3" id="eq-grid-acc">
+                            <!-- JS renderEquipPanel()로 채워짐 -->
+                        </div>
                     </div>
                 </div>
 
-                <!-- 그룹 2: 장신구 (3열 × 3행) -->
-                <div class="eq-group">
-                    <div class="eq-group-title">💍 장신구</div>
-                    <div class="eq-grid-3" id="eq-grid-acc">
-                        <!-- JS renderEquipPanel()로 채워짐 -->
-                    </div>
+                <!-- 좌측 패널 하단 액션 바 (아이콘 버튼 + 마우스오버 부동 툴팁) -->
+                <div class="eq-action-bar">
+                    <button class="eq-icon-btn" id="invtab-autoeq"
+                            data-tooltip="자동 장착 — 인벤토리 내 최강 장비로 일괄 교체"
+                            onclick="autoEquipBest()"
+                            onmouseenter="showEqTooltip(this)" onmouseleave="hideEqTooltip()" onmousedown="hideEqTooltip()">
+                        <span class="eq-icon-btn-glyph">🤖</span>
+                    </button>
+                    <button class="eq-icon-btn dis-toggle" id="invtab-dis"
+                            data-tooltip="분해 모드 — 선택한 아이템 분해"
+                            onclick="toggleInvDisMode()"
+                            onmouseenter="showEqTooltip(this)" onmouseleave="hideEqTooltip()" onmousedown="hideEqTooltip()">
+                        <span class="eq-icon-btn-glyph">🔨</span>
+                    </button>
                 </div>
 
             </div><!-- /eq-panel -->
@@ -3829,7 +4268,6 @@ body {
                     <button class="inv-tab active" id="invtab-all"       onclick="switchInvTab('all')">전체</button>
                     <button class="inv-tab"        id="invtab-equipment" onclick="switchInvTab('equipment')">장비</button>
                     <button class="inv-tab"        id="invtab-misc"      onclick="switchInvTab('misc')">기타</button>
-                    <button class="inv-tab dis-toggle" id="invtab-dis" onclick="toggleInvDisMode()" title="분해 모드 켜기/끄기">🔨 분해</button>
                 </div>
                 <!-- 정보 바 -->
                 <div class="inv-info-bar">
@@ -3854,6 +4292,15 @@ body {
             </div><!-- /inv-right-panel -->
 
         </div><!-- /inv-main-body -->
+    </div>
+</div>
+
+<!-- ================================================================
+     장비 툴팁 (인벤토리 / 장착 슬롯 클릭 시 표시)
+================================================================ -->
+<div id="item-tooltip-overlay" class="item-tooltip-overlay">
+    <div id="item-tooltip-panel" class="item-tooltip-panel">
+        <!-- JS renderInvTooltip()로 채워짐 -->
     </div>
 </div>
 
@@ -3931,9 +4378,115 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">5월</span>
-                <span class="pn-month-count">114건</span>
+                <span class="pn-month-count">129건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-05-13 23:17 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">23:17</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>진행 초기화 확인 UI를 인게임 모달로 전환 — 기존 브라우저 native confirm() 대신 인게임 모달 `#reset-confirm-overlay`로 표시. ⚠ 헤더 + 🗑 아이콘 + 삭제 항목 리스트(인벤토리·장착 장비·스테이지·캐릭터 레벨·클리어 기록·로그 6종) + 설정 데이터 보존 안내 + 취소/초기화 진행 액션 버튼. 게임 일시정지 처리, ✕/취소 버튼으로만 닫기(CLAUDE.md 규칙 6 준수)</li>
+            </ul>
+
+            <!-- ── 2026-05-13 23:14 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">23:14</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>스테이지 클리어 기록 시스템 도입 — ① 액션바에 `📜 기록` 버튼 추가(도감 버튼 좌측). ② 보스 처치 시 자동으로 클리어 기록 저장: 라운드별 (R1~R5) 총 소요 시간·평균 처치 시간·일반 몬스터 개별 처치 시간 + 보스 처치 시간 + 기록 시점의 캐릭터 능력치(클래스/Lv/SL/HP/MP) + 17개 슬롯 장착 장비 스냅샷(아이콘·이름·등급·위력·능력치). ③ 기록 모달은 리스트 뷰(최신순 카드)에서 상세 뷰로 전환. localStorage 최대 100건 최신순 보관. ④ 진행 초기화 버튼 클릭 시 기록도 함께 삭제. ⑤ 이어하기 시 라운드 번호 동기화하여 현재 라운드부터 추적</li>
+            </ul>
+
+            <!-- ── 2026-05-13 23:02 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">23:02</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>게임 진행 저장 v2 — 전투 로그·아이템 로그 포함 — ① 저장 스냅샷에 logs(전투 로그, 최대 60개) + dropLogs(아이템 로그, 최대 60개) 추가. ② GAME_PROGRESS_VERSION 1→2 상향, v1·v2 모두 허용하여 구버전 자동 마이그레이션(로그=빈배열). ③ addLog/addDropLog의 DOM 렌더링을 _renderCombatLogList/_renderDropLogList 헬퍼로 분리해 복원 시 재사용. ④ applyGameProgress에서 로그 복원 + 재렌더로 새로고침/재시작 후에도 이전 로그 그대로 표시. equipMap(Map 객체)·equipEvents(item 참조 의존)는 저장 제외 — 복원된 로그는 "→ 착용/교체" 접미사만 표시되지 않을 뿐 아이템 자체는 정상</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>사이드바 정리 — 👾 몬스터 정보 조회 버튼 제거. 🗺 스테이지 공략 정보와 동일 모달을 열었으므로 중복. 몬스터 정보 탭은 이미 통합 모달 메인 탭(🗺 공략 정보 / 👾 몬스터 정보 / 🎁 드랍 정보)에 포함되어 정보·기능 누락 없음. 남은 🗺 버튼 title에 "공략 정보 · 몬스터 정보 · 드랍 정보 통합 모달" 안내문 추가. 🐉 몬스터 공통 능력치 설정은 별도 모달이라 유지</li>
+            </ul>
+
+            <!-- ── 2026-05-13 22:54 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">22:54</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>인게임 진행 상황 저장/로드 시스템 도입 — ① localStorage 키 `versione_game_progress`에 character(level/exp/HP/MP/position) + stage(currentStage/Round/stageKills/boss 상태/monsterSoulLevel) + inventory + equippedItems + totalKills + inTown 스냅샷 저장. ② 버전 필드(GAME_PROGRESS_VERSION) + `_isGameProgressValid` 검증 — 스키마 변경 시 안전하게 폐기 또는 마이그레이션. ③ initGame에서 저장 데이터 발견 시 `applyGameProgress`로 복원(보스 진행 중이면 보스 재스폰 / 아니면 일반 몬스터 재스폰). ④ 저장 트리거: 몬스터 처치(일반+보스), 장비 착용/해제, 라운드/스테이지 전환, saveCharacterState 호출 시. ⑤ 페이지 새로고침·"↩ 재시작"·"🔄 데이터 최신화" 후에도 진행 유지</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>탑 바에 `🗑 진행 초기화` 버튼 추가 — 패치 노트 ↔ 재시작 버튼 사이 위치. 클릭 시 확인 후 저장된 진행(versione_game_progress + versione_char) 삭제 + 페이지 리로드. 캐릭터 클래스 설정·레벨 능력치 설정 등의 설정 데이터는 보존(진행 데이터와 분리)</li>
+                <li class="pn-item"><span class="pn-tag sys">시스템</span>CLAUDE.md 규칙 10 신설 — 인게임 진행 저장 호환성 검증 의무화. (10-A) 모든 신규/개선 기능에서 신규 시작·새로고침 이어하기·재시작 이어하기·진행 초기화 4가지 시나리오 점검. (10-B) 스키마 변경 시 GAME_PROGRESS_VERSION 증가 + 검증/적용 함수 갱신 필수. (10-C) 저장 트리거 누락 방지 — 진행에 영향 주는 변경 지점에서 반드시 saveGameProgress 호출. (10-D) 진행 데이터와 설정 데이터 분리</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 공략 정보 — 드랍 정보 탭에 경험치(EXP) 보상 정보 추가. 일반 몬스터 1마리당 +1 EXP, 보스 1마리당 +1 EXP, 스테이지 클리어 합계 +51 EXP(일반 50 + 보스 1) 표시</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 공략 정보 — 몬스터 정보 탭 일반 몬스터에 라운드별 HP 표 추가. R1~R5 각 라운드의 시간 비율·배정 시간·HP·처치 수를 한눈에 확인. 공격력/CC 등은 5개 라운드 모두 동일이므로 안내문 추가. 보스 sub-tab은 단일 HP 바 유지</li>
+            </ul>
+
+            <!-- ── 2026-05-13 22:35 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">22:35</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인벤토리 장비 툴팁 듀얼 레이아웃 — 동일 슬롯에 이미 다른 장비가 착용된 상태에서 인벤토리 장비를 클릭하면 좌측 "현재 착용" 카드 + 중앙 ⇄ 화살표 + 우측 "새 선택" 카드 형태로 2개 툴팁이 나란히 표시. 우측 카드는 각 스탯에 좌측 대비 변화량(+N/-N, 녹/적/회 색상) 인디케이터 + 능력치 합계 차이 합산 표시. 헤더 아이콘이 ⇄로 표시되어 교체 모드임을 시각화. 다른 케이스(빈 슬롯/이미 착용 중/클래스 제한/비장비)는 단일 카드 유지</li>
+            </ul>
+
+            <!-- ── 2026-05-13 22:29 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">22:29</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>몬스터 정보 모달을 스테이지 공략 모달의 탭으로 통합 — ① 메인 탭 3개 구조(🗺 공략 정보 / 👾 몬스터 정보 / 🎁 드랍 정보). ② 몬스터 탭 내 일반/보스 sub-tab 유지. ③ 사이드바 "👾 몬스터 정보 조회" 버튼은 동일 모달의 몬스터 탭으로 진입(openStageGuide('monster')). ④ 중복 정보 제거: 구 보상 정보 sub-section 폐기(드랍 정보 탭이 대체), 라운드별 HP는 공략 정보 탭 참조, 방어력(근/원/마)는 공략 정보 탭 참조 후 몬스터 탭에서는 방어력 관통만 표시. ⑤ 구 #moninfo-overlay HTML 제거 및 관련 함수들을 통합 라우터로 위임/no-op 스텁 처리</li>
+            </ul>
+
+            <!-- ── 2026-05-13 22:19 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">22:19</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>모든 아이템 아이콘에 등급색 시각 식별 강화 — 2px 풀톤 등급색 테두리 + 등급색 미세 그라데이션 배경(135°, 16% → 4% alpha) 둘 다 적용. 적용 위치: ① 인벤토리 슬롯 ② 좌측 장착 패널 슬롯 ③ 스테이지 공략 드랍 리스트 아이콘 셀(좌측 3px 강조선) ④ 인게임 장비 획득 토스트 ⑤ 우측 아이템 로그(교체 시 이전 장비 아이콘도 포함). 슬롯 호버 피드백은 등급색을 유지하면서 brightness 1.25 + scale 1.04로 처리</li>
+            </ul>
+
+            <!-- ── 2026-05-13 21:56 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">21:56</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag fix">수정</span>아이콘 버튼 툴팁 잘림 현상 해결 — 인벤토리 패널의 overflow:hidden 때문에 `::after` 의사 요소 툴팁이 잘리던 문제를 body 직속 부동 툴팁(`position: fixed`, z-index 10000)으로 전환하여 해결. 가로 폭은 240px로 제한하여 너무 길어지지 않게 하고 길면 줄바꿈. JS로 버튼 위치 측정 후 위쪽 표시, 화면 경계에 닿으면 좌우 클램핑·위쪽 공간 부족 시 자동으로 아래쪽 표시</li>
+            </ul>
+
+            <!-- ── 2026-05-13 21:52 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">21:52</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인벤토리 자동 장착·분해 버튼 위치 이전 + 아이콘화 — ① 우측 탭 행에서 제거 후 좌측 장비 패널 하단으로 이전(`.eq-action-bar`, 항상 고정). ② 아이콘만 표시(🤖 자동 장착·🔨 분해, 글리프 폰트 20px). ③ 마우스 오버 시 버튼 위쪽에 풀 텍스트 툴팁 표시(`data-tooltip` + `::after` 의사 요소, 부드러운 페이드+슬라이드 인). ④ `.eq-panel` 내부 구조를 스크롤 영역(슬롯)과 고정 액션 바로 분리 — 슬롯이 많아도 액션 바는 항상 하단에 표시. ⑤ 분해 모드 활성 시 분해 버튼 빨강 강조 유지</li>
+            </ul>
+
+            <!-- ── 2026-05-13 21:38 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">21:38</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>인벤토리 장비 툴팁 시스템 도입 — 기존: 장비 클릭 시 즉시 착용/해제 → 변경: 클릭 시 툴팁 표시 후 버튼으로 확정. ① 미착용 장비 + 빈 슬롯 → 녹색 **장착** 버튼. ② 미착용 장비 + 동일 슬롯 점유 → 주황 **교체** 버튼 + 능력치 비교(스탯별 prev → new + delta, 합계 변화). ③ 착용 중 장비 → 빨강 **해제** 버튼. ④ 클래스 제한 위반(다른 클래스 전용 무기) → 에러 표시 + 닫기만. ⑤ 장착 슬롯(좌측 패널) 클릭도 동일 툴팁(해제 버튼만 표시). 모든 케이스에 닫기 버튼 동반</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>자동 장착 버튼 추가 — 인벤토리 탭 행에 🤖 자동 장착 버튼 신설. 클릭 시 모든 17개 슬롯(무기·방어구 8 + 장신구 9)에 대해 인벤토리 내 클래스 제한 통과 + 능력치 합(itemStrength) 최강 장비로 일괄 교체. 현재 착용보다 강할 때만 교체, 결과 요약 로그(교체 N개 · 이미 최강 · 후보 없음) 출력 + 캐릭터 스탯 즉시 재계산</li>
+            </ul>
 
             <!-- ── 2026-05-13 21:12 ── -->
             <div class="pn-ver">
@@ -6895,7 +7448,15 @@ function initGame() {
         monsters.push(spawnMonster(monLv, false, false));
     }
 
-    addLog('게임 시작 — [1-1] 1스테이지 필드에 입장했습니다.', 'info');
+    // 저장된 진행 상황이 있으면 이어하기로 복원
+    const saved = loadGameProgress();
+    if (saved && applyGameProgress(saved)) {
+        addLog(`💾 저장된 진행 이어하기 — [${stageRoundLabel()}] 스테이지 ${currentStage}`, 'info');
+    } else {
+        addLog('게임 시작 — [1-1] 1스테이지 필드에 입장했습니다.', 'info');
+    }
+    // 클리어 기록 추적 버퍼 초기화 — 복원 시 현재 라운드부터 시작 (이전 라운드 기록은 빠짐)
+    _recInitBuffer(currentStage, currentRound);
     refreshUI();
 }
 
@@ -7578,13 +8139,21 @@ function killMonster(m) {
             addLog(`⚠ 인벤토리 가득 — 보스 보상 ${bossDrops.length - accepted.length}개 누락`, 'info');
         }
 
+        // 클리어 기록 — 보스 타이머 마감 → 캐릭터/장비 스냅샷 + 라운드 기록을 저장
+        _recEndBoss();
+        const clearRec = _recCaptureStageClear();
+        _recSaveRecord(clearRec);
+
         advanceStage();
+        // 새 스테이지 기록 버퍼 초기화 (advanceStage 후 currentStage가 증가된 상태)
+        _recInitBuffer(currentStage);
         refreshUI();
         return;
     }
 
     // ── 일반 몬스터 처치
     stageKills++;
+    _recAddKill(); // 클리어 기록 — 처치 시각 누적
     const need = expNeeded(character.level);
     addLog(`Lv.${m.level} 몬스터 처치 [${stageRoundLabel()}] (${stageKills}/${ROUND_KILLS}) → EXP ${character.exp}/${need}`, 'kill');
 
@@ -7627,10 +8196,13 @@ function killMonster(m) {
         onLevelChanged(true); // 레벨업 = 완전 회복 + 스탯 즉시 재계산
     }
     refreshUI();
+    saveGameProgress(); // 일반 몬스터 처치 — 진행 저장
 }
 
 // 보스 몬스터 등장
 function spawnBossMonster() {
+    _recFinalizeRound(); // 5라운드 기록 마감
+    _recBeginBoss();     // 보스 타이머 시작
     bossSpawned = true;
 
     // 일반 몬스터 모두 제거 — 보스 등장과 동시에 필드를 보스 전용 공간으로 전환
@@ -7663,10 +8235,12 @@ function spawnBossMonster() {
 
 // 라운드 진행 (1~4라운드 → 다음 라운드)
 function advanceRound() {
+    _recFinalizeRound(); // 이전 라운드 기록 마감 후 다음 라운드 시작
     currentRound++;
     stageKills = 0;
     addLog(`▶ [${stageRoundLabel()}] 라운드 시작!`, 'info');
     refreshUI();
+    saveGameProgress(); // 라운드 전환 — 진행 저장
 }
 
 // 스테이지 클리어 → 다음 스테이지로 (라운드 1로 초기화)
@@ -7731,6 +8305,7 @@ function advanceStage() {
             m.respawnLeft = Math.min(m.respawnLeft, RESPAWN_DELAY);
         }
     }
+    saveGameProgress(); // 스테이지 전환 — 진행 저장
 }
 
 function upgradeLivingMonsters() {
@@ -9015,15 +9590,20 @@ function refreshUI() {
 // ────────────────────────────────────────────────
 // 로그
 // ────────────────────────────────────────────────
-function addLog(msg, type = 'normal') {
-    const ts = new Date().toLocaleTimeString('ko-KR', { hour12: false });
-    logs.unshift({ msg, type, ts });
-    if (logs.length > 80) logs.pop();
+function _renderCombatLogList() {
     const el = document.getElementById('log-list');
+    if (!el) return;
     // flex-direction:column-reverse 이므로 배열 그대로 렌더 → 최신이 아래에 표시됨
     el.innerHTML = logs.slice(0, 60).map(e =>
         `<div class="log-entry ${e.type}">[${e.ts}] ${e.msg}</div>`
     ).join('');
+}
+
+function addLog(msg, type = 'normal') {
+    const ts = new Date().toLocaleTimeString('ko-KR', { hour12: false });
+    logs.unshift({ msg, type, ts });
+    if (logs.length > 80) logs.pop();
+    _renderCombatLogList();
 }
 
 function clearLog() {
@@ -9139,23 +9719,25 @@ const SG_EQ_ITEMS = [
 ];
 
 // ── 스테이지 공략 모달 탭/필터 상태 ─────────────────────────────────────────
-let _sgTab            = 'guide';   // 'guide' | 'drop'
+let _sgTab            = 'guide';   // 'guide' | 'monster' | 'drop'
+let _sgMonsterSubTab  = 'normal';  // 'normal' | 'boss' (몬스터 정보 하위 탭)
 let _sgDropSubTab     = 'normal';  // 'normal' | 'boss' (드랍 정보 하위 탭)
 let _sgDropFilterPart = 'all';     // 'all' 또는 EQ_CODEX_PARTS 인덱스
 let _sgDropFilterGrade= 'all';     // 'all' 또는 0~12
 let _sgDropPage       = 1;         // 현재 페이지
 const SG_DROP_PAGE_SIZE = 50;      // 페이지당 아이템 수
 
-function openStageGuide() {
+function openStageGuide(initialTab) {
     _initStageEquipmentMap(); // 지연 초기화 (최초 호출 시 DPS 정렬 수행)
     const maxStage = STAGE_EQUIPMENT_MAP.length;
     const inp = document.getElementById('sg-stage-input');
     inp.max = maxStage;
     inp.value = Math.max(1, Math.min(currentStage, maxStage));
     _sgEquipActiveIdx = 0; // 기본값: 나이트 무기 선택 (항상 장비 능력치 표시)
-    _sgTab        = 'guide';
-    _sgDropSubTab = 'normal';
-    _sgDropPage   = 1;
+    _sgTab           = (initialTab === 'monster' || initialTab === 'drop') ? initialTab : 'guide';
+    _sgMonsterSubTab = 'normal';
+    _sgDropSubTab    = 'normal';
+    _sgDropPage      = 1;
     _sgSyncTabButtons();
     renderStageGuide();
     document.getElementById('stageguide-overlay').classList.add('open');
@@ -9170,15 +9752,23 @@ function closeStageGuide() {
 
 function _sgSyncTabButtons() {
     const tg = document.getElementById('sg-tab-guide');
+    const tm = document.getElementById('sg-tab-monster');
     const td = document.getElementById('sg-tab-drop');
     if (tg) tg.classList.toggle('active', _sgTab === 'guide');
+    if (tm) tm.classList.toggle('active', _sgTab === 'monster');
     if (td) td.classList.toggle('active', _sgTab === 'drop');
 }
 
 function sgSwitchTab(tab) {
-    _sgTab = (tab === 'drop') ? 'drop' : 'guide';
-    _sgDropPage = 1; // 탭 전환 시 페이지 리셋
+    if (tab === 'monster' || tab === 'drop' || tab === 'guide') _sgTab = tab;
+    else _sgTab = 'guide';
+    _sgDropPage = 1; // 탭 전환 시 드랍 페이지 리셋
     _sgSyncTabButtons();
+    renderStageGuide();
+}
+
+function sgSwitchMonsterSubTab(sub) {
+    _sgMonsterSubTab = (sub === 'boss') ? 'boss' : 'normal';
     renderStageGuide();
 }
 
@@ -9239,8 +9829,9 @@ function sgToggleEquipDetail(idx) {
 function renderStageGuide() {
     const raw   = parseInt(document.getElementById('sg-stage-input').value, 10);
     const stage = Math.max(1, Math.min(isNaN(raw) ? 1 : raw, STAGE_EQUIPMENT_MAP.length));
-    if (_sgTab === 'drop') _sgRenderDropTab(stage);
-    else                   _sgRenderGuideTab(stage);
+    if      (_sgTab === 'drop')    _sgRenderDropTab(stage);
+    else if (_sgTab === 'monster') _sgRenderMonsterTab(stage);
+    else                            _sgRenderGuideTab(stage);
 }
 
 function _sgRenderGuideTab(stage) {
@@ -9422,6 +10013,20 @@ function _sgRenderDropTab(stage) {
             </tbody>
         </table>`;
 
+    // ── 경험치(EXP) 보상 정보 ─────────────────────────────────────────────
+    const expPerNormal = 1;  // 일반 몬스터 처치 시 EXP
+    const expPerBoss   = 1;  // 보스 처치 시 EXP
+    const expTotalStage = (ROUND_KILLS * 5 * expPerNormal) + expPerBoss; // 스테이지 클리어 시 총 EXP
+    const expRewardHtml = `
+        <div class="sg-section-title">경험치(EXP) 보상</div>
+        <table class="sg-round-table sg-kv-table">
+            <tbody>
+                <tr><td>일반 몬스터 1마리</td><td><strong>+${expPerNormal} EXP</strong></td></tr>
+                <tr><td>보스 몬스터 1마리</td><td><strong>+${expPerBoss} EXP</strong></td></tr>
+                <tr><td>스테이지 클리어 합계</td><td><strong>+${expTotalStage} EXP</strong> <span style="color:#6e7681;">(일반 ${ROUND_KILLS * 5} × ${expPerNormal} + 보스 ${expPerBoss})</span></td></tr>
+            </tbody>
+        </table>`;
+
     // ── 2) 일반 몬스터 라운드별 드랍 확률표 (보스 탭은 별도) ──
     let rateTableHtml = '';
     if (!isBoss) {
@@ -9548,8 +10153,10 @@ function _sgRenderDropTab(stage) {
         const gColor = grade ? grade.color : '#e6edf3';
         const gLabel = grade ? grade.label : '-';
         const partName = item.name.replace(/^\[[^\]]+\]\s*/, '');
+        // 아이콘 셀에 등급색 좌측 강조선 + 미세 배경 — 한눈에 등급 식별
+        const iconCellStyle = `style="background:linear-gradient(135deg, ${gColor}26, ${gColor}08 80%); border-left: 3px solid ${gColor}; color:${gColor};"`;
         return `<tr>
-            <td class="sg-item-icon">${item.icon}</td>
+            <td class="sg-item-icon" ${iconCellStyle}>${item.icon}</td>
             <td class="sg-item-grade" style="color:${gColor};">[${gLabel}]</td>
             <td>${partName}</td>
             <td>${power}</td>
@@ -9598,6 +10205,8 @@ function _sgRenderDropTab(stage) {
     document.getElementById('sg-body').innerHTML = `
         ${subTabHtml}
 
+        ${expRewardHtml}
+
         <div class="sg-section-title">드랍 풀 정보</div>
         ${summaryHtml}
 
@@ -9606,6 +10215,212 @@ function _sgRenderDropTab(stage) {
         <div class="sg-section-title">${isBoss ? '보스 드랍 가능 아이템 리스트' : '일반 몬스터 드랍 가능 아이템 리스트'}</div>
         ${filterHtml}
         ${listHtml}
+    `;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// ── 스테이지 공략 — 몬스터 정보 탭 ──────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+// 기존 단독 모달(renderMonsterInfo)을 통합. 보상 정보 sub-section은 드랍 정보 탭으로
+// 이관되어 제거. 일반/보스 sub-tab만 유지.
+function _sgRenderMonsterTab(stage) {
+    const isBoss = (_sgMonsterSubTab === 'boss');
+    const lv     = calcMonsterStatLevel(stage);
+    const s      = calcMonsterStats(stage, isBoss);
+    const hp     = s.maxHP;
+    const isCurrent = (stage === currentStage);
+    const badge     = isCurrent ? '<span class="mon-current-badge">현재 스테이지</span>' : '';
+    const bRow      = isBoss ? 'boss-row' : '';
+    const bVal      = isBoss ? 'boss-val' : '';
+
+    // 공격 간격(ms) → 초 변환
+    const corr   = ATTACK_SPEED_CORRECTION || 2000;
+    const atkMs  = Math.max(100, Math.round(1000 / (s.attackSpeed / corr)));
+    const atkSec = (atkMs / 1000).toFixed(2);
+
+    // 영문명 서브라벨 헬퍼
+    const en  = nm => `<span class="mon-stat-en">${nm}</span>`;
+    const pct = v => (v / 100).toFixed(2) + '%';
+
+    // 일반/보스 하위 탭
+    const subTabHtml = `
+        <div class="sg-subtab-row">
+            <button class="sg-subtab${!isBoss ? ' active' : ''}" onclick="sgSwitchMonsterSubTab('normal')">⚔ 일반 몬스터</button>
+            <button class="sg-subtab${isBoss ? ' active' : ''}"  onclick="sgSwitchMonsterSubTab('boss')">💀 보스 몬스터</button>
+        </div>`;
+
+    // 일반 몬스터: 라운드별 HP 표 + 단일 HP 바 (능력치는 라운드 무관 동일이므로 공통 표시)
+    // 보스 몬스터: 단일 HP 바
+    let hpSectionHtml;
+    if (isBoss) {
+        hpSectionHtml = `
+            <div class="mon-hp-bar-wrap boss-wrap">
+                <div class="mon-hp-label">
+                    💀 보스 몬스터 · Lv.${lv} (영혼 레벨 ${stage}) ${badge}
+                </div>
+                <div class="mon-hp-track">
+                    <div class="mon-hp-fill boss-fill" style="width:100%"></div>
+                </div>
+                <div class="mon-hp-text">HP ${hp.toLocaleString()}</div>
+            </div>`;
+    } else {
+        // 라운드별 HP 표
+        const roundLabels = ['1라운드', '2라운드', '3라운드', '4라운드', '5라운드'];
+        const totalTime = STAGE_TIME_BASE + (stage - 1) * STAGE_TIME_STEP;
+        const rowsHtml = roundLabels.map((rl, i) => {
+            const r = i + 1;
+            const ratio = STAGE_ROUND_RATIOS[i];
+            const rHP   = calcStageMonsterHP(stage, false, r);
+            const rTime = Math.round(totalTime * ratio);
+            return `<tr>
+                <td>${rl}</td>
+                <td>${Math.round(ratio * 100)}%</td>
+                <td>${rTime}초</td>
+                <td>${rHP.toLocaleString()}</td>
+                <td>${ROUND_KILLS}마리</td>
+            </tr>`;
+        }).join('');
+        hpSectionHtml = `
+            <div class="mon-hp-bar-wrap">
+                <div class="mon-hp-label">
+                    ⚔ 일반 몬스터 · Lv.${lv} (영혼 레벨 ${stage}) ${badge}
+                </div>
+                <div class="mon-hp-text" style="margin-top:6px;color:#8b949e;">
+                    공격력·치명타·CC 등 능력치는 5개 라운드 모두 동일. HP만 라운드별로 차등 적용됩니다.
+                </div>
+            </div>
+            <div class="mon-section-title">라운드별 HP / 배정 시간</div>
+            <table class="sg-round-table">
+                <thead><tr>
+                    <th>라운드</th><th>시간 비율</th><th>배정 시간</th><th>몬스터 HP</th><th>처치 수</th>
+                </tr></thead>
+                <tbody>${rowsHtml}</tbody>
+            </table>`;
+    }
+
+    document.getElementById('sg-body').innerHTML = `
+        ${subTabHtml}
+
+        ${hpSectionHtml}
+
+        <div class="mon-section-title">기본 능력치</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">공격 간격 ${en('AttackSpeed')}</span>
+                <span class="mon-stat-val">${atkSec}초/회 <span style="font-size:15px;color:#6e7681;">(${(1000/atkMs).toFixed(2)}회/초)</span></span>
+            </div>
+            <div class="mon-stat-row ${bRow}">
+                <span class="mon-stat-lbl">이동 속도 ${en('MoveSpeed')}</span>
+                <span class="mon-stat-val">${s.moveSpeed} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed / 100).toFixed(2)} m/s)</span></span>
+            </div>
+        </div>
+
+        <div class="mon-section-title">PVP 공격력 — 근거리</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 최소 근거리 공격 ${en('PVPMeleeMinAtk')}</span><span class="mon-stat-val">${s.pvpMeleeMinAtk.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 최대 근거리 공격 ${en('PVPMeleeMaxAtk')}</span><span class="mon-stat-val">${s.pvpMeleeMaxAtk.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 치명타 근거리 공격력 ${en('PVPCritMeleeAtk')}</span><span class="mon-stat-val">+${s.pvpCritMeleeAtk.toLocaleString()}</span></div>
+        </div>
+
+        <div class="mon-section-title">PVP 공격력 — 원거리 / 마법</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 최소 원거리 공격 ${en('PVPRangedMinAtk')}</span><span class="mon-stat-val">${s.pvpRangedMinAtk.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 최대 원거리 공격 ${en('PVPRangedMaxAtk')}</span><span class="mon-stat-val">${s.pvpRangedMaxAtk.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 치명타 원거리 공격력 ${en('PVPCritRangedAtk')}</span><span class="mon-stat-val">+${s.pvpCritRangedAtk.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 최소 마법 공격 ${en('PVPMagicMinAtk')}</span><span class="mon-stat-val">${s.pvpMagicMinAtk.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 최대 마법 공격 ${en('PVPMagicMaxAtk')}</span><span class="mon-stat-val">${s.pvpMagicMaxAtk.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 치명타 마법 공격력 ${en('PVPCritMagicAtk')}</span><span class="mon-stat-val">+${s.pvpCritMagicAtk.toLocaleString()}</span></div>
+        </div>
+
+        <div class="mon-section-title">치명타율 / 저항</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 근거리 치명타율 ${en('PVPMeleeCritRate')}</span><span class="mon-stat-val">${s.pvpMeleeCritRate.toFixed(2)}%</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 원거리 치명타율 ${en('PVPRangedCritRate')}</span><span class="mon-stat-val">${s.pvpRangedCritRate.toFixed(2)}%</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 마법 치명타율 ${en('PVPMagicCritRate')}</span><span class="mon-stat-val">${s.pvpMagicCritRate.toFixed(2)}%</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">근거리 치명타 저항 ${en('MeleeCriticalResist')}</span><span class="mon-stat-val">${s.meleeCritResist.toFixed(2)}%</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">원거리 치명타 저항 ${en('RangedCriticalResist')}</span><span class="mon-stat-val">${s.rangedCritResist.toFixed(2)}%</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">마법 치명타 저항 ${en('MagicCriticalResist')}</span><span class="mon-stat-val">${s.magicCritResist.toFixed(2)}%</span></div>
+        </div>
+
+        <div class="mon-section-title">명중 / 회피</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 근거리 명중 ${en('PVPMeleeAccuracy')}</span><span class="mon-stat-val">${s.pvpMeleeAccuracy.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 원거리 명중 ${en('PVPRangedAccuracy')}</span><span class="mon-stat-val">${s.pvpRangedAccuracy.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 마법 명중 ${en('PVPMagicAccuracy')}</span><span class="mon-stat-val">${s.pvpMagicAccuracy.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">근거리 회피 ${en('MeleeEvasion')}</span><span class="mon-stat-val">${pct(s.meleeEvasion)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">원거리 회피 ${en('RangedEvasion')}</span><span class="mon-stat-val">${pct(s.rangedEvasion)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">마법 회피 ${en('MagicEvasion')}</span><span class="mon-stat-val">${pct(s.magicEvasion)}</span></div>
+        </div>
+
+        <div class="mon-section-title">방어력 관통 <span style="font-size:15px;color:#6e7681;font-weight:normal;">※ 근/원/마 방어력 자체는 🗺 공략 정보 탭 참조</span></div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 근거리 방어력 관통 ${en('PVPMeleeDefPen')}</span><span class="mon-stat-val">${s.pvpMeleeDefPen.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 원거리 방어력 관통 ${en('PVPRangedDefPen')}</span><span class="mon-stat-val">${s.pvpRangedDefPen.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 마법 방어력 관통 ${en('PVPMagicDefPen')}</span><span class="mon-stat-val">${s.pvpMagicDefPen.toLocaleString()}</span></div>
+        </div>
+
+        <div class="mon-section-title">치명타 피해 감소 / 감소 무시</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">근거리 치명타 피해 감소 ${en('MeleeCritDmgReduc')}</span><span class="mon-stat-val">${pct(s.meleeCritDmgReduc)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">원거리 치명타 피해 감소 ${en('RangedCritDmgReduc')}</span><span class="mon-stat-val">${pct(s.rangedCritDmgReduc)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">마법 치명타 피해 감소 ${en('MagicCritDmgReduc')}</span><span class="mon-stat-val">${pct(s.magicCritDmgReduc)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 근거리 치명타 감소 무시 ${en('PVPMeleeCritDmgDecIgnore')}</span><span class="mon-stat-val">${pct(s.pvpMeleeCritDmgDecIgnore)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 원거리 치명타 감소 무시 ${en('PVPRangedCritDmgDecIgnore')}</span><span class="mon-stat-val">${pct(s.pvpRangedCritDmgDecIgnore)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 마법 치명타 감소 무시 ${en('PVPMagicCritDmgDecIgnore')}</span><span class="mon-stat-val">${pct(s.pvpMagicCritDmgDecIgnore)}</span></div>
+        </div>
+
+        <div class="mon-section-title">스킬 피해 감소 / 감소 무시</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">근거리 스킬 피해 감소 ${en('MeleeSkillDmgReduc')}</span><span class="mon-stat-val">${pct(s.meleeSkillDmgReduc)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">원거리 스킬 피해 감소 ${en('RangedSkillDmgReduc')}</span><span class="mon-stat-val">${pct(s.rangedSkillDmgReduc)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">마법 스킬 피해 감소 ${en('MagicSkillDmgReduc')}</span><span class="mon-stat-val">${pct(s.magicSkillDmgReduc)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 근거리 스킬 감소 무시 ${en('PVPMeleeSkillDmgDecIgnore')}</span><span class="mon-stat-val">${pct(s.pvpMeleeSkillDmgDecIgnore)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 원거리 스킬 감소 무시 ${en('PVPRangedSkillDmgDecIgnore')}</span><span class="mon-stat-val">${pct(s.pvpRangedSkillDmgDecIgnore)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 마법 스킬 감소 무시 ${en('PVPMagicSkillDmgDecIgnore')}</span><span class="mon-stat-val">${pct(s.pvpMagicSkillDmgDecIgnore)}</span></div>
+        </div>
+
+        <div class="mon-section-title">PVP 받는 피해 감소</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 근거리 받는 피해 감소 ${en('PVPMeleeDmgReduc')}</span><span class="mon-stat-val">${pct(s.pvpMeleeDmgReduc)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 원거리 받는 피해 감소 ${en('PVPRangedDmgReduc')}</span><span class="mon-stat-val">${pct(s.pvpRangedDmgReduc)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">PVP 마법 받는 피해 감소 ${en('PVPMagicDmgReduc')}</span><span class="mon-stat-val">${pct(s.pvpMagicDmgReduc)}</span></div>
+        </div>
+
+        <div class="mon-section-title">CC 적중 / 저항 (스턴·마비·침묵·속박·둔화·도발)</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">스턴 적중 ${en('StunHit')}</span><span class="mon-stat-val">${s.stunHit.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">마비 적중 ${en('ParalysisHit')}</span><span class="mon-stat-val">${s.paralysisHit.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">침묵 적중 ${en('SilenceHit')}</span><span class="mon-stat-val">${s.silenceHit.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">속박 적중 ${en('HoldHit')}</span><span class="mon-stat-val">${s.holdHit.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">둔화 적중 ${en('SlowHit')}</span><span class="mon-stat-val">${s.slowHit.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">도발 적중 ${en('ProvokeHit')}</span><span class="mon-stat-val">${s.provokeHit.toLocaleString()}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">스턴 저항 ${en('StunResist')}</span><span class="mon-stat-val">${pct(s.stunResist)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">마비 저항 ${en('ParalysisResist')}</span><span class="mon-stat-val">${pct(s.paralysisResist)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">침묵 저항 ${en('SilenceResist')}</span><span class="mon-stat-val">${pct(s.silenceResist)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">속박 저항 ${en('HoldResist')}</span><span class="mon-stat-val">${pct(s.holdResist)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">둔화 저항 ${en('SlowResist')}</span><span class="mon-stat-val">${pct(s.slowResist)}</span></div>
+            <div class="mon-stat-row ${bRow}"><span class="mon-stat-lbl">도발 저항 ${en('ProvokeResist')}</span><span class="mon-stat-val">${pct(s.provokeResist)}</span></div>
+        </div>
+
+        ${isBoss ? `
+        <div class="mon-section-title">보스 전용 정보</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row boss-row"><span class="mon-stat-lbl">보스 등장 조건</span><span class="mon-stat-val">5라운드 — 일반 ${ROUND_KILLS}킬</span></div>
+            <div class="mon-stat-row boss-row"><span class="mon-stat-lbl">부활 여부</span><span class="mon-stat-val boss-val">없음 (1회 등장)</span></div>
+            <div class="mon-stat-row boss-row"><span class="mon-stat-lbl">적 인식 범위 ${en('AggroRange')}</span><span class="mon-stat-val boss-val">${(MONSTER_BOSS_AGGRO_RANGE / PX_PER_METER).toFixed(1)}m</span></div>
+            <div class="mon-stat-row boss-row"><span class="mon-stat-lbl">로밍 범위 ${en('RoamRange')} <span style="font-size:15px;color:#6e7681;">(인식 범위 × 3)</span></span><span class="mon-stat-val boss-val">${(MONSTER_BOSS_AGGRO_RANGE * 3 / PX_PER_METER).toFixed(1)}m</span></div>
+            <div class="mon-stat-row boss-row"><span class="mon-stat-lbl">로밍 속도 ${en('RoamSpeed')} <span style="font-size:15px;color:#6e7681;">(전투 전 배회)</span></span><span class="mon-stat-val boss-val">${(s.moveSpeed * 0.5).toFixed(1)} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed * 0.5 / 100).toFixed(2)} m/s)</span></span></div>
+        </div>` : `
+        <div class="mon-section-title">필드 정보</div>
+        <div class="mon-stat-grid">
+            <div class="mon-stat-row"><span class="mon-stat-lbl">리스폰 대기</span><span class="mon-stat-val">${(RESPAWN_DELAY / 1000).toFixed(1)}초</span></div>
+            <div class="mon-stat-row"><span class="mon-stat-lbl">동시 등장 수</span><span class="mon-stat-val">${MONSTER_COUNT}마리</span></div>
+            <div class="mon-stat-row"><span class="mon-stat-lbl">적 인식 범위 ${en('AggroRange')}</span><span class="mon-stat-val">${(MONSTER_AGGRO_RANGE / PX_PER_METER).toFixed(1)}m</span></div>
+            <div class="mon-stat-row"><span class="mon-stat-lbl">로밍 범위 ${en('RoamRange')} <span style="font-size:15px;color:#6e7681;">(인식 범위 × 3)</span></span><span class="mon-stat-val">${(MONSTER_AGGRO_RANGE * 3 / PX_PER_METER).toFixed(1)}m</span></div>
+            <div class="mon-stat-row"><span class="mon-stat-lbl">로밍 속도 ${en('RoamSpeed')} <span style="font-size:15px;color:#6e7681;">(전투 전 배회)</span></span><span class="mon-stat-val">${(s.moveSpeed * 0.5).toFixed(1)} <span style="font-size:15px;color:#6e7681;">(${(s.moveSpeed * 0.5 / 100).toFixed(2)} m/s)</span></span></div>
+        </div>`}
+
+        <p class="mon-compare-note">※ 능력치는 나이트(기본) 레벨 1 전투력 기준으로 자동 산출됩니다. HP·방어력·드랍 정보는 다른 탭 참조.</p>
     `;
 }
 
@@ -9624,27 +10439,9 @@ function _sgComputePoolStats(pool) {
     return { gradeMin: gMin, gradeMax: gMax, powerMin: pMin, powerMax: pMax };
 }
 
-function openMonsterInfo() {
-    // 현재 스테이지로 초기화
-    document.getElementById('moninfo-stage-input').value = currentStage;
-    _monInfoTab = 'normal';
-    document.getElementById('montab-normal').classList.add('active');
-    document.getElementById('montab-boss').classList.remove('active');
-    // 섹션 탭 초기화 (능력치 정보)
-    _monInfoSection = 'stats';
-    document.getElementById('monsectab-stats').classList.add('active');
-    document.getElementById('monsectab-reward').classList.remove('active');
-    renderMonsterInfo();
-    document.getElementById('moninfo-overlay').classList.add('open');
-    // 게임 일시정지 없이 팝업만 표시
-    if (gameState === 'playing') {
-        gameState = 'paused';
-        _monInfoPaused = true;
-    } else {
-        _monInfoPaused = false;
-    }
-}
-let _monInfoPaused = false;
+// (구) 몬스터 정보 조회 모달 — 스테이지 공략 모달의 몬스터 정보 탭으로 리다이렉트
+function openMonsterInfo() { openStageGuide('monster'); }
+let _monInfoPaused = false; // (deprecated, 호환용)
 
 // ────────────────────────────────────────────────
 // 몬스터 공통 능력치 설정 모달
@@ -9663,50 +10460,14 @@ function closeMonsterSettingsModal() {
     if (_monSettingsPaused) { gameState = 'playing'; lastTime = performance.now(); _monSettingsPaused = false; }
 }
 
-function closeMonsterInfo() {
-    document.getElementById('moninfo-overlay').classList.remove('open');
-    if (_monInfoPaused) {
-        gameState = 'playing';
-        lastTime  = performance.now();
-        _monInfoPaused = false;
-    }
-}
-
-function setMonInfoToCurrentStage() {
-    document.getElementById('moninfo-stage-input').value = currentStage;
-    renderMonsterInfo();
-}
-
-// 스테이지 번호를 delta만큼 증감 (1 ~ 1,000,000 범위 클램핑)
-function monInfoStep(delta) {
-    const inp = document.getElementById('moninfo-stage-input');
-    inp.value = Math.max(1, Math.min(1000000, (parseInt(inp.value, 10) || 1) + delta));
-    renderMonsterInfo();
-}
-
-// 최솟값(1) / 최댓값(1,000,000) 바로 이동
-function monInfoSetMin() {
-    document.getElementById('moninfo-stage-input').value = 1;
-    renderMonsterInfo();
-}
-function monInfoSetMax() {
-    document.getElementById('moninfo-stage-input').value = 1000000;
-    renderMonsterInfo();
-}
-
-function switchMonTab(tab) {
-    _monInfoTab = tab;
-    document.getElementById('montab-normal').classList.toggle('active', tab === 'normal');
-    document.getElementById('montab-boss').classList.toggle('active', tab === 'boss');
-    renderMonsterInfo();
-}
-
-function switchMonInfoSection(sec) {
-    _monInfoSection = sec;
-    document.getElementById('monsectab-stats').classList.toggle('active', sec === 'stats');
-    document.getElementById('monsectab-reward').classList.toggle('active', sec === 'reward');
-    renderMonsterInfo();
-}
+// (구) 몬스터 정보 모달 관련 함수들 — 모두 통합 모달로 위임 또는 no-op
+function closeMonsterInfo() { closeStageGuide(); }
+function setMonInfoToCurrentStage() { /* 통합 모달 sg-stage-input이 사용됨, no-op */ }
+function monInfoStep(delta)  { /* no-op */ }
+function monInfoSetMin()     { /* no-op */ }
+function monInfoSetMax()     { /* no-op */ }
+function switchMonTab(tab)   { sgSwitchMonsterSubTab(tab); }
+function switchMonInfoSection(sec) { /* 보상 sub-section은 폐기, no-op */ }
 
 function renderMonsterInfo() {
     const raw    = parseInt(document.getElementById('moninfo-stage-input').value, 10);
@@ -11534,6 +12295,548 @@ function saveCharacterState() {
     }));
     // 기본 스탯도 함께 동기화 (character_info.html이 최신 값 읽을 수 있도록)
     saveClassBaseStats(currentClass, BASE_STATS);
+    // 전체 진행 상황도 함께 저장 (이어하기를 위한 통합 스냅샷)
+    saveGameProgress();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// ── 게임 진행 상황 저장/로드 (이어하기) ─────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+// 재시작·페이지 새로고침·데이터 최신화 후에도 게임이 끊김 없이 이어지도록 핵심 상태를
+// localStorage에 스냅샷으로 저장한다. 버전 필드로 스키마 변경에 대비.
+//
+// ★ 향후 새 기능 추가 시 반드시 확인: 신규 상태가 진행에 영향을 주면 GAME_PROGRESS_VERSION을
+//    올리고 saveGameProgress/applyGameProgress/_isGameProgressValid를 갱신할 것.
+//    구버전 세이브가 들어와도 안전하게 폐기되거나 호환 마이그레이션되도록 검증.
+const GAME_PROGRESS_KEY     = 'versione_game_progress';
+// v2: 전투 로그(logs) + 아이템 로그(dropLogs) 추가. v1 세이브는 자동 마이그레이션(로그=빈배열).
+const GAME_PROGRESS_VERSION = 2;
+
+function saveGameProgress() {
+    if (gameState === 'title') return; // 타이틀에서는 저장 안 함
+    try {
+        const snapshot = {
+            version: GAME_PROGRESS_VERSION,
+            savedAt: Date.now(),
+            classId: currentClass,
+            character: {
+                level:     character.level,
+                soulLevel: character.soulLevel,
+                exp:       character.exp,
+                currentHP: character.currentHP,
+                maxHP:     character.maxHP,
+                currentMP: character.currentMP,
+                maxMP:     character.maxMP,
+                x:         character.x,
+                y:         character.y,
+                normalAtkType: character.normalAtkType,
+            },
+            stage: {
+                currentStage,
+                currentRound,
+                stageKills,
+                bossSpawned,
+                bossDefeated,
+                monsterSoulLevel,
+            },
+            inventory: inventory.map(it => it ? { ...it } : null),
+            equippedItems: { ...equippedItems },
+            totalKills,
+            inTown,
+            // 로그(전투/아이템) — v2에서 추가. 표시 최대 60개이므로 최대 60개만 저장
+            logs:     logs.slice(0, 60).map(l => ({ msg: l.msg, type: l.type, ts: l.ts })),
+            dropLogs: dropLogs.slice(0, 60).map(d => ({
+                ts: d.ts,
+                items: (d.items || []).map(it => ({ ...it })),
+                isBoss: !!d.isBoss,
+                // equipMap은 Map 객체라 JSON 직렬화 불가, equipEvents도 item 참조 의존이라 복원 후 의미 없음
+                // → 저장에서 제외, 복원 시 equipMap=빈 Map, equipEvents=[] 사용 (← suffix 안 보임)
+            })),
+        };
+        localStorage.setItem(GAME_PROGRESS_KEY, JSON.stringify(snapshot));
+    } catch (e) {
+        console.warn('saveGameProgress failed:', e);
+    }
+}
+
+// 저장 데이터 유효성 검사 — v1/v2 모두 허용 (구버전은 applyGameProgress에서 호환 처리)
+function _isGameProgressValid(snap) {
+    if (!snap || typeof snap !== 'object') return false;
+    if (snap.version !== 1 && snap.version !== 2) return false;
+    if (!snap.character || typeof snap.character.level !== 'number') return false;
+    if (!snap.stage    || typeof snap.stage.currentStage !== 'number') return false;
+    if (!Array.isArray(snap.inventory)) return false;
+    if (!snap.equippedItems || typeof snap.equippedItems !== 'object') return false;
+    return true;
+}
+
+function loadGameProgress() {
+    try {
+        const raw = localStorage.getItem(GAME_PROGRESS_KEY);
+        if (!raw) return null;
+        const snap = JSON.parse(raw);
+        if (!_isGameProgressValid(snap)) {
+            console.warn('saved progress invalid or version mismatch, discarding');
+            return null;
+        }
+        return snap;
+    } catch (e) {
+        console.warn('loadGameProgress failed:', e);
+        return null;
+    }
+}
+
+function clearGameProgress() {
+    localStorage.removeItem(GAME_PROGRESS_KEY);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// ── 스테이지 클리어 기록 시스템 ─────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+// 라운드별 처치 시간 + 보스 처치 시간 + 클리어 시점의 캐릭터·장비 스냅샷을 저장.
+// localStorage 키: versione_stage_records (최신순 배열, 최대 100건)
+const STAGE_RECORDS_KEY  = 'versione_stage_records';
+const STAGE_RECORDS_LIMIT = 100;
+
+// 현재 진행 중 스테이지의 기록 버퍼 (보스 처치 시 저장 + 리셋)
+let _stageRecBuf = null;
+
+function _recInitBuffer(stage, startRound) {
+    const now = Date.now();
+    const r = (typeof startRound === 'number' && startRound >= 1) ? startRound : 1;
+    _stageRecBuf = {
+        stage,
+        startedAt:        now,
+        roundStartAt:     now,
+        currentRoundNum:  r,
+        currentKillTimes: [], // 절대 시각(ms) 배열 — 처치 순서대로 누적
+        rounds:           [], // 완료된 라운드 기록 (이어하기 시 이전 라운드는 빠질 수 있음)
+        bossStartAt:      null,
+        bossDurationMs:   null,
+    };
+}
+
+// 일반 몬스터 처치 시각 기록 (kill 발생 시 호출)
+function _recAddKill() {
+    if (!_stageRecBuf) return;
+    _stageRecBuf.currentKillTimes.push(Date.now());
+}
+
+// 현재 라운드 종료 처리 (advanceRound 또는 spawnBossMonster 호출 직전)
+function _recFinalizeRound() {
+    if (!_stageRecBuf) return;
+    const buf   = _stageRecBuf;
+    const start = buf.roundStartAt;
+    const end   = Date.now();
+    const killTimes = buf.currentKillTimes.slice();
+    // 라운드 시작 시점 기준 누적 시각
+    const cumulative = killTimes.map(t => t - start);
+    // 처치 간격 (이전 처치 또는 라운드 시작 기준)
+    const intervals = [];
+    let prev = start;
+    for (const t of killTimes) { intervals.push(t - prev); prev = t; }
+    const avgMs = intervals.length > 0
+        ? intervals.reduce((a, b) => a + b, 0) / intervals.length
+        : 0;
+    buf.rounds.push({
+        roundNum:    buf.currentRoundNum,
+        startedAt:   start,
+        endedAt:     end,
+        durationMs:  end - start,
+        killTimesCumulative: cumulative, // ms 누적
+        killIntervals:        intervals,  // ms 간격
+        avgKillMs:   avgMs,
+        killCount:   killTimes.length,
+    });
+    // 다음 라운드 준비
+    buf.currentRoundNum++;
+    buf.roundStartAt = Date.now();
+    buf.currentKillTimes = [];
+}
+
+// 보스 등장 — 시간 측정 시작
+function _recBeginBoss() {
+    if (!_stageRecBuf) return;
+    _stageRecBuf.bossStartAt = Date.now();
+}
+
+// 보스 처치 — 보스 시간 마감
+function _recEndBoss() {
+    if (!_stageRecBuf) return;
+    if (_stageRecBuf.bossStartAt != null) {
+        _stageRecBuf.bossDurationMs = Date.now() - _stageRecBuf.bossStartAt;
+    }
+}
+
+// 캐릭터·장비 스냅샷 + 라운드 기록을 합쳐 최종 기록 객체 생성
+function _recCaptureStageClear() {
+    if (!_stageRecBuf) return null;
+    const buf = _stageRecBuf;
+    const totalMs = Date.now() - buf.startedAt;
+
+    // 캐릭터 능력치 스냅샷 — calcCharStats로 현재 계산값 수집
+    let calc = null;
+    try { calc = calcCharStats(character.level); } catch (e) {}
+    const charSnap = {
+        classId:     currentClass,
+        className:   (CLASS_DEFS[currentClass] && CLASS_DEFS[currentClass].label) || currentClass,
+        level:       character.level,
+        soulLevel:   character.soulLevel,
+        exp:         character.exp,
+        currentHP:   character.currentHP,
+        maxHP:       character.maxHP,
+        currentMP:   character.currentMP,
+        maxMP:       character.maxMP,
+        normalAtkType: character.normalAtkType || '',
+        computed:    calc ? { ...calc } : null,
+    };
+
+    // 장비 스냅샷 — 각 슬롯의 장착 아이템 정보를 복사
+    const eqSnap = {};
+    for (const sl of EQ_SLOT_DEFS) {
+        const idx = equippedItems[sl.key];
+        if (idx !== null && idx !== undefined && idx >= 0 && inventory[idx]) {
+            const it = inventory[idx];
+            eqSnap[sl.key] = {
+                slotKey:      sl.key,
+                slotLabel:    sl.label,
+                name:         it.name,
+                icon:         it.icon,
+                slot:         it.slot,
+                weaponTypeId: it.weaponTypeId || null,
+                gradeIdx:     it.gradeIdx,
+                power:        it.power,
+                gradeColor:   it.gradeColor,
+                eqStats:      it.eqStats ? { ...it.eqStats } : {},
+            };
+        } else {
+            eqSnap[sl.key] = null; // 빈 슬롯
+        }
+    }
+
+    return {
+        version:    1,
+        stage:      buf.stage,
+        clearedAt:  Date.now(),
+        totalMs,
+        rounds:     buf.rounds.slice(),
+        boss: {
+            startedAt:  buf.bossStartAt,
+            durationMs: buf.bossDurationMs || 0,
+        },
+        character:  charSnap,
+        equipped:   eqSnap,
+    };
+}
+
+function _recSaveRecord(rec) {
+    if (!rec) return;
+    try {
+        const raw = localStorage.getItem(STAGE_RECORDS_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        arr.unshift(rec);
+        if (arr.length > STAGE_RECORDS_LIMIT) arr.length = STAGE_RECORDS_LIMIT;
+        localStorage.setItem(STAGE_RECORDS_KEY, JSON.stringify(arr));
+    } catch (e) {
+        console.warn('save stage record failed:', e);
+    }
+}
+
+function loadStageRecords() {
+    try {
+        const raw = localStorage.getItem(STAGE_RECORDS_KEY);
+        if (!raw) return [];
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function clearStageRecords() {
+    localStorage.removeItem(STAGE_RECORDS_KEY);
+}
+
+// 시간 포맷 헬퍼 — ms → "1분 23.45초" 또는 "5.20초"
+function _fmtRecTime(ms) {
+    if (ms == null || isNaN(ms)) return '-';
+    const total = Math.max(0, ms);
+    const min   = Math.floor(total / 60000);
+    const sec   = (total % 60000) / 1000;
+    if (min > 0) return `${min}분 ${sec.toFixed(2)}초`;
+    return `${sec.toFixed(2)}초`;
+}
+
+// ── 기록 모달 (열기/닫기/렌더) ─────────────────────────────────────────────
+let _recordModalPaused = false;
+let _recordViewDetailIdx = -1; // -1 = 리스트 모드 / 0+ = 상세 모드(index)
+
+function openRecord() {
+    _recordViewDetailIdx = -1;
+    renderRecord();
+    document.getElementById('record-overlay').classList.add('open');
+    if (gameState === 'playing') { gameState = 'paused'; _recordModalPaused = true; }
+    else { _recordModalPaused = false; }
+}
+
+function closeRecord() {
+    document.getElementById('record-overlay').classList.remove('open');
+    if (_recordModalPaused) { gameState = 'playing'; lastTime = performance.now(); _recordModalPaused = false; }
+}
+
+function recordBackToList() {
+    _recordViewDetailIdx = -1;
+    renderRecord();
+}
+
+function recordShowDetail(idx) {
+    _recordViewDetailIdx = idx;
+    renderRecord();
+}
+
+function renderRecord() {
+    const records = loadStageRecords();
+    const body = document.getElementById('record-body');
+    if (!body) return;
+
+    if (records.length === 0) {
+        body.innerHTML = `<div class="record-empty">아직 기록된 스테이지 클리어가 없습니다.<br>스테이지 보스를 처치하면 자동으로 기록됩니다.</div>`;
+        return;
+    }
+
+    // 상세 보기
+    if (_recordViewDetailIdx >= 0 && _recordViewDetailIdx < records.length) {
+        body.innerHTML = _renderRecordDetail(records[_recordViewDetailIdx]);
+        return;
+    }
+
+    // 리스트 보기
+    const rowsHtml = records.map((r, i) => {
+        const date = new Date(r.clearedAt).toLocaleString('ko-KR', { hour12: false });
+        const grade = (r.character && r.character.classId) ? r.character.classId : '';
+        return `<div class="record-card" onclick="recordShowDetail(${i})">
+            <div class="rec-stage-num">스테이지 ${r.stage.toLocaleString()}</div>
+            <div class="rec-info-col">
+                <strong>${r.character ? r.character.className || grade : '-'}</strong> ·
+                Lv.${r.character ? r.character.level : '-'} · SL.${r.character ? r.character.soulLevel : '-'}
+            </div>
+            <div class="rec-info-col">라운드 ${r.rounds ? r.rounds.length : 0} + 보스</div>
+            <div class="rec-time">${_fmtRecTime(r.totalMs)}</div>
+            <div class="rec-date">${date}</div>
+        </div>`;
+    }).join('');
+
+    body.innerHTML = `
+        <div class="record-toolbar">
+            <span class="rec-title">📜 클리어 기록 리스트</span>
+            <span class="rec-meta">총 ${records.length}건 (최신순)</span>
+        </div>
+        <div class="record-list">${rowsHtml}</div>
+    `;
+}
+
+function _renderRecordDetail(rec) {
+    const date = new Date(rec.clearedAt).toLocaleString('ko-KR', { hour12: false });
+    // 라운드별 표
+    const roundRows = (rec.rounds || []).map(r => {
+        const killTimesHtml = (r.killIntervals || []).map((d, i) =>
+            `<span class="record-kill-time-chip" title="누적 ${_fmtRecTime((r.killTimesCumulative || [])[i])}">${(d/1000).toFixed(2)}s</span>`
+        ).join('');
+        return `<tr>
+            <td>${r.roundNum}라운드</td>
+            <td>${_fmtRecTime(r.durationMs)}</td>
+            <td>${r.killCount}마리</td>
+            <td class="rec-avg-cell">${_fmtRecTime(r.avgKillMs)}</td>
+            <td><div class="record-kill-times-row">${killTimesHtml || '<span style="color:#6e7681;">-</span>'}</div></td>
+        </tr>`;
+    }).join('');
+
+    const bossRow = `<tr class="boss-row">
+        <td><strong>💀 보스</strong></td>
+        <td>${_fmtRecTime(rec.boss && rec.boss.durationMs)}</td>
+        <td>1마리</td>
+        <td>-</td>
+        <td>-</td>
+    </tr>`;
+
+    // 캐릭터 정보
+    const c = rec.character || {};
+    const charTable = `
+        <table class="record-kv-table">
+            <tbody>
+                <tr><td>클래스</td><td><strong>${c.className || c.classId || '-'}</strong></td></tr>
+                <tr><td>레벨</td><td>Lv.${c.level || '-'}</td></tr>
+                <tr><td>영혼 레벨</td><td>SL.${c.soulLevel || '-'}</td></tr>
+                <tr><td>경험치</td><td>${(c.exp || 0).toLocaleString()}</td></tr>
+                <tr><td>HP</td><td>${(c.currentHP || 0).toLocaleString()} / ${(c.maxHP || 0).toLocaleString()}</td></tr>
+                <tr><td>MP</td><td>${(c.currentMP || 0).toLocaleString()} / ${(c.maxMP || 0).toLocaleString()}</td></tr>
+                <tr><td>평타 공격 타입</td><td>${c.normalAtkType || '-'}</td></tr>
+            </tbody>
+        </table>`;
+
+    // 장비 정보
+    const eq = rec.equipped || {};
+    const eqHtml = EQ_SLOT_DEFS.map(sl => {
+        const it = eq[sl.key];
+        if (!it) {
+            return `<div class="record-eq-slot empty">
+                <span class="record-eq-slot-icon">${sl.icon}</span>
+                <div class="record-eq-slot-info">
+                    <div class="record-eq-slot-name" style="color:#6e7681;">${sl.label}</div>
+                    <div class="record-eq-slot-sub">미장착</div>
+                </div>
+            </div>`;
+        }
+        const gc = it.gradeColor || '#e6edf3';
+        const grade = EQ_GRADES[it.gradeIdx];
+        const gLabel = grade ? grade.label : '';
+        const stats = it.eqStats ? Object.entries(it.eqStats).map(([k, v]) =>
+            `${(typeof EQ_STAT_LABELS !== 'undefined' && EQ_STAT_LABELS[k]) ? EQ_STAT_LABELS[k] : k}: +${(v || 0).toLocaleString()}`
+        ).join(' / ') : '';
+        return `<div class="record-eq-slot" style="border-color:${gc};background:linear-gradient(135deg, ${gc}29, ${gc}0a 80%);" title="${stats}">
+            <span class="record-eq-slot-icon" style="background:${gc}26;border:1px solid ${gc};color:${gc};">${it.icon || '📦'}</span>
+            <div class="record-eq-slot-info">
+                <div class="record-eq-slot-name" style="color:${gc};">${it.name}</div>
+                <div class="record-eq-slot-sub">[${gLabel}] · 위력 ${it.power} · ${sl.label}</div>
+            </div>
+        </div>`;
+    }).join('');
+
+    return `
+        <div class="record-toolbar">
+            <button class="rec-back-btn" onclick="recordBackToList()">‹ 리스트로</button>
+            <span class="rec-title">스테이지 ${rec.stage.toLocaleString()} 클리어 상세</span>
+            <span class="rec-meta">총 클리어 시간 <strong style="color:#79c0ff;">${_fmtRecTime(rec.totalMs)}</strong> · ${date}</span>
+        </div>
+
+        <div class="record-section-title">라운드별 처치 시간 (개별 + 평균)</div>
+        <table class="record-round-table">
+            <thead><tr>
+                <th>구분</th><th>총 소요 시간</th><th>처치 수</th><th>평균 처치 시간</th><th>개별 처치 시간</th>
+            </tr></thead>
+            <tbody>
+                ${roundRows}
+                ${bossRow}
+            </tbody>
+        </table>
+
+        <div class="record-section-title">기록 시점 캐릭터 능력치</div>
+        ${charTable}
+
+        <div class="record-section-title">기록 시점 장착 장비</div>
+        <div class="record-eq-grid">${eqHtml}</div>
+    `;
+}
+
+// 진행 초기화 — 탑 바 버튼에서 호출. 인게임 확인 모달을 표시한다(브라우저 confirm 대신).
+let _resetConfirmPaused = false;
+function resetGameProgress() {
+    document.getElementById('reset-confirm-overlay').classList.add('open');
+    if (gameState === 'playing') { gameState = 'paused'; _resetConfirmPaused = true; }
+    else { _resetConfirmPaused = false; }
+}
+
+function closeResetConfirm() {
+    document.getElementById('reset-confirm-overlay').classList.remove('open');
+    if (_resetConfirmPaused) { gameState = 'playing'; lastTime = performance.now(); _resetConfirmPaused = false; }
+}
+
+// 모달의 "초기화 진행" 버튼 클릭 시 실제 삭제 + 리로드.
+// 설정 데이터(클래스 설정·레벨 능력치 등)는 유지하고 진행 데이터만 삭제.
+function confirmResetGameProgress() {
+    clearGameProgress();
+    clearStageRecords(); // 클리어 기록도 함께 삭제
+    // 캐릭터 레벨/EXP/HP/MP도 초기화하기 위해 versione_char도 함께 삭제
+    try { localStorage.removeItem('versione_char'); } catch (e) {}
+    // 페이지 리로드로 깨끗하게 재시작 (initGame이 저장 없으면 기본값으로 시작)
+    location.href = location.pathname + '?_=' + Date.now();
+}
+
+// 저장된 스냅샷을 게임 메모리에 적용 (initGame이 기본 초기화한 직후 호출)
+function applyGameProgress(snap) {
+    if (!_isGameProgressValid(snap)) return false;
+
+    // 클래스 — 저장된 클래스로 전환
+    if (snap.classId && snap.classId !== currentClass) {
+        currentClass = snap.classId;
+        try { localStorage.setItem('versione_current_class', currentClass); } catch (e) {}
+        loadBaseStats();
+        buildMonsterBaseStats();
+    }
+
+    // 캐릭터
+    const c = snap.character;
+    character.level     = c.level;
+    character.soulLevel = c.soulLevel;
+    character.exp       = c.exp;
+    character.maxHP     = c.maxHP;
+    character.currentHP = c.currentHP;
+    character.maxMP     = c.maxMP;
+    character.currentMP = c.currentMP;
+    if (typeof c.x === 'number') character.x = c.x;
+    if (typeof c.y === 'number') character.y = c.y;
+    if (c.normalAtkType) character.normalAtkType = c.normalAtkType;
+
+    // 스테이지 상태
+    currentStage     = snap.stage.currentStage;
+    currentRound     = snap.stage.currentRound;
+    stageKills       = snap.stage.stageKills;
+    bossSpawned      = !!snap.stage.bossSpawned;
+    bossDefeated     = !!snap.stage.bossDefeated;
+    monsterSoulLevel = snap.stage.monsterSoulLevel;
+
+    totalKills = snap.totalKills || 0;
+    inTown     = !!snap.inTown;
+
+    // 인벤토리 복원 — 길이 보정
+    inventory = [];
+    for (let i = 0; i < INVENTORY_SIZE; i++) {
+        inventory[i] = (snap.inventory[i] != null) ? { ...snap.inventory[i] } : null;
+    }
+    // 장비 슬롯 복원
+    EQ_SLOT_DEFS.forEach(s => { equippedItems[s.key] = null; });
+    for (const k in snap.equippedItems) {
+        const idx = snap.equippedItems[k];
+        if (typeof idx === 'number' && idx >= 0 && inventory[idx]) {
+            equippedItems[k] = idx;
+            inventory[idx].equipped     = true;
+            inventory[idx].equippedSlot = k;
+        }
+    }
+
+    // 몬스터 재구성 — 보스 진행 중이면 보스 1마리, 아니면 일반 몬스터
+    monsters = [];
+    if (bossSpawned && !bossDefeated) {
+        const boss = spawnMonster(stageLevel(currentStage), true, true);
+        monsters.push(boss);
+    } else {
+        const monLv = stageLevel(currentStage);
+        for (let i = 0; i < MONSTER_COUNT; i++) {
+            monsters.push(spawnMonster(monLv, false, false));
+        }
+    }
+
+    // ── 로그 복원 (v2+) — v1 세이브에는 logs/dropLogs가 없을 수 있음(빈 배열로 대체) ──
+    if (Array.isArray(snap.logs)) {
+        logs = snap.logs.slice(0, 80).map(l => ({ msg: l.msg || '', type: l.type || 'normal', ts: l.ts || '' }));
+    } else {
+        logs = [];
+    }
+    if (Array.isArray(snap.dropLogs)) {
+        // equipMap/equipEvents는 저장 시 제외했으므로 빈 값으로 복원 (suffix 안 보임)
+        dropLogs = snap.dropLogs.slice(0, 80).map(d => ({
+            ts: d.ts || '',
+            items: Array.isArray(d.items) ? d.items.map(it => ({ ...it })) : [],
+            isBoss: !!d.isBoss,
+            equipMap: new Map(),
+            equipEvents: [],
+        }));
+    } else {
+        dropLogs = [];
+    }
+    _renderCombatLogList();
+    _renderDropLogList();
+    return true;
 }
 
 // ────────────────────────────────────────────────
@@ -12123,8 +13426,9 @@ function showDropToast(items, isBoss = false) {
         const gradeColor = it.gradeColor || (grade ? grade.color : '#e6edf3');
         // 파츠명은 name에서 "[등급] " 부분 제거
         const partName = it.name.replace(/^\[[^\]]+\]\s*/, '');
+        const iconBgStyle = `style="background:${gradeColor}26; border:1px solid ${gradeColor}; color:${gradeColor};"`;
         return `<div class="drop-toast-item">
-            <span class="drop-toast-icon">${it.icon}</span>
+            <span class="drop-toast-icon" ${iconBgStyle}>${it.icon}</span>
             <span class="drop-toast-name">${partName}</span>
             <span class="drop-toast-grade" style="color:${gradeColor};">[${gradeLabel}]</span>
         </div>`;
@@ -12147,18 +13451,21 @@ function showDropToast(items, isBoss = false) {
 
 // ── 아이템 로그 (우측 패널) — 획득 + 자동 착용/교체 통합 표시 ──────────────
 let dropLogs = [];
+
 function addDropLog(items, isBoss = false, equipEvents = []) {
     if ((!items || items.length === 0) && (!equipEvents || equipEvents.length === 0)) return;
     const ts = new Date().toLocaleTimeString('ko-KR', { hour12: false });
-
     // 자동 착용된 아이템을 빠르게 조회하기 위한 인덱스 (item 참조 동일성 기준)
     const equipMap = new Map();
     for (const ev of (equipEvents || [])) {
         if (ev && ev.item) equipMap.set(ev.item, ev);
     }
-
     dropLogs.unshift({ ts, items: items || [], isBoss, equipMap, equipEvents: equipEvents || [] });
     if (dropLogs.length > 80) dropLogs.pop();
+    _renderDropLogList();
+}
+
+function _renderDropLogList() {
     const el = document.getElementById('drop-log-list');
     if (!el) return;
 
@@ -12167,6 +13474,7 @@ function addDropLog(items, isBoss = false, equipEvents = []) {
         const gradeLabel = grade ? grade.label : '';
         const gradeColor = it.gradeColor || (grade ? grade.color : '#e6edf3');
         const partName = it.name.replace(/^\[[^\]]+\]\s*/, '');
+        const iconBadge = `<span class="drop-log-icon-badge" style="background:${gradeColor}26;border:1px solid ${gradeColor};color:${gradeColor};">${it.icon}</span>`;
         let suffix = '';
         if (equipEvt) {
             if (equipEvt.action === 'equip') {
@@ -12177,18 +13485,21 @@ function addDropLog(items, isBoss = false, equipEvents = []) {
                 const pvColor  = pv ? (pv.gradeColor || (pvGrade ? pvGrade.color : '#8b949e')) : '#8b949e';
                 const pvLabel  = pvGrade ? pvGrade.label : '';
                 const pvName   = pv ? pv.name.replace(/^\[[^\]]+\]\s*/, '') : '';
-                suffix = ` <span style="color:#d29922;font-weight:bold;">→ 교체</span> <span style="color:#6e7681;font-size:14px;">(이전: ${pv ? pv.icon : ''} ${pvName} <span style="color:${pvColor};">[${pvLabel}]</span>)</span>`;
+                const pvIcon   = pv ? `<span class="drop-log-icon-badge" style="background:${pvColor}26;border:1px solid ${pvColor};color:${pvColor};">${pv.icon || ''}</span>` : '';
+                suffix = ` <span style="color:#d29922;font-weight:bold;">→ 교체</span> <span style="color:#6e7681;font-size:15px;">(이전: ${pvIcon} ${pvName} <span style="color:${pvColor};">[${pvLabel}]</span>)</span>`;
             }
         }
-        return `<div class="drop-log-item">${it.icon} ${partName} <span style="color:${gradeColor};">[${gradeLabel}]</span>${suffix}</div>`;
+        return `<div class="drop-log-item">${iconBadge} ${partName} <span style="color:${gradeColor};">[${gradeLabel}]</span>${suffix}</div>`;
     };
 
     el.innerHTML = dropLogs.slice(0, 60).map(e => {
-        const equipCount = e.equipEvents.length;
+        const eq    = e.equipEvents || [];
+        const eqMap = e.equipMap || new Map();
+        const equipCount = eq.length;
         const head = e.isBoss
             ? `💀 보스 보상 (${e.items.length}개${equipCount ? `, 자동 착용 ${equipCount}` : ''})`
             : `🎁 장비 획득 (${e.items.length}개${equipCount ? `, 자동 착용 ${equipCount}` : ''})`;
-        const list = e.items.map(it => renderItemSpan(it, e.equipMap.get(it))).join('');
+        const list = e.items.map(it => renderItemSpan(it, eqMap.get(it))).join('');
         return `<div class="drop-log-entry${e.isBoss ? ' boss' : ''}">
             <div class="drop-log-head"><span class="drop-log-ts">[${e.ts}]</span>${head}</div>
             <div>${list}</div>
@@ -12474,10 +13785,12 @@ function renderEquipPanel() {
         const item   = (invIdx !== null && invIdx >= 0) ? inventory[invIdx] : null;
         if (item) {
             const gc = item.gradeColor || '';
-            const borderStyle = gc ? ` style="border-color:${gc}80;"` : '';
+            // 등급색 풀톤 테두리(2px) + 등급색 미세 그라데이션 배경
+            const borderStyle = gc ? ` style="border-color:${gc};background:linear-gradient(135deg, ${gc}33, ${gc}0d 80%);"` : '';
             const iconStyle   = gc ? ` style="color:${gc};"` : '';
-            return `<div class="eq-slot occupied"${borderStyle} onclick="unequipSlot('${sl.key}')"
-                title="${item.name}\n[${sl.label}] 클릭 → 탈착">
+            // 장착 슬롯 클릭 → 툴팁(해제 버튼만 표시)
+            return `<div class="eq-slot occupied"${borderStyle} onclick="openEquipSlotTooltip('${sl.key}')"
+                title="${item.name}\n[${sl.label}] 클릭 → 툴팁 열기">
                 <span class="eq-slot-icon"${iconStyle}>${item.icon || sl.icon}</span>
                 <span class="eq-slot-label">${sl.label}</span>
             </div>`;
@@ -12528,6 +13841,7 @@ function equipItem(invIdx) {
 
     renderEquipPanel();
     renderInventory();
+    saveGameProgress(); // 장착 — 진행 저장
 }
 
 // 착용 슬롯 탈착 (slotKey: 'weapon' | 'helmet' | ... )
@@ -12547,6 +13861,359 @@ function unequipSlot(slotKey) {
 
     renderEquipPanel();
     renderInventory();
+    saveGameProgress(); // 해제 — 진행 저장
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// ── 장비 툴팁 + 자동 장착 시스템 ────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+// 인벤토리 슬롯 / 장착 슬롯 클릭 시 표시되는 툴팁. 상태에 따라 장착·교체·해제 버튼이 다르게 표시.
+
+let _invTooltipInvIdx = -1; // 현재 툴팁이 열린 인벤토리 인덱스 (-1 = 닫힘)
+
+function openInvTooltip(invIdx) {
+    const item = inventory[invIdx];
+    if (!item) return;
+    _invTooltipInvIdx = invIdx;
+    document.getElementById('item-tooltip-overlay').classList.add('open');
+    renderInvTooltip();
+}
+
+// 장착 슬롯 클릭 → 해당 슬롯에 착용된 아이템의 툴팁 표시
+function openEquipSlotTooltip(slotKey) {
+    const idx = equippedItems[slotKey];
+    if (idx === null || idx < 0) return; // 빈 슬롯
+    openInvTooltip(idx);
+}
+
+function closeInvTooltip() {
+    _invTooltipInvIdx = -1;
+    document.getElementById('item-tooltip-overlay').classList.remove('open');
+}
+
+// 툴팁 내 능력치 행 렌더링
+function _ttRenderStats(item) {
+    if (!item.eqStats) return '';
+    return Object.entries(item.eqStats).map(([k, v]) => {
+        const lbl = (typeof EQ_STAT_LABELS !== 'undefined' && EQ_STAT_LABELS[k]) ? EQ_STAT_LABELS[k] : k;
+        return `<div class="tt-stat-row">
+            <span class="tt-stat-lbl">${lbl}</span>
+            <span class="tt-stat-val">+${v.toLocaleString()}</span>
+        </div>`;
+    }).join('');
+}
+
+// 신규/기존 장비 능력치 비교 행 렌더링
+function _ttRenderCompareStats(newItem, prevItem) {
+    const allKeys = new Set([...Object.keys(newItem.eqStats || {}), ...Object.keys(prevItem.eqStats || {})]);
+    return [...allKeys].map(k => {
+        const newV  = (newItem.eqStats && newItem.eqStats[k])  || 0;
+        const prevV = (prevItem.eqStats && prevItem.eqStats[k]) || 0;
+        const diff  = newV - prevV;
+        const cls   = diff > 0 ? 'tt-cmp-up' : (diff < 0 ? 'tt-cmp-down' : 'tt-cmp-eq');
+        const sign  = diff > 0 ? '+' : '';
+        const lbl   = (typeof EQ_STAT_LABELS !== 'undefined' && EQ_STAT_LABELS[k]) ? EQ_STAT_LABELS[k] : k;
+        return `<div class="tt-compare-row">
+            <span class="tt-cmp-prev">${prevV.toLocaleString()}</span>
+            <span class="tt-cmp-arrow">→</span>
+            <span class="tt-cmp-new">${newV.toLocaleString()}</span>
+            <span class="${cls}">(${sign}${diff.toLocaleString()})</span>
+            <span style="grid-column:1/-1;color:#8b949e;font-size:15px;margin-top:-2px;">${lbl}</span>
+        </div>`;
+    }).join('');
+}
+
+// 단일 카드용 header HTML (듀얼 컬럼 내부에 들어가는 형태)
+function _ttRenderCardHeader(item, tagText, tagCls) {
+    const grade      = EQ_GRADES[item.gradeIdx];
+    const gradeName  = grade ? grade.label : '';
+    const gradeColor = item.gradeColor || (grade ? grade.color : '#e6edf3');
+    return `
+        <div class="tt-dual-col-header">
+            <span class="tt-dual-col-tag">${tagText}</span>
+            <span class="tt-dual-col-icon">${item.icon || '📦'}</span>
+            <div style="min-width:0;flex:1;">
+                <div class="tt-dual-col-name" style="color:${gradeColor};">${item.name}</div>
+                ${item.power !== undefined ? `<div class="tt-dual-col-sub"><span style="color:${gradeColor};">[${gradeName}]</span> · 위력 ${item.power}</div>` : ''}
+            </div>
+        </div>`;
+}
+
+// 듀얼 우측(신규) 카드용 스탯 행 — 좌측(현재) 대비 변화량 인디케이터 포함
+function _ttRenderStatsWithDelta(newItem, prevItem) {
+    const allKeys = new Set([...Object.keys(newItem.eqStats || {}), ...Object.keys(prevItem.eqStats || {})]);
+    return [...allKeys].map(k => {
+        const newV  = (newItem.eqStats && newItem.eqStats[k])   || 0;
+        const prevV = (prevItem.eqStats && prevItem.eqStats[k]) || 0;
+        const diff  = newV - prevV;
+        const cls   = diff > 0 ? 'up' : (diff < 0 ? 'down' : 'eq');
+        const sign  = diff > 0 ? '+' : '';
+        const lbl   = (typeof EQ_STAT_LABELS !== 'undefined' && EQ_STAT_LABELS[k]) ? EQ_STAT_LABELS[k] : k;
+        return `<div class="tt-stat-row">
+            <span class="tt-stat-lbl">${lbl}</span>
+            <span>
+                <span class="tt-stat-val">+${newV.toLocaleString()}</span>
+                ${diff !== 0 ? `<span class="tt-stat-delta ${cls}">(${sign}${diff.toLocaleString()})</span>` : ''}
+            </span>
+        </div>`;
+    }).join('');
+}
+
+function renderInvTooltip() {
+    const idx  = _invTooltipInvIdx;
+    const item = inventory[idx];
+    if (!item) { closeInvTooltip(); return; }
+
+    const panel = document.getElementById('item-tooltip-panel');
+    panel.classList.remove('dual'); // 기본 single 모드, 듀얼 모드면 아래에서 다시 추가
+
+    const grade      = EQ_GRADES[item.gradeIdx];
+    const gradeName  = grade ? grade.label : '';
+    const gradeColor = item.gradeColor || (grade ? grade.color : '#e6edf3');
+
+    // ── 케이스 1: 장비가 아닌 일반 아이템 → 닫기만
+    if (item.type !== 'equipment' || !item.slot) {
+        panel.innerHTML = `
+            <div class="tt-header">
+                <span class="tt-icon">${item.icon || '📦'}</span>
+                <div><div class="tt-name" style="color:${gradeColor};">${item.name}</div></div>
+            </div>
+            <div class="tt-buttons">
+                <button class="tt-btn tt-btn-cancel" onclick="closeInvTooltip()">닫기</button>
+            </div>
+        `;
+        return;
+    }
+
+    // ── 케이스 2: 이미 착용 중 → 해제 버튼 (단일 카드)
+    if (item.equipped) {
+        const _slotDef = EQ_SLOT_DEFS.find(s => s.key === item.equippedSlot);
+        const _slotLbl = _slotDef ? _slotDef.label : item.equippedSlot;
+        panel.innerHTML = `
+            <div class="tt-header">
+                <span class="tt-icon">${item.icon || '📦'}</span>
+                <div>
+                    <div class="tt-name" style="color:${gradeColor};">${item.name}</div>
+                    ${item.power !== undefined ? `<div class="tt-grade-row"><span style="color:${gradeColor};">[${gradeName}]</span> · 위력 ${item.power}</div>` : ''}
+                </div>
+            </div>
+            <div class="tt-info">✓ 현재 [${_slotLbl}] 슬롯에 착용 중</div>
+            <div class="tt-section-title">능력치</div>
+            <div class="tt-stats">${_ttRenderStats(item)}</div>
+            <div class="tt-buttons">
+                <button class="tt-btn tt-btn-unequip" onclick="tooltipUnequip()">해제</button>
+                <button class="tt-btn tt-btn-cancel" onclick="closeInvTooltip()">닫기</button>
+            </div>
+        `;
+        return;
+    }
+
+    // ── 미착용 아이템 — 클래스 제한 체크
+    let classError = '';
+    if (item.slot === 'weapon' && item.weaponTypeId) {
+        const wt = EQ_WEAPON_TYPES.find(w => w.id === item.weaponTypeId);
+        if (wt && !wt.classes.includes(currentClass)) {
+            const classNames = wt.classes.map(c => CLASS_DEFS[c]?.label || c).join(', ');
+            classError = `<div class="tt-error">⚠ ${classNames} 전용 무기 — 현재 클래스(${CLASS_DEFS[currentClass]?.label || currentClass}) 착용 불가</div>`;
+        }
+    }
+    const prevIdx = equippedItems[item.slot];
+    const hasPrev = (prevIdx !== null && prevIdx >= 0 && !!inventory[prevIdx]);
+
+    // ── 케이스 3: 클래스 제한 위반 → 단일 카드 + 닫기
+    if (classError) {
+        panel.innerHTML = `
+            <div class="tt-header">
+                <span class="tt-icon">${item.icon || '📦'}</span>
+                <div>
+                    <div class="tt-name" style="color:${gradeColor};">${item.name}</div>
+                    ${item.power !== undefined ? `<div class="tt-grade-row"><span style="color:${gradeColor};">[${gradeName}]</span> · 위력 ${item.power}</div>` : ''}
+                </div>
+            </div>
+            ${classError}
+            <div class="tt-section-title">능력치</div>
+            <div class="tt-stats">${_ttRenderStats(item)}</div>
+            <div class="tt-buttons">
+                <button class="tt-btn tt-btn-cancel" onclick="closeInvTooltip()">닫기</button>
+            </div>
+        `;
+        return;
+    }
+
+    // ── 케이스 4: 동일 슬롯에 이미 착용 중 → 듀얼 카드 (좌: 현재, 우: 신규)
+    if (hasPrev) {
+        panel.classList.add('dual');
+        const prev = inventory[prevIdx];
+        const newS  = itemStrength(item);
+        const prevS = itemStrength(prev);
+        const totalDiff = newS - prevS;
+        const totalCls  = totalDiff > 0 ? 'up' : (totalDiff < 0 ? 'down' : 'eq');
+        const totalSign = totalDiff > 0 ? '+' : '';
+        const prevGrade = EQ_GRADES[prev.gradeIdx];
+        const prevSlotDef = EQ_SLOT_DEFS.find(s => s.key === item.slot);
+        const slotLbl = prevSlotDef ? prevSlotDef.label : item.slot;
+
+        panel.innerHTML = `
+            <div class="tt-header">
+                <span class="tt-icon">⇄</span>
+                <div>
+                    <div class="tt-name" style="color:#a78bfa;">[${slotLbl}] 장비 교체</div>
+                    <div class="tt-grade-row">좌측 현재 착용 / 우측 새 선택 — 능력치 차이는 신규 카드에 표시</div>
+                </div>
+            </div>
+            <div class="tt-dual-row">
+                <div class="tt-dual-col current">
+                    ${_ttRenderCardHeader(prev, '현재 착용')}
+                    <div class="tt-stats">${_ttRenderStats(prev)}</div>
+                    <div class="tt-dual-total-row">
+                        능력치 합계: <strong style="color:#e6edf3;">${prevS.toLocaleString()}</strong>
+                    </div>
+                </div>
+                <div class="tt-dual-arrow">⇄</div>
+                <div class="tt-dual-col new">
+                    ${_ttRenderCardHeader(item, '새 선택')}
+                    <div class="tt-stats">${_ttRenderStatsWithDelta(item, prev)}</div>
+                    <div class="tt-dual-total-row">
+                        능력치 합계: <strong style="color:#e6edf3;">${newS.toLocaleString()}</strong>
+                        ${totalDiff !== 0 ? `<span class="tt-stat-delta ${totalCls}">(${totalSign}${totalDiff.toLocaleString()})</span>` : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="tt-buttons">
+                <button class="tt-btn tt-btn-swap" onclick="tooltipSwap()">교체</button>
+                <button class="tt-btn tt-btn-cancel" onclick="closeInvTooltip()">닫기</button>
+            </div>
+        `;
+        return;
+    }
+
+    // ── 케이스 5: 빈 슬롯 → 단일 카드 + 장착 버튼
+    panel.innerHTML = `
+        <div class="tt-header">
+            <span class="tt-icon">${item.icon || '📦'}</span>
+            <div>
+                <div class="tt-name" style="color:${gradeColor};">${item.name}</div>
+                ${item.power !== undefined ? `<div class="tt-grade-row"><span style="color:${gradeColor};">[${gradeName}]</span> · 위력 ${item.power}</div>` : ''}
+            </div>
+        </div>
+        <div class="tt-section-title">능력치</div>
+        <div class="tt-stats">${_ttRenderStats(item)}</div>
+        <div class="tt-buttons">
+            <button class="tt-btn tt-btn-equip" onclick="tooltipEquip()">장착</button>
+            <button class="tt-btn tt-btn-cancel" onclick="closeInvTooltip()">닫기</button>
+        </div>
+    `;
+}
+
+// 툴팁 — 장착 (빈 슬롯)
+function tooltipEquip() {
+    const idx = _invTooltipInvIdx;
+    if (idx < 0) return;
+    equipItem(idx);
+    // equipItem 내부에서 renderEquipPanel/renderInventory 호출됨
+    onLevelChanged(false);
+    closeInvTooltip();
+}
+// 툴팁 — 교체 (같은 슬롯에 이미 다른 장비 착용 중)
+function tooltipSwap() {
+    const idx = _invTooltipInvIdx;
+    if (idx < 0) return;
+    equipItem(idx); // equipItem이 기존 장착 자동 해제 후 새로 장착
+    onLevelChanged(false);
+    closeInvTooltip();
+}
+// 툴팁 — 해제 (현재 착용 중인 장비)
+function tooltipUnequip() {
+    const idx  = _invTooltipInvIdx;
+    const item = inventory[idx];
+    if (!item || !item.equipped || !item.equippedSlot) return;
+    unequipSlot(item.equippedSlot);
+    onLevelChanged(false);
+    closeInvTooltip();
+}
+
+// ── 자동 장착 (모든 파츠에 대해 인벤토리 내 최강 장비로 일괄 교체) ──────────
+function autoEquipBest() {
+    let swaps = 0, unchanged = 0, noCandidate = 0;
+    const detail = [];
+
+    EQ_SLOT_DEFS.forEach(sl => {
+        const slotKey = sl.key;
+        // 이 슬롯에 들어갈 수 있는 인벤토리 후보(클래스 제한 통과) 중 최강 선택
+        let bestIdx = -1;
+        let bestS   = -Infinity;
+        for (let i = 0; i < inventory.length; i++) {
+            const it = inventory[i];
+            if (!it || it.type !== 'equipment' || it.slot !== slotKey) continue;
+            if (slotKey === 'weapon' && it.weaponTypeId) {
+                const wt = EQ_WEAPON_TYPES.find(w => w.id === it.weaponTypeId);
+                if (wt && !wt.classes.includes(currentClass)) continue;
+            }
+            const s = itemStrength(it);
+            if (s > bestS) { bestS = s; bestIdx = i; }
+        }
+        if (bestIdx < 0) { noCandidate++; return; }
+
+        const curIdx = equippedItems[slotKey];
+        if (curIdx === bestIdx) { unchanged++; return; }
+
+        // 현재 착용 장비와 비교 — 더 강할 때만 교체 (동일 강도는 유지)
+        const curStrength = (curIdx !== null && curIdx >= 0 && inventory[curIdx])
+            ? itemStrength(inventory[curIdx]) : -Infinity;
+        if (bestS <= curStrength) { unchanged++; return; }
+
+        equipItem(bestIdx);
+        swaps++;
+        detail.push(`${sl.label}: ${inventory[bestIdx].name}`);
+    });
+
+    onLevelChanged(false);
+    renderEquipPanel();
+    renderInventory();
+
+    if (swaps > 0) {
+        addLog(`🤖 자동 장착 완료: ${swaps}개 슬롯 교체 (이미 최강 ${unchanged} · 후보 없음 ${noCandidate})`, 'levelup');
+    } else {
+        addLog(`🤖 자동 장착: 교체할 장비 없음 (이미 모두 최강)`, 'info');
+    }
+}
+
+// ── 아이콘 버튼 부동 툴팁 (body 직속, overflow:hidden 우회) ──────────────────
+function _getEqTooltipEl() {
+    let el = document.getElementById('eq-tooltip-floating');
+    if (!el) {
+        el = document.createElement('div');
+        el.id = 'eq-tooltip-floating';
+        el.className = 'eq-tooltip-floating';
+        document.body.appendChild(el);
+    }
+    return el;
+}
+function showEqTooltip(btn) {
+    if (!btn) return;
+    const text = btn.getAttribute('data-tooltip');
+    if (!text) return;
+    const tip = _getEqTooltipEl();
+    tip.textContent = text;
+    tip.classList.add('visible');
+    // 표시 후 실제 크기 측정 → 버튼 기준으로 위치 조정
+    const btnRect = btn.getBoundingClientRect();
+    const tipRect = tip.getBoundingClientRect();
+    let left = btnRect.left + (btnRect.width  - tipRect.width)  / 2;
+    let top  = btnRect.top  -  tipRect.height - 8;
+    // 화면 경계 클램핑
+    const pad = 6;
+    if (left < pad) left = pad;
+    if (left + tipRect.width > window.innerWidth - pad) {
+        left = window.innerWidth - tipRect.width - pad;
+    }
+    if (top < pad) top = btnRect.bottom + 8; // 위쪽 공간 부족 시 아래로 표시
+    tip.style.left = `${Math.round(left)}px`;
+    tip.style.top  = `${Math.round(top)}px`;
+}
+function hideEqTooltip() {
+    const tip = document.getElementById('eq-tooltip-floating');
+    if (tip) tip.classList.remove('visible');
 }
 
 function switchInvTab(tab) {
@@ -12594,7 +14261,8 @@ function renderInventory() {
                 const checkMk  = selected ? '<span class="dis-check">✓</span>' : '';
                 const click    = locked ? '' : `onclick="toggleDisassembleItem(${idx})"`;
                 const titleHint = locked ? '\n[착용중] 분해 불가' : (selected ? '\n✓ 선택됨 — 클릭으로 해제' : '\n클릭으로 분해 선택');
-                const borderStyle = selected ? '' : (gc ? ` style="border-color:${gc}80;"` : '');
+                // 선택 시 dis-selected의 !important 빨강이 우선, 미선택 시 등급색 테두리 + 미세 그라데이션 배경
+                const borderStyle = selected ? '' : (gc ? ` style="border-color:${gc};background:linear-gradient(135deg, ${gc}29, ${gc}0a 80%);"` : '');
                 const iconStyle   = gc ? ` style="color:${gc};"` : '';
                 html += `<div class="inv-slot occupied ${show.type === 'equipment' ? 'equipment' : ''}${lockCls}${selCls}"
                     ${click}${borderStyle}
@@ -12608,11 +14276,15 @@ function renderInventory() {
                 // ── 일반 모드 렌더링 ─────────────────────────────────
                 const badge   = isEq ? '<span class="inv-equipped-badge">착용</span>' : '';
                 const eqClass = isEq ? 'inv-equipped' : '';
-                const eqHint  = isEq ? '\n[착용중] 클릭 → 탈착' : (show.slot ? '\n클릭 → 착용' : '');
-                const click   = isEq
-                    ? `onclick="unequipSlot('${show.equippedSlot}')"`
-                    : (show.type === 'equipment' && show.slot ? `onclick="equipItem(${idx})"` : '');
-                const borderStyle = gc ? ` style="border-color:${gc}80;"` : '';
+                // 모든 장비 클릭은 툴팁을 연다(즉시 착용/해제 X). 기타 아이템은 비활성.
+                const eqHint  = show.type === 'equipment' && show.slot
+                    ? '\n클릭 → 툴팁 열기'
+                    : '';
+                const click   = (show.type === 'equipment' && show.slot)
+                    ? `onclick="openInvTooltip(${idx})"`
+                    : '';
+                // 등급색 풀톤 테두리(2px) + 등급색 미세 그라데이션 배경 (135도 방향, 16% → 4% alpha)
+                const borderStyle = gc ? ` style="border-color:${gc};background:linear-gradient(135deg, ${gc}29, ${gc}0a 80%);"` : '';
                 const iconStyle   = gc ? ` style="color:${gc};"` : '';
                 html += `<div class="inv-slot occupied ${show.type === 'equipment' ? 'equipment' : ''} ${eqClass}"
                     ${click}${borderStyle}
