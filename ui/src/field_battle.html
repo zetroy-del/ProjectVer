@@ -514,7 +514,26 @@ body {
     background: #58a6ff;
 }
 
-#log-bottom-header {
+#log-bottom-split {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    min-height: 0; /* flex 자식 overflow 정상 동작 */
+}
+.log-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+.log-divider {
+    width: 1px;
+    background: #21262d;
+    flex-shrink: 0;
+}
+
+#log-bottom-header, .log-bottom-header {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -522,7 +541,7 @@ body {
     border-bottom: 1px solid #21262d;
     flex-shrink: 0;
 }
-#log-bottom-title {
+#log-bottom-title, .log-bottom-title {
     font-size: 15px;
     color: #6e7681;
     font-weight: bold;
@@ -530,7 +549,7 @@ body {
     text-transform: uppercase;
     flex: 1;
 }
-#log-clear-btn {
+#log-clear-btn, .log-clear-btn {
     background: none;
     border: 1px solid #30363d;
     color: #6e7681;
@@ -540,9 +559,9 @@ body {
     cursor: pointer;
     transition: all 0.15s;
 }
-#log-clear-btn:hover { background: #21262d; color: #c9d1d9; }
+#log-clear-btn:hover, .log-clear-btn:hover { background: #21262d; color: #c9d1d9; }
 
-#log-list {
+#log-list, #drop-log-list {
     flex: 1;
     overflow-y: auto;
     padding: 4px 10px 4px;
@@ -551,8 +570,8 @@ body {
     scrollbar-width: thin;
     scrollbar-color: #30363d transparent;
 }
-#log-list::-webkit-scrollbar { width: 4px; }
-#log-list::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
+#log-list::-webkit-scrollbar, #drop-log-list::-webkit-scrollbar { width: 4px; }
+#log-list::-webkit-scrollbar-thumb, #drop-log-list::-webkit-scrollbar-thumb { background: #30363d; border-radius: 2px; }
 
 .log-entry {
     padding: 3px 6px;
@@ -570,6 +589,88 @@ body {
 .log-entry.crit   { color: #ffd700; font-weight: bold; }
 .log-entry.damage { color: #f85149; }
 .log-entry.heal   { color: #7ee787; }
+
+/* ── 아이템 획득 로그 ────────────────────────────────────────────────── */
+.drop-log-entry {
+    padding: 5px 7px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    font-size: 15px;
+    line-height: 1.4;
+    color: #c9d1d9;
+    background: rgba(167, 139, 250, 0.05);
+    border-left: 2px solid #a78bfa;
+}
+.drop-log-entry.boss { border-left-color: #ff4444; background: rgba(255, 68, 68, 0.07); }
+.drop-log-ts   { color: #6e7681; font-size: 15px; margin-right: 6px; }
+.drop-log-head { color: #a78bfa; font-weight: bold; margin-bottom: 2px; }
+.drop-log-entry.boss .drop-log-head { color: #ff9966; }
+.drop-log-item {
+    display: block;
+    margin: 2px 0;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 15px;
+    background: rgba(0,0,0,0.25);
+}
+
+/* ── 인게임 장비 획득 토스트 (캔버스 좌측 상단 영역) ─────────────────── */
+/* 좌측 하단의 #char-status-panel(bottom:14px, ~210px 높이) 위로 올려 겹침 방지 */
+#drop-toast-area {
+    position: absolute;
+    left: 14px;
+    bottom: 240px; /* 캐릭터 상태창 위쪽 여백 확보 */
+    display: flex;
+    flex-direction: column-reverse; /* 새 토스트가 아래에 추가되며 기존은 위로 쌓임 */
+    gap: 6px;
+    z-index: 30;
+    pointer-events: none;
+}
+.drop-toast {
+    background: linear-gradient(135deg, rgba(15,15,28,0.94), rgba(28,20,48,0.94));
+    border: 1px solid rgba(167,139,250,0.6);
+    border-left: 4px solid #a78bfa;
+    border-radius: 6px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.55), 0 0 14px rgba(167,139,250,0.25);
+    min-width: 230px;
+    max-width: 340px;
+    animation: dropToastIn 0.25s ease-out;
+    transition: opacity 0.6s, transform 0.6s;
+}
+.drop-toast.boss {
+    border-left-color: #ff4444;
+    border-color: rgba(255, 68, 68, 0.6);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.55), 0 0 18px rgba(255, 68, 68, 0.35);
+}
+.drop-toast.fade-out { opacity: 0; transform: translateX(-30px); }
+.drop-toast-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #a78bfa;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+}
+.drop-toast.boss .drop-toast-title { color: #ff9966; }
+.drop-toast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.drop-toast-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    line-height: 1.3;
+}
+.drop-toast-icon  { font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
+.drop-toast-name  { color: #e6edf3; font-weight: bold; }
+.drop-toast-grade { font-size: 15px; font-weight: bold; }
+@keyframes dropToastIn {
+    from { opacity: 0; transform: translateX(-40px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
 
 /* ══════════════════════════════════════════
    인게임 퀵슬롯 바
@@ -2001,6 +2102,99 @@ body {
 .sg-btn.sg-btn-current { color: #ff9966; border-color: #cc3300; background: #1f1510; }
 .sg-btn.sg-btn-current:hover { background: #2a1a0d; }
 .sg-body { overflow-y: auto; flex: 1; padding: 12px 18px; }
+/* ── 스테이지 공략 메인 탭 ─────────────────────────────────────────────── */
+.sg-tab-row {
+    display: flex; gap: 4px;
+    padding: 0 18px;
+    border-bottom: 1px solid #21262d;
+    flex-shrink: 0;
+}
+.sg-tab {
+    background: #161b22; border: 1px solid #21262d; border-bottom: none;
+    color: #8b949e; font-size: 15px; font-weight: bold;
+    padding: 8px 18px; cursor: pointer;
+    border-radius: 6px 6px 0 0;
+    margin-bottom: -1px;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.sg-tab:hover { background: #1f2430; color: #c9d1d9; }
+.sg-tab.active {
+    background: #0d1117; color: #a78bfa;
+    border-color: #6d4ac8 #6d4ac8 #0d1117;
+}
+/* ── 드랍 정보 하위 탭 ─────────────────────────────────────────────────── */
+.sg-subtab-row { display: flex; gap: 6px; margin: 4px 0 10px; }
+.sg-subtab {
+    background: #161b22; border: 1px solid #30363d;
+    color: #8b949e; font-size: 15px; padding: 5px 14px;
+    border-radius: 5px; cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.sg-subtab:hover { background: #1f2430; color: #c9d1d9; }
+.sg-subtab.active { background: #1f2d3d; color: #79c0ff; border-color: #1f6feb; }
+/* ── 드랍 필터 영역 ────────────────────────────────────────────────────── */
+.sg-drop-filter-row {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin: 8px 0;
+    padding: 8px 12px;
+    background: #0d1117; border: 1px solid #21262d; border-radius: 6px;
+}
+.sg-drop-filter-row label { font-size: 15px; color: #8b949e; }
+.sg-drop-select {
+    background: #0d1117; border: 1px solid #30363d; border-radius: 4px;
+    color: #e6edf3; font-size: 15px; padding: 4px 8px;
+}
+.sg-drop-select:focus { outline: none; border-color: #6d4ac8; }
+/* ── 드랍 아이템 리스트 ────────────────────────────────────────────────── */
+.sg-drop-list-info {
+    font-size: 15px; color: #8b949e; margin: 6px 0;
+}
+.sg-drop-list-info strong { color: #e6edf3; }
+.sg-drop-pagination {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin: 10px 0 4px;
+}
+.sg-drop-pagination button {
+    background: #1f2430; border: 1px solid #30363d; border-radius: 5px;
+    color: #a78bfa; font-size: 15px; padding: 4px 12px; cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+}
+.sg-drop-pagination button:hover:not(:disabled) { background: #2d2a4a; border-color: #a78bfa; }
+.sg-drop-pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+.sg-drop-pagination .sg-page-label { color: #c9d1d9; font-size: 15px; font-weight: bold; padding: 0 6px; }
+.sg-item-table { width: 100%; border-collapse: collapse; font-size: 15px; margin-bottom: 4px; table-layout: fixed; }
+.sg-item-table th {
+    background: #161b22; color: #8b949e; padding: 7px 10px;
+    border: 1px solid #21262d; text-align: center; font-weight: bold;
+    position: sticky; top: 0;
+    white-space: nowrap; /* 헤더 줄바꿈 방지 */
+}
+.sg-item-table td {
+    padding: 6px 10px; border: 1px solid #21262d;
+    text-align: center; color: #e6edf3;
+    white-space: nowrap;          /* 다른 컬럼은 줄바꿈 금지 */
+    overflow: hidden;
+    text-overflow: ellipsis;      /* 넘치면 ... 처리 */
+}
+.sg-item-table tr:nth-child(even) td { background: #0f1117; }
+/* 컬럼별 폭 제어 — 능력치(stats)는 좁히고 나머지는 자동 */
+.sg-item-table col.col-icon  { width: 50px; }
+.sg-item-table col.col-grade { width: 80px; }
+.sg-item-table col.col-part  { width: 110px; }
+.sg-item-table col.col-power { width: 60px; }
+.sg-item-table col.col-stats { width: 28%; }  /* 기존 풀폭 대비 약 70% 축소 */
+.sg-item-table col.col-prob  { width: 110px; }
+.sg-item-table col.col-exp   { width: 110px; }
+.sg-item-table .sg-item-icon  { font-size: 18px; }
+.sg-item-table .sg-item-grade { font-weight: bold; font-size: 15px; }
+.sg-item-table .sg-item-stats {
+    font-size: 14px; color: #8b949e; text-align: left;
+    white-space: normal;          /* 능력치는 줄바꿈 허용 */
+    word-break: break-word;
+    line-height: 1.35;
+}
+.sg-item-table .sg-item-prob  { font-family: monospace; color: #79c0ff; }
+.sg-item-table .sg-item-exp   { font-family: monospace; color: #7ee787; }
 .sg-section-title {
     font-size: 15px; font-weight: bold; color: #a78bfa;
     border-bottom: 1px solid #30363d; margin: 12px 0 8px; padding-bottom: 4px;
@@ -2056,6 +2250,9 @@ body {
 }
 .sg-round-table tr.sg-boss-row td { background: #1a0000; color: #ff6666; }
 .sg-round-table tr:nth-child(even):not(.sg-boss-row) td { background: #0f1117; }
+/* 키-값 표 (드랍 풀·보스 보상 정보용) — 1열은 라벨(좌측), 2열은 값(좌측) */
+.sg-kv-table td:first-child { text-align: left; color: #8b949e; width: 200px; font-weight: bold; }
+.sg-kv-table td:nth-child(2) { text-align: left; }
 
 .mon-body {
     overflow-y: auto;
@@ -2740,17 +2937,34 @@ body {
                 <div class="sb-line2" id="sb-stage-num">STAGE 1</div>
                 <div class="sb-line3" id="sb-stage-info">몬스터 레벨 1  |  라운드 1-1</div>
             </div>
+            <!-- 인게임 장비 획득 토스트 오버레이 (캔버스 좌측 하단, position:absolute) -->
+            <div id="drop-toast-area"></div>
         </div>
 
-        <!-- 전투 로그 (canvas-col 안에 위치) -->
+        <!-- 전투 로그 + 획득 로그 (canvas-col 안에 위치, 좌우 2분할) -->
         <div id="log-bottom">
             <!-- 드래그 리사이즈 핸들 -->
             <div id="log-resize-handle" title="드래그하여 높이 조절"></div>
-            <div id="log-bottom-header">
-                <span id="log-bottom-title">⚔ 전투 로그</span>
-                <button id="log-clear-btn" onclick="clearLog()">지우기</button>
+            <div id="log-bottom-split">
+                <!-- 좌측: 전투 로그 -->
+                <div class="log-pane" id="log-pane-combat">
+                    <div id="log-bottom-header">
+                        <span id="log-bottom-title">⚔ 전투 로그</span>
+                        <button id="log-clear-btn" onclick="clearLog()">지우기</button>
+                    </div>
+                    <div id="log-list"></div>
+                </div>
+                <!-- 좌우 분할 라인 -->
+                <div class="log-divider"></div>
+                <!-- 우측: 아이템 로그 (획득 + 자동 착용/교체 통합) -->
+                <div class="log-pane" id="log-pane-drop">
+                    <div class="log-bottom-header">
+                        <span class="log-bottom-title">📦 아이템 로그</span>
+                        <button class="log-clear-btn" onclick="clearDropLog()">지우기</button>
+                    </div>
+                    <div id="drop-log-list"></div>
+                </div>
             </div>
-            <div id="log-list"></div>
         </div>
     </div>
 
@@ -3429,6 +3643,12 @@ body {
             <button class="sg-btn sg-btn-current" onclick="sgSetCurrentStage()">현재 스테이지</button>
         </div>
 
+        <!-- 메인 탭 네비 -->
+        <div class="sg-tab-row">
+            <button class="sg-tab active" id="sg-tab-guide" onclick="sgSwitchTab('guide')">🗺 공략 정보</button>
+            <button class="sg-tab"        id="sg-tab-drop"  onclick="sgSwitchTab('drop')">🎁 드랍 정보</button>
+        </div>
+
         <!-- 본문 (renderStageGuide()로 채워짐) -->
         <div class="sg-body" id="sg-body"></div>
 
@@ -3711,9 +3931,83 @@ body {
             <div class="pn-month-header">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">5월</span>
-                <span class="pn-month-count">107건</span>
+                <span class="pn-month-count">114건</span>
             </div>
             <div class="pn-month-section">
+
+            <!-- ── 2026-05-13 21:12 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">21:12</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>드랍 정보 아이템 리스트 컬럼 폭 재조정 — ① 테이블에 `table-layout: fixed` 적용 + `<colgroup>`으로 컬럼별 폭 명시(아이콘 50px·등급 80px·파츠 110px·위력 60px·능력치 28%·추첨 확률 110px·기대 획득 110px). ② 능력치 컬럼을 기존 풀폭 대비 약 70%로 축소, 그 외 모든 컬럼은 `white-space: nowrap` + `text-overflow: ellipsis`로 줄바꿈 금지. ③ 능력치 셀만 줄바꿈 허용(word-break: break-word, line-height 1.35)로 다중 스탯도 깔끔히 표시</li>
+            </ul>
+
+            <!-- ── 2026-05-13 21:02 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">21:02</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 공략 정보 — 드랍 정보 별도 탭 분리 + 개별 아이템 리스트 — ① 모달 상단에 메인 탭(🗺 공략 정보 / 🎁 드랍 정보) 추가, 직전에 만든 드랍 섹션을 공략 탭에서 제거 후 드랍 탭으로 이전. ② 드랍 탭 하위 탭(⚔ 일반 몬스터 / 💀 보스)으로 풀 출처(현재 스테이지 / 다음 스테이지) 전환. ③ 풀 요약 + 라운드별 확률표(일반) 또는 5~10개 확정 안내(보스). ④ 파츠·등급 셀렉트 필터(풀에 실제 존재하는 등급만 노출). ⑤ 가상 인덱싱 기반 페이지네이션(50개/페이지, 50,000개 이상 풀에서도 즉시 응답). 처음/이전/다음/끝 버튼 + 현재 페이지 라벨. ⑥ 각 행: 아이콘 · 등급(색상) · 파츠명 · 위력 · 능력치 요약 · 단일 추첨 확률 · 스테이지·보스 1회당 기대 획득 수. 정렬은 등급↓ 위력↓ 고정</li>
+            </ul>
+
+            <!-- ── 2026-05-13 20:54 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">20:54</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>스테이지 공략 정보 모달에 드랍 정보 섹션 3종 추가 — ① **라운드별 일반 몬스터 드랍** 표: R1~R5 각 라운드의 드랍 확률(14·19·24·29·34%)·처치 수·예상 획득 수(R1≈1.4 ~ R5≈3.4) + 합계 행(평균 24% / 예상 합 약 12개 / 17파츠 대비 비율). ② **일반 몬스터 드랍 풀 정보**: 풀 크기(DPS 50~100% 범위 등급·위력 조합 수), 등급 범위(색상 라벨 표시), 위력 범위, 파츠 22종(클래스 무관 무기 6+방어구 7+장신구 9), 가능한 총 아이템 종(풀×파츠), 단일 아이템 추첨 확률(1/총수). ③ **보스 보상 정보**: 5~10개 확정 + 다음 스테이지 풀 통계(등급·위력 범위, 총 아이템 수, 추첨 확률), 최종 스테이지일 경우 현재 풀 사용 안내. 키-값 표 가독성을 위해 sg-kv-table CSS 추가</li>
+            </ul>
+
+            <!-- ── 2026-05-13 20:44 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">20:44</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag ui">UI</span>장비 획득 토스트 위치 상향 — 캐릭터 상태창과 겹치던 좌측 하단(bottom:80px) 위치를 bottom:240px로 올려 캐릭터 상태창 위쪽에 표시. 다수 토스트 스택 시에도 상태창을 덮지 않음</li>
+                <li class="pn-item"><span class="pn-tag game">게임</span>드랍 장비 자동 착용/교체 시스템 — ① 빈 슬롯이면 즉시 착용. ② 이미 착용 중인 장비가 있으면 능력치(eqStats 합) 비교 후 더 좋을 때만 교체. ③ 다른 클래스 전용 무기는 자동 착용 대상에서 제외(드랍은 됨, 인벤토리에만 보관). ④ 자동 착용 후 캐릭터 스탯 즉시 재계산(onLevelChanged 호출)으로 HP·공격력 등 보너스 실시간 반영</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>아이템 로그 통합 개편 — ① 패널 명칭 "🎁 아이템 획득 로그" → "📦 아이템 로그"로 변경. ② 자동 착용된 장비에는 "→ 착용"(녹색) 접미사, 교체된 장비에는 "→ 교체 (이전: 아이콘 + 파츠명 + 등급)"(주황) 접미사를 같은 줄에 표시. ③ 로그 헤더에 "자동 착용 N개" 카운트 동시 표시. ④ 아이템 표시를 inline → block 레이아웃으로 변경하여 한 줄에 모든 정보가 들어가도록 정리. 보스 보상 시 좌측 전투 로그에도 자동 착용 개수 안내</li>
+            </ul>
+
+            <!-- ── 2026-05-13 20:36 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-13</span>
+                <span class="pn-ver-time">20:36</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>스테이지 기반 장비 드랍 시스템 도입 — ① 일반 몬스터 처치 시 라운드별 확률(R1 14% → R5 34%, 50마리 기준 평균 12개 / 7~17개 예상)로 장비 드랍. ② 드랍 풀: 현재 스테이지 기준 DPS 50%~100% 범위의 (등급·위력) 조합에서 EQ_CODEX_PARTS 22종(클래스 무관 전체 파츠) 균등 무작위. 이전 스테이지 장비 자동 포함. ③ 보스 처치 시 다음 스테이지 풀에서 5~10개 확정 드랍. ④ 인벤토리 자동 추가 + 가득 차면 누락 알림. 드랍 풀 캐시화로 반복 호출 비용 0</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>장비 획득 인게임 토스트 연출 추가 — 캔버스 좌측 하단(quickslot 바 위쪽)에 한 번에 획득한 모든 장비를 한 카드로 표시. 카드 내 아이템마다 아이콘 + 파츠명 + 등급명(등급 색상)을 표시. 3.5초 후 0.6초 페이드 아웃. 보스 보상 토스트는 빨간 테두리·그림자로 강조. 동시 표시 최대 5장(초과 시 가장 오래된 토스트 즉시 제거)</li>
+                <li class="pn-item"><span class="pn-tag ui">UI</span>하단 로그 바 좌·우 2분할 — 좌측 ⚔ 전투 로그(기존) + 우측 🎁 아이템 획득 로그(신규). 분할 라인으로 분리, 각 패널 헤더에 지우기 버튼 별도. 획득 로그 항목은 보라색 좌측 강조선(보스 보상은 적색 강조선), 시간 스탬프, 아이콘+파츠명+등급명 인라인 표시. 로그 높이 드래그 리사이즈는 양 패널 동시 조정됨</li>
+            </ul>
+
+            <!-- ── 2026-05-11 18:40 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-11</span>
+                <span class="pn-ver-time">18:40</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>스테이지 보스 등장 시 필드 정리 시스템 도입 — ① 보스 등장과 동시에 필드에 있는 모든 일반 몬스터(살아있는 몬스터·리스폰 대기 중인 죽은 몬스터 포함) 일괄 제거. ② 캐릭터 타겟을 무조건 보스로 강제 전환(기존: 타겟이 비어있거나 죽었을 때만 전환). ③ 보스 진행 중 일반 몬스터 부활 차단(reviveMonster 안전장치). ④ 보스 처치 후 다음 스테이지 진입 시 일반 몬스터 MONSTER_COUNT(15마리) 신규 스폰</li>
+            </ul>
+
+            <!-- ── 2026-05-11 15:03 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-11</span>
+                <span class="pn-ver-time">15:03</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item"><span class="pn-tag game">게임</span>일반 몬스터 리스폰 대기 시간 변경 — 20초 → 30초 (RESPAWN_DELAY 20000ms → 30000ms). 사망 후 부활까지 대기 시간이 길어져 전투 페이스 완화. 몬스터 정보 모달의 "리스폰 대기" 표시도 자동으로 30.0초로 갱신</li>
+            </ul>
 
             <!-- ── 2026-05-08 22:58 ── -->
             <div class="pn-ver">
@@ -5034,7 +5328,7 @@ const ATK_RANGE               = 44;   // 공격 사거리 (px)
 const PX_PER_METER            = 10;   // 1미터 = 10px (사거리 단위 변환 기준)
 // 기획서 103_전투_속도: MoveSpeed 1 단위 = 1/100 m/s → px/s = MoveSpeed × PX_PER_METER / 100
 const MOVE_SPEED_SCALE        = PX_PER_METER / 100; // 0.1 — raw MoveSpeed → px/s 변환 계수
-const RESPAWN_DELAY           = 20000; // 몬스터 리스폰 대기 (ms)
+const RESPAWN_DELAY           = 30000; // 몬스터 리스폰 대기 (ms)
 const WANDER_SPEED            = 22;   // 몬스터 배회 속도 (px/s)
 const MONSTER_AGGRO_RANGE     = 100;  // 일반 몬스터 적 인식 범위 (px)
 const MONSTER_BOSS_AGGRO_RANGE= 175;  // 보스 몬스터 적 인식 범위 (px)
@@ -7270,6 +7564,20 @@ function killMonster(m) {
         bossDefeated = true;
         character.soulLevel++;
         addLog(`💀 보스 처치! [${stageRoundLabel()}] ${currentStage}스테이지 클리어! ✨ 영혼 레벨 SL.${character.soulLevel}!`, 'kill');
+
+        // 보스 보상: 다음 스테이지 풀에서 5~10개 확정 드랍 → 인벤토리 추가 + 자동 착용 + 연출 + 로그
+        const bossDrops = rollBossDrop(currentStage);
+        const { accepted, equipEvents } = commitDroppedItems(bossDrops);
+        if (accepted.length > 0) {
+            showDropToast(accepted, true);
+            addDropLog(accepted, true, equipEvents);
+            const eqMsg = equipEvents.length > 0 ? ` (자동 착용 ${equipEvents.length}개)` : '';
+            addLog(`🎁 보스 보상 ${accepted.length}개 획득!${eqMsg}`, 'levelup');
+        }
+        if (accepted.length < bossDrops.length) {
+            addLog(`⚠ 인벤토리 가득 — 보스 보상 ${bossDrops.length - accepted.length}개 누락`, 'info');
+        }
+
         advanceStage();
         refreshUI();
         return;
@@ -7279,6 +7587,16 @@ function killMonster(m) {
     stageKills++;
     const need = expNeeded(character.level);
     addLog(`Lv.${m.level} 몬스터 처치 [${stageRoundLabel()}] (${stageKills}/${ROUND_KILLS}) → EXP ${character.exp}/${need}`, 'kill');
+
+    // 일반 몬스터 처치 드랍 — 현재 라운드 확률에 따라 0~1개 (자동 착용 시도 포함)
+    const normalDrops = rollNormalDrop(currentStage, currentRound);
+    if (normalDrops.length > 0) {
+        const { accepted, equipEvents } = commitDroppedItems(normalDrops);
+        if (accepted.length > 0) {
+            showDropToast(accepted, false);
+            addDropLog(accepted, false, equipEvents);
+        }
+    }
 
     if (stageKills >= ROUND_KILLS) {
         if (currentRound < ROUND_COUNT) {
@@ -7314,17 +7632,21 @@ function killMonster(m) {
 // 보스 몬스터 등장
 function spawnBossMonster() {
     bossSpawned = true;
+
+    // 일반 몬스터 모두 제거 — 보스 등장과 동시에 필드를 보스 전용 공간으로 전환
+    // (살아있는 몬스터·죽은 몬스터(리스폰 대기 중)·발사체 타겟 모두 함께 사라짐)
+    for (let i = monsters.length - 1; i >= 0; i--) {
+        if (!monsters[i].isBoss) monsters.splice(i, 1);
+    }
+
     const monLv = stageLevel(currentStage);
     const boss  = spawnMonster(monLv, true, true);
     monsters.push(boss);
     addLog(`🔥 보스 등장! [${stageRoundLabel()}] SL.${boss.soulLevel} (Lv.${monLv}) 보스 — HP ${boss.maxHP}`, 'kill');
 
-    // 비전투 상태(타겟 없음 또는 사망)이면 즉시 보스 타겟팅
-    // 전투 중이면 현재 전투 종료 시 findNearest()가 보스를 최우선 반환하므로 별도 처리 불필요
-    if (!character.target || character.target.isDead) {
-        character.target  = boss;
-        character.atkTimer = 0; // 사거리 진입 즉시 첫 공격 발사
-    }
+    // 일반 몬스터를 모두 제거했으므로 캐릭터 타겟을 무조건 보스로 전환
+    character.target  = boss;
+    character.atkTimer = 0; // 사거리 진입 즉시 첫 공격 발사
 
     // 보스 등장 화면 플래시
     for (let i = 0; i < 8; i++) {
@@ -7375,12 +7697,19 @@ function advanceStage() {
 
     addLog(`▶ [${stageRoundLabel()}] ${currentStage}스테이지 시작! 몬스터 SL.${monSL} → 스탯 Lv.${monLv}`, 'info');
 
-    // 기존 일반 몬스터들을 새 스테이지 레벨로 교체
-    // 보스(isBoss)는 제거, 일반 몬스터만 새로 세팅
+    // 보스 처치 후 다음 스테이지 진입: 필드를 새로 구성한다.
+    // ① 보스(isBoss) 제거 — 보스는 처치된 시점에 isDead가 되어 잔존할 수 있음
     for (let i = monsters.length - 1; i >= 0; i--) {
         if (monsters[i].isBoss) { monsters.splice(i, 1); }
     }
-    // 살아있는 일반 몬스터 영혼 레벨·스탯 레벨·HP·속도 갱신
+    // ② 일반 몬스터 신규 스폰 — 보스 등장 시 일반 몬스터를 모두 제거했으므로 새 스테이지 진입과 함께 다시 등장
+    const _curMLv = stageLevel(currentStage);
+    while (monsters.length < MONSTER_COUNT) {
+        monsters.push(spawnMonster(_curMLv, false, false));
+    }
+    // ③ 살아있는 일반 몬스터 영혼 레벨·스탯 레벨·HP·속도 갱신
+    //    (정상 경로에서는 위 ②에서 새로 스폰된 몬스터만 존재하므로 변화 없음.
+    //     예외 경로로 이전 몬스터가 잔존한 경우에도 새 스테이지 스탯으로 맞춰주기 위한 안전장치)
     const _nxtMSt  = calcMonsterStats(monSL, false);
     const _nxtCorr = ATTACK_SPEED_CORRECTION || 2000;
     for (const m of monsters) {
@@ -7393,7 +7722,7 @@ function advanceStage() {
             m.moveSpeedPx = _nxtMSt.moveSpeed;
         }
     }
-    // 죽은 몬스터도 영혼 레벨·스탯 레벨 업데이트
+    // ④ 죽은 몬스터도 영혼 레벨·스탯 레벨 업데이트 (안전장치)
     for (const m of monsters) {
         if (m.isDead) {
             m.soulLevel   = monSL;
@@ -7438,6 +7767,13 @@ function resetAllMonsters() {
 function reviveMonster(m) {
     // 보스 몬스터는 부활하지 않음 — 배열에서 제거
     if (m.isBoss) {
+        const idx = monsters.indexOf(m);
+        if (idx !== -1) monsters.splice(idx, 1);
+        return;
+    }
+
+    // 보스 등장 후 보스 처치 전까지는 일반 몬스터 부활 차단 — 배열에서 제거 (안전장치)
+    if (bossSpawned && !bossDefeated) {
         const idx = monsters.indexOf(m);
         if (idx !== -1) monsters.splice(idx, 1);
         return;
@@ -8802,6 +9138,14 @@ const SG_EQ_ITEMS = [
     { type:'acc', cls:'스킬',     icon:'🎭', name:'마스크', key:'mask',      stats:['pveSkillAtk','magicDef'] },
 ];
 
+// ── 스테이지 공략 모달 탭/필터 상태 ─────────────────────────────────────────
+let _sgTab            = 'guide';   // 'guide' | 'drop'
+let _sgDropSubTab     = 'normal';  // 'normal' | 'boss' (드랍 정보 하위 탭)
+let _sgDropFilterPart = 'all';     // 'all' 또는 EQ_CODEX_PARTS 인덱스
+let _sgDropFilterGrade= 'all';     // 'all' 또는 0~12
+let _sgDropPage       = 1;         // 현재 페이지
+const SG_DROP_PAGE_SIZE = 50;      // 페이지당 아이템 수
+
 function openStageGuide() {
     _initStageEquipmentMap(); // 지연 초기화 (최초 호출 시 DPS 정렬 수행)
     const maxStage = STAGE_EQUIPMENT_MAP.length;
@@ -8809,6 +9153,10 @@ function openStageGuide() {
     inp.max = maxStage;
     inp.value = Math.max(1, Math.min(currentStage, maxStage));
     _sgEquipActiveIdx = 0; // 기본값: 나이트 무기 선택 (항상 장비 능력치 표시)
+    _sgTab        = 'guide';
+    _sgDropSubTab = 'normal';
+    _sgDropPage   = 1;
+    _sgSyncTabButtons();
     renderStageGuide();
     document.getElementById('stageguide-overlay').classList.add('open');
     if (gameState === 'playing') { gameState = 'paused'; _sgPaused = true; }
@@ -8820,27 +9168,65 @@ function closeStageGuide() {
     if (_sgPaused) { gameState = 'playing'; lastTime = performance.now(); _sgPaused = false; }
 }
 
+function _sgSyncTabButtons() {
+    const tg = document.getElementById('sg-tab-guide');
+    const td = document.getElementById('sg-tab-drop');
+    if (tg) tg.classList.toggle('active', _sgTab === 'guide');
+    if (td) td.classList.toggle('active', _sgTab === 'drop');
+}
+
+function sgSwitchTab(tab) {
+    _sgTab = (tab === 'drop') ? 'drop' : 'guide';
+    _sgDropPage = 1; // 탭 전환 시 페이지 리셋
+    _sgSyncTabButtons();
+    renderStageGuide();
+}
+
+function sgSwitchDropSubTab(sub) {
+    _sgDropSubTab = (sub === 'boss') ? 'boss' : 'normal';
+    _sgDropPage = 1;
+    renderStageGuide();
+}
+
+function sgSetDropFilter(field, value) {
+    if (field === 'part')  _sgDropFilterPart  = value;
+    if (field === 'grade') _sgDropFilterGrade = (value === 'all') ? 'all' : parseInt(value, 10);
+    _sgDropPage = 1;
+    renderStageGuide();
+}
+
+function sgChangeDropPage(delta) {
+    _sgDropPage += delta;
+    if (_sgDropPage < 1) _sgDropPage = 1;
+    renderStageGuide();
+}
+
 function sgInputChanged() {
+    _sgDropPage = 1;
     renderStageGuide();
 }
 
 function sgChangeStage(delta) {
     const inp = document.getElementById('sg-stage-input');
     inp.value = Math.max(1, Math.min(STAGE_EQUIPMENT_MAP.length, (parseInt(inp.value, 10) || 1) + delta));
+    _sgDropPage = 1;
     renderStageGuide();
 }
 
 function sgSetCurrentStage() {
     document.getElementById('sg-stage-input').value = Math.max(1, Math.min(currentStage, STAGE_EQUIPMENT_MAP.length));
+    _sgDropPage = 1;
     renderStageGuide();
 }
 
 function sgSetMin() {
     document.getElementById('sg-stage-input').value = 1;
+    _sgDropPage = 1;
     renderStageGuide();
 }
 function sgSetMax() {
     document.getElementById('sg-stage-input').value = STAGE_EQUIPMENT_MAP.length;
+    _sgDropPage = 1;
     renderStageGuide();
 }
 
@@ -8849,9 +9235,15 @@ function sgToggleEquipDetail(idx) {
     renderStageGuide();
 }
 
+// 메인 라우터: 활성 탭에 맞는 콘텐츠를 sg-body에 렌더
 function renderStageGuide() {
     const raw   = parseInt(document.getElementById('sg-stage-input').value, 10);
     const stage = Math.max(1, Math.min(isNaN(raw) ? 1 : raw, STAGE_EQUIPMENT_MAP.length));
+    if (_sgTab === 'drop') _sgRenderDropTab(stage);
+    else                   _sgRenderGuideTab(stage);
+}
+
+function _sgRenderGuideTab(stage) {
     const { gradeIdx, power } = getStageEquipment(stage);
 
     // 등급 이름·색상
@@ -8990,6 +9382,246 @@ function renderStageGuide() {
         <div class="sg-section-title">라운드별 몬스터 HP</div>
         ${tableHtml}
     `;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// ── 스테이지 공략 — 드랍 정보 탭 ────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+// 메인 렌더러: 하위 탭(일반/보스) + 필터 + 라운드 확률표 + 풀 통계 + 아이템 리스트(페이지네이션)
+function _sgRenderDropTab(stage) {
+    // 활성 풀 결정 (일반 = 현재 스테이지 / 보스 = 다음 스테이지)
+    const isBoss   = (_sgDropSubTab === 'boss');
+    const poolStg  = isBoss ? Math.min(stage + 1, STAGE_EQUIPMENT_MAP.length) : stage;
+    const pool     = getStageDropPool(poolStg);
+    const poolStats= _sgComputePoolStats(pool);
+    const totalItems = pool.length * EQ_CODEX_PARTS.length;
+
+    // ── 등급 라벨 헬퍼 ──
+    const fmtGrade = g => {
+        const obj = EQ_GRADES[g];
+        if (!obj) return `-`;
+        return `<span style="color:${obj.color};font-weight:bold;">[${obj.label}]</span>`;
+    };
+
+    // ── 1) 하위 탭 + 풀 요약 ──
+    const isLastStage = (stage >= STAGE_EQUIPMENT_MAP.length);
+    const subTabHtml = `
+        <div class="sg-subtab-row">
+            <button class="sg-subtab${!isBoss ? ' active' : ''}" onclick="sgSwitchDropSubTab('normal')">⚔ 일반 몬스터 드랍 (현재 스테이지 ${stage})</button>
+            <button class="sg-subtab${isBoss ? ' active' : ''}"  onclick="sgSwitchDropSubTab('boss')">💀 보스 보상 (${isLastStage ? '현재 풀' : `다음 스테이지 ${stage + 1}`})</button>
+        </div>`;
+
+    const summaryHtml = `
+        <table class="sg-round-table sg-kv-table">
+            <tbody>
+                <tr><td>풀 크기</td><td><strong>${pool.length.toLocaleString()}종</strong> (등급·위력 조합) <span style="color:#6e7681;">— DPS 50%~100% 범위</span></td></tr>
+                <tr><td>등급 범위</td><td>${fmtGrade(poolStats.gradeMin)} ~ ${fmtGrade(poolStats.gradeMax)}</td></tr>
+                <tr><td>위력 범위</td><td>${poolStats.powerMin} ~ ${poolStats.powerMax}</td></tr>
+                <tr><td>파츠 수</td><td>22종 (무기 6 + 방어구 7 + 장신구 9, 클래스 무관)</td></tr>
+                <tr><td>가능한 총 아이템 수</td><td><strong>${totalItems.toLocaleString()}종</strong> (풀 ${pool.length.toLocaleString()} × 파츠 22)</td></tr>
+            </tbody>
+        </table>`;
+
+    // ── 2) 일반 몬스터 라운드별 드랍 확률표 (보스 탭은 별도) ──
+    let rateTableHtml = '';
+    if (!isBoss) {
+        const rounds = [1, 2, 3, 4, 5];
+        let expSum = 0;
+        const rows = rounds.map(r => {
+            const rate = DROP_RATES[r - 1];
+            const exp  = ROUND_KILLS * rate;
+            expSum += exp;
+            return `<tr>
+                <td>${r}라운드</td>
+                <td>${(rate * 100).toFixed(0)}%</td>
+                <td>${ROUND_KILLS}마리</td>
+                <td>≈ ${exp.toFixed(1)}개</td>
+            </tr>`;
+        }).join('');
+        const avgRate = (DROP_RATES.reduce((s,v) => s+v, 0) / DROP_RATES.length) * 100;
+        const partsTotalSlots = EQ_SLOT_DEFS.length;
+        const expRatio = (expSum / partsTotalSlots) * 100;
+        rateTableHtml = `
+            <div class="sg-section-title">라운드별 드랍 확률 (일반 몬스터, 마리당)</div>
+            <table class="sg-round-table">
+                <thead><tr><th>라운드</th><th>드랍 확률</th><th>처치 수</th><th>예상 획득 수</th></tr></thead>
+                <tbody>
+                    ${rows}
+                    <tr class="sg-boss-row">
+                        <td><strong>합계</strong></td>
+                        <td><strong>평균 ${avgRate.toFixed(0)}%</strong></td>
+                        <td><strong>${ROUND_KILLS * 5}마리</strong></td>
+                        <td><strong>≈ ${expSum.toFixed(1)}개 (${expRatio.toFixed(0)}% / 17파츠)</strong></td>
+                    </tr>
+                </tbody>
+            </table>`;
+    } else {
+        // 보스 탭은 5~10개 확정 드랍 정보
+        rateTableHtml = `
+            <div class="sg-section-title">보스 보상 (스테이지 ${stage} 보스 처치 시)</div>
+            <table class="sg-round-table sg-kv-table">
+                <tbody>
+                    <tr><td>보장 드랍 개수</td><td><strong>${BOSS_DROP_MIN} ~ ${BOSS_DROP_MAX}개</strong> (랜덤, 확정 드랍)</td></tr>
+                    <tr><td>드랍 풀 출처</td><td>${isLastStage ? '<span style="color:#ff6633;">최종 스테이지 — 현재 풀 사용</span>' : `다음 스테이지 <strong>${stage + 1}</strong>`}</td></tr>
+                </tbody>
+            </table>`;
+    }
+
+    // ── 3) 필터 영역 ──
+    const partOptions = ['<option value="all"' + (_sgDropFilterPart === 'all' ? ' selected' : '') + '>전체 (22종)</option>']
+        .concat(EQ_CODEX_PARTS.map((p, i) => {
+            const slotDef = EQ_SLOT_DEFS.find(s => s.key === p.slot);
+            const icon = (p.slot === 'weapon' && p.weaponTypeId)
+                ? (EQ_WEAPON_TYPES.find(w => w.id === p.weaponTypeId)?.icon || '⚔')
+                : (slotDef ? slotDef.icon : '📦');
+            const sel = (_sgDropFilterPart == i) ? ' selected' : '';
+            return `<option value="${i}"${sel}>${icon} ${p.label}</option>`;
+        }))
+        .join('');
+    const presentGrades = new Set(pool.map(e => e.gradeIdx));
+    const gradeOptions = ['<option value="all"' + (_sgDropFilterGrade === 'all' ? ' selected' : '') + '>전체</option>']
+        .concat(EQ_GRADES.map((g, i) => {
+            if (!presentGrades.has(i)) return '';
+            const sel = (_sgDropFilterGrade === i) ? ' selected' : '';
+            return `<option value="${i}"${sel}>[${g.label}]</option>`;
+        }).filter(x => x))
+        .join('');
+    const filterHtml = `
+        <div class="sg-drop-filter-row">
+            <label>파츠</label>
+            <select class="sg-drop-select" onchange="sgSetDropFilter('part', this.value)">${partOptions}</select>
+            <label>등급</label>
+            <select class="sg-drop-select" onchange="sgSetDropFilter('grade', this.value)">${gradeOptions}</select>
+            <span style="color:#6e7681;font-size:15px;margin-left:auto;">정렬: 등급↓ 위력↓ 파츠 순</span>
+        </div>`;
+
+    // ── 4) 필터 적용된 아이템 리스트 (가상 인덱스 → 페이지) ──
+    const filteredPool = (_sgDropFilterGrade === 'all')
+        ? pool.slice()
+        : pool.filter(e => e.gradeIdx === _sgDropFilterGrade);
+    // 정렬: 등급 desc, 위력 desc
+    filteredPool.sort((a, b) => (b.gradeIdx - a.gradeIdx) || (b.power - a.power));
+
+    const filteredParts = (_sgDropFilterPart === 'all')
+        ? EQ_CODEX_PARTS
+        : [EQ_CODEX_PARTS[parseInt(_sgDropFilterPart, 10)]].filter(Boolean);
+
+    const filteredTotal = filteredPool.length * filteredParts.length;
+    const totalPages = Math.max(1, Math.ceil(filteredTotal / SG_DROP_PAGE_SIZE));
+    if (_sgDropPage > totalPages) _sgDropPage = totalPages;
+    const startIdx = (_sgDropPage - 1) * SG_DROP_PAGE_SIZE;
+    const endIdx   = Math.min(startIdx + SG_DROP_PAGE_SIZE, filteredTotal);
+
+    // 단일 추첨 확률 (드랍이 발생했을 때 이 아이템이 뽑힐 확률) — 모든 아이템 동일
+    const perRollProb = totalItems > 0 ? (1 / totalItems) : 0;
+    // 평균 라운드 확률 × 50마리 × 단일 추첨 확률 = 스테이지 1회 통과 시 이 아이템의 기대 획득 수
+    const avgRateNum  = DROP_RATES.reduce((s,v) => s+v, 0) / DROP_RATES.length;
+    const expPerStage = isBoss
+        ? (BOSS_DROP_MIN + BOSS_DROP_MAX) / 2 * perRollProb // 보스: 평균 7.5개 × 단일 추첨 확률
+        : 50 * avgRateNum * perRollProb;
+
+    // 페이지 내 아이템 생성
+    const pageItems = [];
+    for (let i = startIdx; i < endIdx; i++) {
+        const poolIdx     = Math.floor(i / filteredParts.length);
+        const partInPage  = i % filteredParts.length;
+        const poolEntry   = filteredPool[poolIdx];
+        const part        = filteredParts[partInPage];
+        if (!poolEntry || !part) continue;
+        const item = createEquipItem(part.slot, part.weaponTypeId, poolEntry.gradeIdx, poolEntry.power);
+        pageItems.push({ item, gradeIdx: poolEntry.gradeIdx, power: poolEntry.power });
+    }
+
+    // 능력치 요약 문자열
+    const fmtStatsCompact = (item) => {
+        if (!item.eqStats) return '-';
+        const entries = Object.entries(item.eqStats);
+        if (entries.length === 0) return '-';
+        return entries.map(([k, v]) => {
+            const lbl = (typeof EQ_STAT_LABELS !== 'undefined' && EQ_STAT_LABELS[k]) ? EQ_STAT_LABELS[k] : k;
+            return `${lbl} +${v.toLocaleString()}`;
+        }).join(' / ');
+    };
+
+    const rowsHtml = pageItems.map(({ item, gradeIdx, power }) => {
+        const grade = EQ_GRADES[gradeIdx];
+        const gColor = grade ? grade.color : '#e6edf3';
+        const gLabel = grade ? grade.label : '-';
+        const partName = item.name.replace(/^\[[^\]]+\]\s*/, '');
+        return `<tr>
+            <td class="sg-item-icon">${item.icon}</td>
+            <td class="sg-item-grade" style="color:${gColor};">[${gLabel}]</td>
+            <td>${partName}</td>
+            <td>${power}</td>
+            <td class="sg-item-stats">${fmtStatsCompact(item)}</td>
+            <td class="sg-item-prob">${(perRollProb * 100).toFixed(4)}%</td>
+            <td class="sg-item-exp">${expPerStage.toFixed(4)}개</td>
+        </tr>`;
+    }).join('');
+
+    const probHeader = isBoss ? '추첨 확률 (보스 1회당)' : '추첨 확률 (드랍 발생 시)';
+    const expHeader  = isBoss ? '보스 1회 기대 획득' : '스테이지 1회 기대 획득';
+    const listHtml = filteredTotal === 0 ? `
+        <div class="sg-drop-list-info" style="text-align:center;padding:20px;">조건에 맞는 아이템이 없습니다.</div>
+    ` : `
+        <div class="sg-drop-list-info">
+            총 <strong>${filteredTotal.toLocaleString()}종</strong> 중 <strong>${(startIdx + 1).toLocaleString()} ~ ${endIdx.toLocaleString()}</strong> 표시
+            (페이지 ${_sgDropPage} / ${totalPages})
+        </div>
+        <table class="sg-item-table">
+            <colgroup>
+                <col class="col-icon">
+                <col class="col-grade">
+                <col class="col-part">
+                <col class="col-power">
+                <col class="col-stats">
+                <col class="col-prob">
+                <col class="col-exp">
+            </colgroup>
+            <thead><tr>
+                <th>아이콘</th><th>등급</th><th>파츠</th><th>위력</th>
+                <th>능력치</th>
+                <th>${probHeader}</th>
+                <th>${expHeader}</th>
+            </tr></thead>
+            <tbody>${rowsHtml}</tbody>
+        </table>
+        <div class="sg-drop-pagination">
+            <button onclick="sgChangeDropPage(-${totalPages})" ${_sgDropPage === 1 ? 'disabled' : ''}>« 처음</button>
+            <button onclick="sgChangeDropPage(-1)" ${_sgDropPage === 1 ? 'disabled' : ''}>‹ 이전</button>
+            <span class="sg-page-label">${_sgDropPage} / ${totalPages}</span>
+            <button onclick="sgChangeDropPage(1)" ${_sgDropPage >= totalPages ? 'disabled' : ''}>다음 ›</button>
+            <button onclick="sgChangeDropPage(${totalPages})" ${_sgDropPage >= totalPages ? 'disabled' : ''}>끝 »</button>
+        </div>
+    `;
+
+    document.getElementById('sg-body').innerHTML = `
+        ${subTabHtml}
+
+        <div class="sg-section-title">드랍 풀 정보</div>
+        ${summaryHtml}
+
+        ${rateTableHtml}
+
+        <div class="sg-section-title">${isBoss ? '보스 드랍 가능 아이템 리스트' : '일반 몬스터 드랍 가능 아이템 리스트'}</div>
+        ${filterHtml}
+        ${listHtml}
+    `;
+}
+
+// 풀 통계 — { gradeMin, gradeMax, powerMin, powerMax }
+function _sgComputePoolStats(pool) {
+    if (!pool || pool.length === 0) {
+        return { gradeMin: 0, gradeMax: 0, powerMin: 1, powerMax: 1 };
+    }
+    let gMin = Infinity, gMax = -Infinity, pMin = Infinity, pMax = -Infinity;
+    for (const e of pool) {
+        if (e.gradeIdx < gMin) gMin = e.gradeIdx;
+        if (e.gradeIdx > gMax) gMax = e.gradeIdx;
+        if (e.power    < pMin) pMin = e.power;
+        if (e.power    > pMax) pMax = e.power;
+    }
+    return { gradeMin: gMin, gradeMax: gMax, powerMin: pMin, powerMax: pMax };
 }
 
 function openMonsterInfo() {
@@ -11327,6 +11959,248 @@ function createEquipItem(slotKey, weaponTypeId, gradeIdx, power) {
     };
 }
 
+// ════════════════════════════════════════════════════════════════════════════
+// ── 장비 드랍 시스템 ────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+// 설계:
+// - 일반 몬스터 처치 시 라운드별 드랍 확률(아래 DROP_RATES)에 따라 1개씩 드랍
+// - 드랍 풀: 현재 스테이지 기준 DPS 50%~100% 범위에 해당하는 (gradeIdx, power) 쌍
+// - 파츠는 EQ_CODEX_PARTS 22종(무기 6 + 방어구 7 + 장신구 9) 중 균등 무작위
+// - 보스 처치 시 다음 스테이지 풀에서 5~10개 확정 드랍
+// - 50마리 시뮬레이션 기준: 평균 12개(40%×100% × 17파츠 = 6.8~17개 범위)
+
+// 라운드별 드랍 확률 — 14% → 34% 선형 증가 (라운드 1~5)
+const DROP_RATES = [0.14, 0.19, 0.24, 0.29, 0.34];
+
+// 보스 처치 시 보장 드랍 개수 범위
+const BOSS_DROP_MIN = 5;
+const BOSS_DROP_MAX = 10;
+
+// 드랍 풀 강도 하한 비율 (50% = 0.5) — 현재 스테이지 DPS × 이 값 이상의 (gradeIdx, power)만 드랍 가능
+const DROP_POOL_MIN_RATIO = 0.5;
+
+// 스테이지별 드랍 풀 캐시: stage(1-base) → [{gradeIdx, power}, ...]
+const _stageDropPoolCache = new Map();
+
+// 특정 스테이지의 드랍 풀 반환 (DPS가 currentDPS × 50% ~ 100% 범위인 모든 (gradeIdx, power) 조합)
+function getStageDropPool(stage) {
+    _initStageEquipmentMap();
+    const maxStage = STAGE_EQUIPMENT_MAP.length;
+    const s = Math.max(1, Math.min(stage, maxStage));
+    if (_stageDropPoolCache.has(s)) return _stageDropPoolCache.get(s);
+
+    const target  = STAGE_EQUIPMENT_MAP[s - 1];
+    const tgtDPS  = _calcRefDPS(target.gradeIdx, target.power);
+    const minDPS  = tgtDPS * DROP_POOL_MIN_RATIO;
+
+    // STAGE_EQUIPMENT_MAP은 이미 DPS 오름차순 정렬 — 50% 경계를 이진 탐색으로 찾고 거기서 현재 스테이지까지 슬라이스
+    let lo = 0, hi = s - 1;
+    while (lo < hi) {
+        const mid = (lo + hi) >> 1;
+        const mEntry = STAGE_EQUIPMENT_MAP[mid];
+        const mDPS   = _calcRefDPS(mEntry.gradeIdx, mEntry.power);
+        if (mDPS < minDPS) lo = mid + 1; else hi = mid;
+    }
+    const pool = STAGE_EQUIPMENT_MAP.slice(lo, s).map(e => ({ gradeIdx: e.gradeIdx, power: e.power }));
+    // 안전장치: 풀이 비어있으면 (스테이지 1 등) 현재 스테이지 자체를 추가
+    if (pool.length === 0) pool.push({ gradeIdx: target.gradeIdx, power: target.power });
+
+    _stageDropPoolCache.set(s, pool);
+    return pool;
+}
+
+// 풀에서 무작위 1개 장비 아이템 생성 (파츠 22종 × 등급/위력 무작위)
+function makeRandomDropItem(pool) {
+    const eq    = pool[(Math.random() * pool.length) | 0];
+    const part  = EQ_CODEX_PARTS[(Math.random() * EQ_CODEX_PARTS.length) | 0];
+    return createEquipItem(part.slot, part.weaponTypeId, eq.gradeIdx, eq.power);
+}
+
+// 일반 몬스터 처치 시 드랍 시도 — 드랍 발생 시 [item] 반환, 미발생 시 []
+function rollNormalDrop(stage, roundNum) {
+    const ratio = DROP_RATES[Math.max(0, Math.min(4, roundNum - 1))];
+    if (Math.random() >= ratio) return [];
+    const pool = getStageDropPool(stage);
+    return [makeRandomDropItem(pool)];
+}
+
+// 보스 처치 시 드랍 — 다음 스테이지 풀에서 5~10개 확정 (다음 스테이지가 없으면 현재 풀 사용)
+function rollBossDrop(currentStg) {
+    _initStageEquipmentMap();
+    const nextStg = Math.min(currentStg + 1, STAGE_EQUIPMENT_MAP.length);
+    const pool    = getStageDropPool(nextStg);
+    const count   = BOSS_DROP_MIN + Math.floor(Math.random() * (BOSS_DROP_MAX - BOSS_DROP_MIN + 1));
+    const items   = [];
+    for (let i = 0; i < count; i++) items.push(makeRandomDropItem(pool));
+    return items;
+}
+
+// 장비 능력치 합산 — 자동 착용 비교 기준 (eqStats 합)
+function itemStrength(item) {
+    if (!item || !item.eqStats) return 0;
+    let s = 0;
+    for (const k in item.eqStats) s += item.eqStats[k] || 0;
+    return s;
+}
+
+// 드랍 아이템 자동 착용 시도
+// 반환: { item, prev, action: 'equip'|'swap' } | null (착용 안 함)
+function tryAutoEquipDroppedItem(invIdx) {
+    const item = inventory[invIdx];
+    if (!item || item.type !== 'equipment' || !item.slot) return null;
+
+    // 무기 클래스 착용 제한 — 다른 클래스 전용 무기는 자동 착용 차단
+    if (item.slot === 'weapon' && item.weaponTypeId) {
+        const wt = EQ_WEAPON_TYPES.find(w => w.id === item.weaponTypeId);
+        if (wt && !wt.classes.includes(currentClass)) return null;
+    }
+
+    const slotKey = item.slot;
+    const prevIdx = equippedItems[slotKey];
+    const hasPrev = (prevIdx !== null && prevIdx >= 0 && inventory[prevIdx]);
+
+    if (!hasPrev) {
+        // 빈 슬롯 — 즉시 착용
+        equipItem(invIdx);
+        return { item, prev: null, action: 'equip' };
+    }
+
+    const prevItem = inventory[prevIdx];
+    if (itemStrength(item) > itemStrength(prevItem)) {
+        // 더 좋은 장비 — 교체
+        equipItem(invIdx);
+        return { item, prev: prevItem, action: 'swap' };
+    }
+
+    return null;
+}
+
+// 드랍된 아이템 목록을 인벤토리에 추가 + 자동 착용 시도
+// 반환: { accepted: [item, ...], equipEvents: [{item, prev, action}, ...] }
+function commitDroppedItems(items) {
+    const accepted = [];
+    const equipEvents = [];
+    for (const it of items) {
+        const idx = addToInventory(it);
+        if (idx < 0) continue;
+        const liveItem = inventory[idx];
+        accepted.push(liveItem);
+        const evt = tryAutoEquipDroppedItem(idx);
+        if (evt) equipEvents.push(evt);
+    }
+    // 인벤토리/장비 패널이 열려 있으면 즉시 갱신 (실시간 반영)
+    if (accepted.length > 0) {
+        const invOv = document.getElementById('inventory-overlay');
+        if (invOv && invOv.classList.contains('open')) renderInventory();
+    }
+    // 자동 착용이 발생했으면 character 스탯·DPS 등 보너스 합산 결과를 갱신
+    if (equipEvents.length > 0) {
+        try { onLevelChanged && onLevelChanged(false); } catch (e) {}
+        try { refreshUI && refreshUI(); } catch (e) {}
+    }
+    return { accepted, equipEvents };
+}
+
+// ── 인게임 토스트 (캔버스 좌측 하단) ────────────────────────────────────────
+const _dropToasts = []; // { el, timer }
+const DROP_TOAST_DURATION = 3500; // 페이드 시작까지 (ms)
+const DROP_TOAST_FADE_MS  = 600;  // 페이드 지속 시간
+
+function showDropToast(items, isBoss = false) {
+    if (!items || items.length === 0) return;
+    const area = document.getElementById('drop-toast-area');
+    if (!area) return;
+
+    const el = document.createElement('div');
+    el.className = 'drop-toast' + (isBoss ? ' boss' : '');
+    const title = isBoss
+        ? `🎁 보스 보상 (${items.length}개)`
+        : `🎁 장비 획득 (${items.length}개)`;
+    const itemsHtml = items.map(it => {
+        // 등급 라벨 추출 — name 형식: "[등급] 파츠명"
+        const grade = EQ_GRADES[it.gradeIdx];
+        const gradeLabel = grade ? grade.label : '';
+        const gradeColor = it.gradeColor || (grade ? grade.color : '#e6edf3');
+        // 파츠명은 name에서 "[등급] " 부분 제거
+        const partName = it.name.replace(/^\[[^\]]+\]\s*/, '');
+        return `<div class="drop-toast-item">
+            <span class="drop-toast-icon">${it.icon}</span>
+            <span class="drop-toast-name">${partName}</span>
+            <span class="drop-toast-grade" style="color:${gradeColor};">[${gradeLabel}]</span>
+        </div>`;
+    }).join('');
+    el.innerHTML = `
+        <div class="drop-toast-title">${title}</div>
+        <div class="drop-toast-list">${itemsHtml}</div>
+    `;
+    area.appendChild(el);
+
+    // 동시 표시 토스트가 너무 많아지면 가장 오래된 것부터 즉시 제거 (최대 5개)
+    while (area.children.length > 5) area.removeChild(area.firstChild);
+
+    const fadeTimer = setTimeout(() => {
+        el.classList.add('fade-out');
+        setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, DROP_TOAST_FADE_MS);
+    }, DROP_TOAST_DURATION);
+    _dropToasts.push({ el, timer: fadeTimer });
+}
+
+// ── 아이템 로그 (우측 패널) — 획득 + 자동 착용/교체 통합 표시 ──────────────
+let dropLogs = [];
+function addDropLog(items, isBoss = false, equipEvents = []) {
+    if ((!items || items.length === 0) && (!equipEvents || equipEvents.length === 0)) return;
+    const ts = new Date().toLocaleTimeString('ko-KR', { hour12: false });
+
+    // 자동 착용된 아이템을 빠르게 조회하기 위한 인덱스 (item 참조 동일성 기준)
+    const equipMap = new Map();
+    for (const ev of (equipEvents || [])) {
+        if (ev && ev.item) equipMap.set(ev.item, ev);
+    }
+
+    dropLogs.unshift({ ts, items: items || [], isBoss, equipMap, equipEvents: equipEvents || [] });
+    if (dropLogs.length > 80) dropLogs.pop();
+    const el = document.getElementById('drop-log-list');
+    if (!el) return;
+
+    const renderItemSpan = (it, equipEvt) => {
+        const grade = EQ_GRADES[it.gradeIdx];
+        const gradeLabel = grade ? grade.label : '';
+        const gradeColor = it.gradeColor || (grade ? grade.color : '#e6edf3');
+        const partName = it.name.replace(/^\[[^\]]+\]\s*/, '');
+        let suffix = '';
+        if (equipEvt) {
+            if (equipEvt.action === 'equip') {
+                suffix = ` <span style="color:#3fb950;font-weight:bold;">→ 착용</span>`;
+            } else if (equipEvt.action === 'swap') {
+                const pv       = equipEvt.prev;
+                const pvGrade  = pv ? EQ_GRADES[pv.gradeIdx] : null;
+                const pvColor  = pv ? (pv.gradeColor || (pvGrade ? pvGrade.color : '#8b949e')) : '#8b949e';
+                const pvLabel  = pvGrade ? pvGrade.label : '';
+                const pvName   = pv ? pv.name.replace(/^\[[^\]]+\]\s*/, '') : '';
+                suffix = ` <span style="color:#d29922;font-weight:bold;">→ 교체</span> <span style="color:#6e7681;font-size:14px;">(이전: ${pv ? pv.icon : ''} ${pvName} <span style="color:${pvColor};">[${pvLabel}]</span>)</span>`;
+            }
+        }
+        return `<div class="drop-log-item">${it.icon} ${partName} <span style="color:${gradeColor};">[${gradeLabel}]</span>${suffix}</div>`;
+    };
+
+    el.innerHTML = dropLogs.slice(0, 60).map(e => {
+        const equipCount = e.equipEvents.length;
+        const head = e.isBoss
+            ? `💀 보스 보상 (${e.items.length}개${equipCount ? `, 자동 착용 ${equipCount}` : ''})`
+            : `🎁 장비 획득 (${e.items.length}개${equipCount ? `, 자동 착용 ${equipCount}` : ''})`;
+        const list = e.items.map(it => renderItemSpan(it, e.equipMap.get(it))).join('');
+        return `<div class="drop-log-entry${e.isBoss ? ' boss' : ''}">
+            <div class="drop-log-head"><span class="drop-log-ts">[${e.ts}]</span>${head}</div>
+            <div>${list}</div>
+        </div>`;
+    }).join('');
+}
+function clearDropLog() {
+    dropLogs = [];
+    const el = document.getElementById('drop-log-list');
+    if (el) el.innerHTML = '';
+}
+
 // ── 도감 UI 함수 ──────────────────────────────────────────────────────────────
 let _codexPower    = 1;
 let _codexPartIdx  = 0; // 현재 선택된 파츠 인덱스
@@ -11493,7 +12367,7 @@ function codexAddToInventory() {
     const gradeIdx = _codexGradeIdx;
     const part = EQ_CODEX_PARTS[partIdx];
     const item = createEquipItem(part.slot, part.weaponTypeId, gradeIdx, _codexPower);
-    if (!addToInventory(item)) {
+    if (addToInventory(item) === -1) {
         addLog('⚠ 인벤토리가 가득 찼습니다. 공간을 확보하세요.', 'info');
         return;
     }
@@ -11503,12 +12377,12 @@ function codexAddToInventory() {
     renderCodex(); // 추가 가능 여부 버튼 상태 갱신
 }
 
-// 빈 슬롯에 아이템 1개 추가. 성공 여부 반환
+// 빈 슬롯에 아이템 1개 추가. 추가된 인덱스 반환 (가득 찼으면 -1)
 function addToInventory(item) {
     const idx = inventory.findIndex(s => s === null);
-    if (idx === -1) return false; // 인벤토리 가득 참
+    if (idx === -1) return -1; // 인벤토리 가득 참
     inventory[idx] = { ...item };
-    return true;
+    return idx;
 }
 
 function openInventory() {
