@@ -2258,6 +2258,114 @@ body {
     font-variant-numeric: tabular-nums;
     text-align: center;
 }
+
+/* 🏛 영웅의 성소 */
+.limit-modal.sanctuary-modal { width: 1080px; max-width: 96vw; height: 88vh; max-height: 88vh; }
+.sanctuary-action-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+.sanctuary-btn.inherit {
+    background: linear-gradient(135deg, #a78bfa, #ffd86b);
+    border: 2px solid #a78bfa;
+    color: #0d1117; font-weight: 800; font-size: 14px;
+    padding: 9px 18px; border-radius: 6px; cursor: pointer;
+}
+.sanctuary-btn.inherit:hover:not(:disabled) { background: linear-gradient(135deg, #c4b5fd, #ffe98c); }
+.sanctuary-btn.inherit:disabled { opacity: 0.4; cursor: not-allowed; }
+.sanctuary-info-text { font-size: 12px; color: #8b949e; }
+.sanctuary-empty {
+    grid-column: 1/-1;
+    padding: 40px 20px; text-align: center;
+    color: #8b949e; font-size: 14px;
+    border: 1px dashed #30363d; border-radius: 6px;
+    margin-top: 12px;
+}
+.sct-type-panel {
+    margin: 10px 0 14px; padding: 10px 14px;
+    background: rgba(167,139,250,0.06);
+    border: 1px solid rgba(167,139,250,0.30);
+    border-radius: 6px;
+}
+.sct-type-panel-title { font-size: 12px; color: #a78bfa; font-weight: 700; margin-bottom: 6px; }
+.sct-type-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.sct-type-chip {
+    padding: 3px 8px; border: 1px solid;
+    border-radius: 10px; font-size: 11px; font-weight: 700;
+    background: #0d1117;
+}
+.sct-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+}
+.sct-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 6px;
+}
+.sct-card-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.sct-card-name {
+    color: #e6edf3; font-weight: 700; font-size: 13px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sct-card-grade {
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 700; white-space: nowrap;
+}
+.sct-card-type { font-size: 11px; color: #8b949e; }
+.sct-card-type b { color: #c4b5fd; }
+.sct-card-stats { display: flex; flex-direction: column; gap: 3px; font-size: 12px; padding: 4px 0; border-top: 1px dashed #30363d; border-bottom: 1px dashed #30363d; }
+.sct-card-stat { display: flex; justify-content: space-between; color: #c9d1d9; }
+.sct-swap-btn {
+    background: rgba(167,139,250,0.15);
+    border: 1px solid #a78bfa;
+    color: #c4b5fd;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px; font-weight: 700;
+}
+.sct-swap-btn:hover:not(:disabled) { background: rgba(167,139,250,0.30); color: #fff; }
+.sct-swap-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* 도감 매트릭스 */
+.sct-codex-section { margin-bottom: 18px; }
+.sct-codex-section-title { font-size: 13px; font-weight: 700; padding: 4px 4px 6px; border-bottom: 1px solid #30363d; margin-bottom: 6px; }
+.sct-codex-table thead th { font-size: 11px; }
+.sct-codex-table tbody td { font-size: 11px; font-variant-numeric: tabular-nums; text-align: center; }
+
+/* 추천 팝업 */
+.limit-modal.sanctuary-pick-modal {
+    width: 780px; max-width: 96vw;
+    max-height: 92vh;
+    display: flex; flex-direction: column;
+}
+#sanctuary-pick-body { padding: 14px 18px 18px; overflow-y: auto; }
+.sct-pick-info { font-size: 13px; color: #c9d1d9; padding: 8px; background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.30); border-radius: 4px; margin-bottom: 12px; }
+.sct-pick-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+.sct-pick-card {
+    background: #161b22;
+    border: 2px solid #30363d;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+}
+.sct-pick-grade { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 800; text-align: center; }
+.sct-pick-name { font-size: 13px; font-weight: 700; color: #e6edf3; text-align: center; }
+.sct-pick-type { font-size: 11px; color: #8b949e; text-align: center; }
+.sct-pick-stats { display: flex; flex-direction: column; gap: 3px; padding: 6px 0; border-top: 1px dashed #30363d; border-bottom: 1px dashed #30363d; font-size: 12px; }
+.sct-pick-stat-row { display: flex; justify-content: space-between; color: #c9d1d9; }
+.sct-pick-btn {
+    background: linear-gradient(135deg, #58a6ff, #a78bfa);
+    border: 2px solid #58a6ff;
+    color: #ffffff; font-weight: 800;
+    padding: 8px; border-radius: 5px; cursor: pointer;
+    font-size: 13px;
+}
+.sct-pick-btn:hover { background: linear-gradient(135deg, #7cb5ff, #c4b5fd); }
+.sct-pick-btn-row { display: flex; justify-content: flex-end; margin-top: 14px; }
 .ol-active-row {
     display: flex; flex-wrap: wrap; gap: 6px;
     margin-top: 10px;
@@ -4549,6 +4657,197 @@ body {
 .inv-dis-btn.exec { background: #f85149; color: #fff; border: 1px solid #f85149; }
 .inv-dis-btn.exec:hover { background: #da3633; }
 .inv-dis-btn.exec:disabled { background: #21262d; color: #e6edf3; border-color: #21262d; cursor: default; }
+.inv-autodis-status {
+    margin-left: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #1f2430;
+    border: 1px solid #30363d;
+    color: #ff9966;
+    font-size: 12px;
+    font-weight: 600;
+    vertical-align: middle;
+}
+.inv-autodis-status.off { color: #6e7681; }
+
+/* ── 🔍 감정 결과 알림 모달 ── */
+.limit-modal.appraise-result-modal {
+    width: 680px;
+    max-width: 96vw;
+    height: 72vh;
+    max-height: 72vh;
+    display: flex;
+    flex-direction: column;
+}
+.appraise-result-body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #0d1117;
+}
+.appraise-result-empty {
+    color: #6e7681;
+    text-align: center;
+    padding: 40px 0;
+    font-size: 14px;
+}
+.appraise-result-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-left-width: 4px;
+    border-radius: 6px;
+    padding: 10px 12px;
+    display: grid;
+    grid-template-columns: 38px 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 10px;
+    row-gap: 6px;
+    align-items: center;
+}
+.appraise-result-icon {
+    grid-row: 1 / span 2;
+    grid-column: 1;
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    border: 1px solid #30363d;
+}
+.appraise-result-name {
+    grid-column: 2;
+    grid-row: 1;
+    font-weight: 700;
+    color: #e6edf3;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.appraise-result-grade-tag {
+    grid-column: 3;
+    grid-row: 1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.appraise-result-opts {
+    grid-column: 2 / span 2;
+    grid-row: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.appraise-result-opt {
+    background: rgba(255,216,107,0.08);
+    border: 1px solid rgba(255,216,107,0.35);
+    color: #ffd86b;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.appraise-result-opt .opt-label { color: #c4b5fd; margin-right: 4px; }
+.appraise-result-opt .opt-value { color: #ffd86b; }
+.appraise-result-footer {
+    padding: 10px 18px 14px;
+    display: flex;
+    justify-content: flex-end;
+    background: #0d1117;
+    border-top: 1px solid #21262d;
+}
+
+/* ── 자동 분해 설정 모달 ── */
+.limit-modal.autodis-modal {
+    width: 520px;
+    max-width: 96vw;
+    height: 60vh;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+}
+.autodis-body {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.autodis-desc {
+    color: #c4c4c4;
+    font-size: 13px;
+    line-height: 1.55;
+    padding: 10px 12px;
+    background: rgba(255,153,102,0.08);
+    border: 1px solid rgba(255,153,102,0.35);
+    border-radius: 6px;
+}
+.autodis-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.autodis-master-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: #e6edf3;
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+}
+.autodis-master-toggle input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+.autodis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+.autodis-grade-chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1.5px solid #30363d;
+    background: #1f2430;
+    color: #e6edf3;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    user-select: none;
+    transition: background 0.12s, border-color 0.12s;
+}
+.autodis-grade-chip.selected {
+    background: rgba(255,153,102,0.18);
+}
+.autodis-grade-chip:hover { border-color: #ff9966; }
+.autodis-grade-chip .gradeBox {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+.autodis-footer {
+    margin-top: 6px;
+    display: flex;
+    justify-content: flex-end;
+}
 .inv-slot .inv-qty {
     position: absolute;
     bottom: 2px;
@@ -6599,6 +6898,10 @@ body {
                         <span class="ab-sub-icon">💎</span>
                         <span class="ab-sub-label">봉인석</span>
                     </button>
+                    <button class="ab-sub-btn" id="ab-sanctuary" onclick="openSanctuaryModal()" title="영웅의 성소 — 계승으로 레거시 획득 + 능력치 강화">
+                        <span class="ab-sub-icon">🏛</span>
+                        <span class="ab-sub-label">영웅의 성소</span>
+                    </button>
                 </div>
                 <!-- 메인 버튼 행 (가로: 기록 → 도감 → 가방 → 귀환/재개 → 메뉴 → 설정) -->
                 <div id="ab-main-row">
@@ -7596,6 +7899,38 @@ body {
 </div>
 
 <!-- ====================================================================
+     🏛 영웅의 성소 모달 — 계승/교체 + 레거시 도감
+     ==================================================================== -->
+<div id="sanctuary-overlay" class="limit-overlay">
+    <div class="limit-modal morph-modal sanctuary-modal">
+        <div class="limit-header">
+            <span class="limit-title" style="color:#a78bfa;">🏛 영웅의 성소</span>
+            <button class="limit-close" onclick="closeSanctuaryModal()">✕</button>
+        </div>
+        <div class="morph-tab-row">
+            <button class="morph-tab active" id="sanctuary-tab-main"   onclick="sanctuarySwitchTab('main')">🏛 계승의 전당</button>
+            <button class="morph-tab"        id="sanctuary-tab-codex"  onclick="sanctuarySwitchTab('codex')">📔 레거시 도감</button>
+        </div>
+        <div class="morph-modal-body" id="sanctuary-modal-body">
+            <!-- renderSanctuaryModal()로 채워짐 -->
+        </div>
+    </div>
+</div>
+
+<!-- 🏛 계승/교체 추천 선택 팝업 -->
+<div id="sanctuary-pick-overlay" class="limit-overlay">
+    <div class="limit-modal sanctuary-pick-modal">
+        <div class="limit-header">
+            <span class="limit-title" id="sanctuary-pick-title" style="color:#ffd86b;">🏛 레거시 추천</span>
+            <button class="limit-close" onclick="onSanctuaryPickCancel()">✕</button>
+        </div>
+        <div id="sanctuary-pick-body">
+            <!-- _showSanctuaryPickPopup()로 채워짐 -->
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================================
      🔓 봉인석 일괄 해방 팝업 — 일반/상급 + 횟수 입력 + MAX 자동 계산
      ==================================================================== -->
 <div id="seal-lib-overlay" class="limit-overlay">
@@ -7680,6 +8015,56 @@ body {
             <div class="reset-confirm-btn-row">
                 <button class="reset-btn-cancel" onclick="closeDisassembleConfirm()">취소</button>
                 <button class="reset-btn-danger" onclick="confirmDisassemble()">🔨 분해 진행</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
+     🔍 감정 결과 알림 모달 — 일괄 감정 후 각 장비별 부옵션 결과를 카드로 표시
+================================================================ -->
+<div id="appraise-result-overlay" class="limit-overlay">
+    <div class="limit-modal appraise-result-modal">
+        <div class="limit-header">
+            <span class="limit-title" style="color:#ffd86b;">🔍 감정 결과 — <span id="appraise-result-count">0</span>개</span>
+            <button class="limit-close" onclick="closeAppraiseResultModal()">✕</button>
+        </div>
+        <div class="appraise-result-body" id="appraise-result-body">
+            <!-- JS로 채워짐 -->
+        </div>
+        <div class="appraise-result-footer">
+            <button class="reset-btn-cancel" onclick="closeAppraiseResultModal()">닫기</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
+     ⚙ 자동 분해 설정 모달 — 획득 즉시 해당 등급 장비를 자동 분해
+================================================================ -->
+<div id="autodis-overlay" class="limit-overlay">
+    <div class="limit-modal autodis-modal">
+        <div class="limit-header">
+            <span class="limit-title" style="color:#ff9966;">⚙ 자동 분해 설정</span>
+            <button class="limit-close" onclick="closeAutoDisassembleModal()">✕</button>
+        </div>
+        <div class="autodis-body">
+            <div class="autodis-desc">
+                선택한 등급의 장비를 <strong style="color:#ff9966;">획득 즉시 자동 분해</strong>합니다.<br>
+                <span style="color:#8b949e;font-size:12px;">※ 자동 착용 조건(빈 슬롯 또는 위력 더 높음)에 해당하면 자동 분해보다 자동 착용이 우선합니다.</span>
+            </div>
+            <div class="autodis-toggle-row">
+                <label class="autodis-master-toggle">
+                    <input type="checkbox" id="autodis-enabled" onchange="onAutoDisEnabledChange(this.checked)">
+                    <span>자동 분해 활성화</span>
+                </label>
+                <button class="inv-dis-btn ghost" onclick="autoDisSelectAll()">전체 선택</button>
+                <button class="inv-dis-btn ghost" onclick="autoDisClearAll()">전체 해제</button>
+            </div>
+            <div class="autodis-grid" id="autodis-grid">
+                <!-- JS로 채워짐 -->
+            </div>
+            <div class="autodis-footer">
+                <button class="reset-btn-cancel" onclick="closeAutoDisassembleModal()">닫기</button>
             </div>
         </div>
     </div>
@@ -7926,8 +8311,9 @@ body {
                 </div>
                 <!-- 분해 모드 액션 바 (분해 모드일 때만 표시) -->
                 <div class="inv-dis-bar" id="inv-dis-bar">
-                    <span class="inv-dis-count"><strong id="inv-dis-count">0</strong>개 선택됨</span>
+                    <span class="inv-dis-count"><strong id="inv-dis-count">0</strong>개 선택됨 <span id="inv-autodis-status" class="inv-autodis-status"></span></span>
                     <div class="inv-dis-btn-row">
+                        <button class="inv-dis-btn ghost" onclick="openAutoDisassembleModal()" title="획득 즉시 자동 분해 등급 설정">⚙ 자동 분해 설정</button>
                         <button class="inv-dis-btn ghost" onclick="selectAllDisassemble()">전체 선택</button>
                         <button class="inv-dis-btn ghost" onclick="clearDisassembleSelect()">전체 해제</button>
                         <button class="inv-dis-btn exec" id="inv-dis-exec" onclick="doDisassemble()" disabled>분해하기</button>
@@ -8031,9 +8417,62 @@ body {
             <div class="pn-month-header" data-pn-year="2026" data-pn-month="5">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">5월</span>
-                <span class="pn-month-count">340건</span>
+                <span class="pn-month-count">347건</span>
             </div>
             <div class="pn-month-section" data-pn-year="2026" data-pn-month="5">
+
+            <!-- ── 2026-05-28 22:49 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-28</span>
+                <span class="pn-ver-time">22:49</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item">
+                    <span class="pn-tag fix">수정</span>
+                    <span class="pn-summary">영웅의 성소 <strong>레거시 옵션 누락</strong> 수정</span>
+                    <span class="pn-detail">단독은 메인 능력치 + 부가 옵션 <code>2개</code>, 복합은 메인 2개 + 부가 옵션 <code>3개</code>로 정상 표시. <code>docs/영웅의 성소.xlsx</code> 재파싱 → <code>SANCTUARY_LEGACIES_DATA</code> 500 entries · 1,150 옵션 모두 복원. 카드/추천/도감 매트릭스 모두 옵션별 행으로 재렌더링</span>
+                </li>
+                <li class="pn-item">
+                    <span class="pn-tag sys">시스템</span>
+                    <span class="pn-summary">인벤토리 <strong>자동 분해</strong> 기능 추가</span>
+                    <span class="pn-detail">분해 모드 액션 바에 <code>⚙ 자동 분해 설정</code> 추가 — <code>13등급</code> 체크박스 + 마스터 토글 모달. 획득 즉시 매칭 등급 자동 분해(자동 착용 우선). 설정은 <code>versione_auto_dis_cfg</code>로 진행 초기화에도 보존</span>
+                </li>
+                <li class="pn-item">
+                    <span class="pn-tag ui">UI</span>
+                    <span class="pn-summary">장비 감정 <strong>결과 알림 UI</strong> 추가</span>
+                    <span class="pn-detail">일괄 감정 후 <code>#appraise-result-overlay</code> 모달로 장비별 카드(아이콘 · 파츠명 · 등급 태그 · 부옵션 칩) 스크롤 리스트 표시. 등급색 좌측 보더 · 부옵션은 라벨/값 분리 칩 · ✕/닫기로만 닫힘(규칙 6)</span>
+                </li>
+            </ul>
+
+            <!-- ── 2026-05-28 22:29 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-28</span>
+                <span class="pn-ver-time">22:29</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item">
+                    <span class="pn-tag sys">시스템</span>
+                    <span class="pn-summary"><strong>🏛 영웅의 성소</strong> 시스템 신설</span>
+                    <span class="pn-detail">계승 레벨 <code>0~100</code> · 100 능력치 타입 × 5 변종 = <code>500 레거시</code>. 6등급 추첨(<code>25/25/25/15/8/2%</code>) → 3개 추천 → 1개 선택. 동일 명칭 중복 불가, 동일 타입 최대 <code>5개</code>. 메뉴 패널 봉인석 아래에 위치</span>
+                </li>
+                <li class="pn-item">
+                    <span class="pn-tag sys">시스템</span>
+                    <span class="pn-summary">계승 <strong>xlsx 데이터</strong> 적용</span>
+                    <span class="pn-detail">출처 <code>docs/영웅의 성소.xlsx</code>. 비용 <code>5+5×Lv</code> 계승석 · 교체 <code>250</code> 고정 · 단독 7타입(200~300)/복합 3타입(100~200) 6등급별 수치. 저장 스키마 <code>v15 → v16</code></span>
+                </li>
+                <li class="pn-item">
+                    <span class="pn-tag ui">UI</span>
+                    <span class="pn-summary">🏛 모달 <strong>2탭 + 추천 팝업</strong></span>
+                    <span class="pn-detail">계승의 전당(보유 타입 chip · 카드 그리드 · 교체 버튼) + 📔 레거시 도감(10 prefix 필터 · 타입별 6등급 매트릭스). 추천 팝업 <code>780px</code> 3장 카드 · ✓ 선택 버튼</span>
+                </li>
+                <li class="pn-item">
+                    <span class="pn-tag sys">시스템</span>
+                    <span class="pn-summary">계승석 <strong>아이템화</strong> + 상점</span>
+                    <span class="pn-detail">`SCROLL_TYPES.legacy_stone` 신설(<code>applicableGroup: 'sanctuary'</code>). 인벤토리 자동 스택, 툴팁에 별도 분류. 상점 일/주/월간 — 빛의 파동석의 <code>1/10</code> 수량 · 동일 가격(<code>10만/90만/800만</code>) · 동일 한도(<code>10회</code>)</span>
+                </li>
+            </ul>
 
             <!-- ── 2026-05-28 17:58 ── -->
             <div class="pn-ver">
@@ -13352,6 +13791,8 @@ const SCROLL_TYPES = {
     acc_scroll:    { name: '장신구 강화 주문서', icon: '📕', gradeColor: '#c39bd3', applicableGroup: 'accessory' },
     // 💎 봉인석 공명 전용 아이템 — 인벤토리 스택 보관, 같은 종류 자동 합쳐짐
     light_fragment:{ name: '빛의 파동석',         icon: '🔆', gradeColor: '#ffd86b', applicableGroup: 'sealstone' },
+    // 🏛 영웅의 성소 계승 전용 아이템
+    legacy_stone: { name: '계승석',              icon: '🏛',  gradeColor: '#a78bfa', applicableGroup: 'sanctuary' },
 };
 
 // 강화 시스템 상수
@@ -13688,6 +14129,17 @@ SHOP_PRODUCTS.weekly.push(
 );
 SHOP_PRODUCTS.monthly.push(
     { id: 'lf_m', name: '빛의 파동석 1,000,000개',  icon: '🔆', count: 1000000,  price: 8000000,   scrollType: 'light_fragment', discount: 0.20, limit: 10 },
+);
+
+// 🏛 계승석 (영웅의 성소 계승용) — 빛의 파동석의 1/10 수량, 동일 가격·동일 구매 한도
+SHOP_PRODUCTS.daily.push(
+    { id: 'ls_d', name: '계승석 1,000개',           icon: '🏛',  count: 1000,     price: 100000,    scrollType: 'legacy_stone', limit: 10 },
+);
+SHOP_PRODUCTS.weekly.push(
+    { id: 'ls_w', name: '계승석 10,000개',          icon: '🏛',  count: 10000,    price: 900000,    scrollType: 'legacy_stone', discount: 0.10, limit: 10 },
+);
+SHOP_PRODUCTS.monthly.push(
+    { id: 'ls_m', name: '계승석 100,000개',         icon: '🏛',  count: 100000,   price: 8000000,   scrollType: 'legacy_stone', discount: 0.20, limit: 10 },
 );
 
 // ── 스테이지 전환 연출
@@ -17712,6 +18164,750 @@ function getSealstoneStats() {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
+// 🏛 영웅의 성소(Hero's Sanctuary) — 계승으로 레거시 획득
+// ════════════════════════════════════════════════════════════════════════════
+// 출처: docs/영웅의 성소.xlsx
+// • 계승 레벨 0~100 (max), 레거시 1개 획득 시 +1
+// • 100 능력치 타입 × 5 변종 = 500 레거시 (모두 명칭 고유)
+// • 각 레거시는 6등급(일반/고급/희귀/영웅/전설/신화) 중 하나로 획득
+// • 추천 3개 중 1개 선택, 등급은 추천 시 25/25/25/15/8/2 % 확률로 결정
+// • 동일 명칭 중복 획득 불가, 동일 능력치 타입은 최대 5개 (해당 타입의 모든 변종)
+// • 교체: lv 1+에서만 가능, 250 계승석 고정 비용 (계승 레벨 무관)
+// • 능력치는 보유한 모든 레거시의 합산 (등급에 따른 수치 차등)
+
+const SANCTUARY_MAX_LEVEL = 100;
+const SANCTUARY_SWAP_COST = 250; // 계승석 (고정)
+// 계승 비용: cost(level N) = 5 + 5*N (lv 0=5, lv 1=10, ..., lv 99=500)
+function _sanctuaryInheritCost(level) {
+    if (level >= SANCTUARY_MAX_LEVEL) return -1; // MAX 도달
+    return 5 + 5 * level;
+}
+// 등급 확률 (xlsx 출처)
+const SANCTUARY_GRADES = [
+    { idx:0, label:'일반', color:'#9da5b4', prob:0.25 },
+    { idx:1, label:'고급', color:'#56c774', prob:0.25 },
+    { idx:2, label:'희귀', color:'#5b9bf3', prob:0.25 },
+    { idx:3, label:'영웅', color:'#b060ee', prob:0.15 },
+    { idx:4, label:'전설', color:'#f5d062', prob:0.08 },
+    { idx:5, label:'신화', color:'#ff5060', prob:0.02 },
+];
+// 능력치 타입 prefix → STAT_LIST en 키 매핑 (단독)
+const SANCTUARY_STAT_SOLO = {
+    '힘':   true,
+    '민첩': true,
+    '지능': true,
+    '순발': true,
+    '건강': true,
+    '지혜': true,
+    '행운': true,
+};
+// 복합 — 2개 stat 조합 prefix
+const SANCTUARY_STAT_COMP = {
+    '힘&건강':   true,
+    '민첩&순발': true,
+    '자눙&지혜': true, // xlsx 표기 오타(자눙=지능) 그대로 유지
+};
+
+// 500 레거시 원본 데이터 — docs/영웅의 성소.xlsx 파싱 결과
+// 형식: [name, typeKey, [[enKey, [v_일반, v_고급, v_희귀, v_영웅, v_전설, v_신화]], ...]]
+//   - 단독(단독 prefix): 2개 옵션 (메인 능력치 증폭 + 부가 옵션)
+//   - 복합(복합 prefix): 3개 옵션 (메인 능력치 증폭 × 2 + 부가 옵션)
+const SANCTUARY_LEGACIES_DATA = [
+    ["힘_01_01","힘_01",[["STRAmplifyRate",[200,220,240,260,280,300]],["MaxHealthPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_01_02","힘_01",[["STRAmplifyRate",[200,220,240,260,280,300]],["MaxManaPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_01_03","힘_01",[["STRAmplifyRate",[200,220,240,260,280,300]],["HealthRegenFixedPoint",[10,14,18,22,26,30]]]],
+    ["힘_01_04","힘_01",[["STRAmplifyRate",[200,220,240,260,280,300]],["ManaRegenFixedPoint",[5,7,9,11,13,15]]]],
+    ["힘_01_05","힘_01",[["STRAmplifyRate",[200,220,240,260,280,300]],["PotionRecoveryRate",[500,700,900,1100,1300,1500]]]],
+    ["민첩_01_01","민첩_01",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MaxHealthPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_01_02","민첩_01",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MaxManaPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_01_03","민첩_01",[["DEXAmplifyRate",[200,220,240,260,280,300]],["HealthRegenFixedPoint",[10,14,18,22,26,30]]]],
+    ["민첩_01_04","민첩_01",[["DEXAmplifyRate",[200,220,240,260,280,300]],["ManaRegenFixedPoint",[5,7,9,11,13,15]]]],
+    ["민첩_01_05","민첩_01",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PotionRecoveryRate",[500,700,900,1100,1300,1500]]]],
+    ["지능_01_01","지능_01",[["INTAmplifyRate",[200,220,240,260,280,300]],["MaxHealthPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_01_02","지능_01",[["INTAmplifyRate",[200,220,240,260,280,300]],["MaxManaPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_01_03","지능_01",[["INTAmplifyRate",[200,220,240,260,280,300]],["HealthRegenFixedPoint",[10,14,18,22,26,30]]]],
+    ["지능_01_04","지능_01",[["INTAmplifyRate",[200,220,240,260,280,300]],["ManaRegenFixedPoint",[5,7,9,11,13,15]]]],
+    ["지능_01_05","지능_01",[["INTAmplifyRate",[200,220,240,260,280,300]],["PotionRecoveryRate",[500,700,900,1100,1300,1500]]]],
+    ["순발_01_01","순발_01",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MaxHealthPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_01_02","순발_01",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MaxManaPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_01_03","순발_01",[["AGIAmplifyRate",[200,220,240,260,280,300]],["HealthRegenFixedPoint",[10,14,18,22,26,30]]]],
+    ["순발_01_04","순발_01",[["AGIAmplifyRate",[200,220,240,260,280,300]],["ManaRegenFixedPoint",[5,7,9,11,13,15]]]],
+    ["순발_01_05","순발_01",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PotionRecoveryRate",[500,700,900,1100,1300,1500]]]],
+    ["건강_01_01","건강_01",[["CONAmplifyRate",[200,220,240,260,280,300]],["MaxHealthPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_01_02","건강_01",[["CONAmplifyRate",[200,220,240,260,280,300]],["MaxManaPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_01_03","건강_01",[["CONAmplifyRate",[200,220,240,260,280,300]],["HealthRegenFixedPoint",[10,14,18,22,26,30]]]],
+    ["건강_01_04","건강_01",[["CONAmplifyRate",[200,220,240,260,280,300]],["ManaRegenFixedPoint",[5,7,9,11,13,15]]]],
+    ["건강_01_05","건강_01",[["CONAmplifyRate",[200,220,240,260,280,300]],["PotionRecoveryRate",[500,700,900,1100,1300,1500]]]],
+    ["지혜_01_01","지혜_01",[["WISAmplifyRate",[200,220,240,260,280,300]],["MaxHealthPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_01_02","지혜_01",[["WISAmplifyRate",[200,220,240,260,280,300]],["MaxManaPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_01_03","지혜_01",[["WISAmplifyRate",[200,220,240,260,280,300]],["HealthRegenFixedPoint",[10,14,18,22,26,30]]]],
+    ["지혜_01_04","지혜_01",[["WISAmplifyRate",[200,220,240,260,280,300]],["ManaRegenFixedPoint",[5,7,9,11,13,15]]]],
+    ["지혜_01_05","지혜_01",[["WISAmplifyRate",[200,220,240,260,280,300]],["PotionRecoveryRate",[500,700,900,1100,1300,1500]]]],
+    ["행운_01_01","행운_01",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MaxHealthPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_01_02","행운_01",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MaxManaPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_01_03","행운_01",[["LUKAmplifyRate",[200,220,240,260,280,300]],["HealthRegenFixedPoint",[10,14,18,22,26,30]]]],
+    ["행운_01_04","행운_01",[["LUKAmplifyRate",[200,220,240,260,280,300]],["ManaRegenFixedPoint",[5,7,9,11,13,15]]]],
+    ["행운_01_05","행운_01",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PotionRecoveryRate",[500,700,900,1100,1300,1500]]]],
+    ["힘&건강_01_01","힘&건강_01",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MaxHealthPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_01_02","힘&건강_01",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MaxManaPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_01_03","힘&건강_01",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["HealthRegenFixedPoint",[10,14,18,22,26,30]]]],
+    ["힘&건강_01_04","힘&건강_01",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["ManaRegenFixedPoint",[5,7,9,11,13,15]]]],
+    ["힘&건강_01_05","힘&건강_01",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PotionRecoveryRate",[500,700,900,1100,1300,1500]]]],
+    ["민첩&순발_01_01","민첩&순발_01",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MaxHealthPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_01_02","민첩&순발_01",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MaxManaPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_01_03","민첩&순발_01",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["HealthRegenFixedPoint",[10,14,18,22,26,30]]]],
+    ["민첩&순발_01_04","민첩&순발_01",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["ManaRegenFixedPoint",[5,7,9,11,13,15]]]],
+    ["민첩&순발_01_05","민첩&순발_01",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PotionRecoveryRate",[500,700,900,1100,1300,1500]]]],
+    ["자눙&지혜_01_01","자눙&지혜_01",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MaxHealthPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_01_02","자눙&지혜_01",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MaxManaPointAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_01_03","자눙&지혜_01",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["HealthRegenFixedPoint",[10,14,18,22,26,30]]]],
+    ["자눙&지혜_01_04","자눙&지혜_01",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["ManaRegenFixedPoint",[5,7,9,11,13,15]]]],
+    ["자눙&지혜_01_05","자눙&지혜_01",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PotionRecoveryRate",[500,700,900,1100,1300,1500]]]],
+    ["힘_02_01","힘_02",[["STRAmplifyRate",[200,220,240,260,280,300]],["StunHit",[300,340,380,420,460,500]]]],
+    ["힘_02_02","힘_02",[["STRAmplifyRate",[200,220,240,260,280,300]],["ParalysisHit",[300,340,380,420,460,500]]]],
+    ["힘_02_03","힘_02",[["STRAmplifyRate",[200,220,240,260,280,300]],["SilenceHit",[300,340,380,420,460,500]]]],
+    ["힘_02_04","힘_02",[["STRAmplifyRate",[200,220,240,260,280,300]],["HoldHit",[300,340,380,420,460,500]]]],
+    ["힘_02_05","힘_02",[["STRAmplifyRate",[200,220,240,260,280,300]],["ProvokeHit",[300,340,380,420,460,500]]]],
+    ["민첩_02_01","민첩_02",[["DEXAmplifyRate",[200,220,240,260,280,300]],["StunHit",[300,340,380,420,460,500]]]],
+    ["민첩_02_02","민첩_02",[["DEXAmplifyRate",[200,220,240,260,280,300]],["ParalysisHit",[300,340,380,420,460,500]]]],
+    ["민첩_02_03","민첩_02",[["DEXAmplifyRate",[200,220,240,260,280,300]],["SilenceHit",[300,340,380,420,460,500]]]],
+    ["민첩_02_04","민첩_02",[["DEXAmplifyRate",[200,220,240,260,280,300]],["HoldHit",[300,340,380,420,460,500]]]],
+    ["민첩_02_05","민첩_02",[["DEXAmplifyRate",[200,220,240,260,280,300]],["ProvokeHit",[300,340,380,420,460,500]]]],
+    ["지능_02_01","지능_02",[["INTAmplifyRate",[200,220,240,260,280,300]],["StunHit",[300,340,380,420,460,500]]]],
+    ["지능_02_02","지능_02",[["INTAmplifyRate",[200,220,240,260,280,300]],["ParalysisHit",[300,340,380,420,460,500]]]],
+    ["지능_02_03","지능_02",[["INTAmplifyRate",[200,220,240,260,280,300]],["SilenceHit",[300,340,380,420,460,500]]]],
+    ["지능_02_04","지능_02",[["INTAmplifyRate",[200,220,240,260,280,300]],["HoldHit",[300,340,380,420,460,500]]]],
+    ["지능_02_05","지능_02",[["INTAmplifyRate",[200,220,240,260,280,300]],["ProvokeHit",[300,340,380,420,460,500]]]],
+    ["순발_02_01","순발_02",[["AGIAmplifyRate",[200,220,240,260,280,300]],["StunHit",[300,340,380,420,460,500]]]],
+    ["순발_02_02","순발_02",[["AGIAmplifyRate",[200,220,240,260,280,300]],["ParalysisHit",[300,340,380,420,460,500]]]],
+    ["순발_02_03","순발_02",[["AGIAmplifyRate",[200,220,240,260,280,300]],["SilenceHit",[300,340,380,420,460,500]]]],
+    ["순발_02_04","순발_02",[["AGIAmplifyRate",[200,220,240,260,280,300]],["HoldHit",[300,340,380,420,460,500]]]],
+    ["순발_02_05","순발_02",[["AGIAmplifyRate",[200,220,240,260,280,300]],["ProvokeHit",[300,340,380,420,460,500]]]],
+    ["건강_02_01","건강_02",[["CONAmplifyRate",[200,220,240,260,280,300]],["StunHit",[300,340,380,420,460,500]]]],
+    ["건강_02_02","건강_02",[["CONAmplifyRate",[200,220,240,260,280,300]],["ParalysisHit",[300,340,380,420,460,500]]]],
+    ["건강_02_03","건강_02",[["CONAmplifyRate",[200,220,240,260,280,300]],["SilenceHit",[300,340,380,420,460,500]]]],
+    ["건강_02_04","건강_02",[["CONAmplifyRate",[200,220,240,260,280,300]],["HoldHit",[300,340,380,420,460,500]]]],
+    ["건강_02_05","건강_02",[["CONAmplifyRate",[200,220,240,260,280,300]],["ProvokeHit",[300,340,380,420,460,500]]]],
+    ["지혜_02_01","지혜_02",[["WISAmplifyRate",[200,220,240,260,280,300]],["StunHit",[300,340,380,420,460,500]]]],
+    ["지혜_02_02","지혜_02",[["WISAmplifyRate",[200,220,240,260,280,300]],["ParalysisHit",[300,340,380,420,460,500]]]],
+    ["지혜_02_03","지혜_02",[["WISAmplifyRate",[200,220,240,260,280,300]],["SilenceHit",[300,340,380,420,460,500]]]],
+    ["지혜_02_04","지혜_02",[["WISAmplifyRate",[200,220,240,260,280,300]],["HoldHit",[300,340,380,420,460,500]]]],
+    ["지혜_02_05","지혜_02",[["WISAmplifyRate",[200,220,240,260,280,300]],["ProvokeHit",[300,340,380,420,460,500]]]],
+    ["행운_02_01","행운_02",[["LUKAmplifyRate",[200,220,240,260,280,300]],["StunHit",[300,340,380,420,460,500]]]],
+    ["행운_02_02","행운_02",[["LUKAmplifyRate",[200,220,240,260,280,300]],["ParalysisHit",[300,340,380,420,460,500]]]],
+    ["행운_02_03","행운_02",[["LUKAmplifyRate",[200,220,240,260,280,300]],["SilenceHit",[300,340,380,420,460,500]]]],
+    ["행운_02_04","행운_02",[["LUKAmplifyRate",[200,220,240,260,280,300]],["HoldHit",[300,340,380,420,460,500]]]],
+    ["행운_02_05","행운_02",[["LUKAmplifyRate",[200,220,240,260,280,300]],["ProvokeHit",[300,340,380,420,460,500]]]],
+    ["힘&건강_02_01","힘&건강_02",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["StunHit",[300,340,380,420,460,500]]]],
+    ["힘&건강_02_02","힘&건강_02",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["ParalysisHit",[300,340,380,420,460,500]]]],
+    ["힘&건강_02_03","힘&건강_02",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["SilenceHit",[300,340,380,420,460,500]]]],
+    ["힘&건강_02_04","힘&건강_02",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["HoldHit",[300,340,380,420,460,500]]]],
+    ["힘&건강_02_05","힘&건강_02",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["ProvokeHit",[300,340,380,420,460,500]]]],
+    ["민첩&순발_02_01","민첩&순발_02",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["StunHit",[300,340,380,420,460,500]]]],
+    ["민첩&순발_02_02","민첩&순발_02",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["ParalysisHit",[300,340,380,420,460,500]]]],
+    ["민첩&순발_02_03","민첩&순발_02",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["SilenceHit",[300,340,380,420,460,500]]]],
+    ["민첩&순발_02_04","민첩&순발_02",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["HoldHit",[300,340,380,420,460,500]]]],
+    ["민첩&순발_02_05","민첩&순발_02",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["ProvokeHit",[300,340,380,420,460,500]]]],
+    ["자눙&지혜_02_01","자눙&지혜_02",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["StunHit",[300,340,380,420,460,500]]]],
+    ["자눙&지혜_02_02","자눙&지혜_02",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["ParalysisHit",[300,340,380,420,460,500]]]],
+    ["자눙&지혜_02_03","자눙&지혜_02",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["SilenceHit",[300,340,380,420,460,500]]]],
+    ["자눙&지혜_02_04","자눙&지혜_02",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["HoldHit",[300,340,380,420,460,500]]]],
+    ["자눙&지혜_02_05","자눙&지혜_02",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["ProvokeHit",[300,340,380,420,460,500]]]],
+    ["힘_03_01","힘_03",[["STRAmplifyRate",[200,220,240,260,280,300]],["PhysicalDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_03_02","힘_03",[["STRAmplifyRate",[200,220,240,260,280,300]],["MeleeEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_03_03","힘_03",[["STRAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalResist",[100,120,140,160,180,200]]]],
+    ["힘_03_04","힘_03",[["STRAmplifyRate",[200,220,240,260,280,300]],["MeleeSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_03_05","힘_03",[["STRAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_03_01","민첩_03",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PhysicalDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_03_02","민첩_03",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MeleeEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_03_03","민첩_03",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalResist",[100,120,140,160,180,200]]]],
+    ["민첩_03_04","민첩_03",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MeleeSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_03_05","민첩_03",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_03_01","지능_03",[["INTAmplifyRate",[200,220,240,260,280,300]],["PhysicalDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_03_02","지능_03",[["INTAmplifyRate",[200,220,240,260,280,300]],["MeleeEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_03_03","지능_03",[["INTAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalResist",[100,120,140,160,180,200]]]],
+    ["지능_03_04","지능_03",[["INTAmplifyRate",[200,220,240,260,280,300]],["MeleeSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_03_05","지능_03",[["INTAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_03_01","순발_03",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PhysicalDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_03_02","순발_03",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MeleeEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_03_03","순발_03",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalResist",[100,120,140,160,180,200]]]],
+    ["순발_03_04","순발_03",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MeleeSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_03_05","순발_03",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_03_01","건강_03",[["CONAmplifyRate",[200,220,240,260,280,300]],["PhysicalDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_03_02","건강_03",[["CONAmplifyRate",[200,220,240,260,280,300]],["MeleeEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_03_03","건강_03",[["CONAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalResist",[100,120,140,160,180,200]]]],
+    ["건강_03_04","건강_03",[["CONAmplifyRate",[200,220,240,260,280,300]],["MeleeSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_03_05","건강_03",[["CONAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_03_01","지혜_03",[["WISAmplifyRate",[200,220,240,260,280,300]],["PhysicalDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_03_02","지혜_03",[["WISAmplifyRate",[200,220,240,260,280,300]],["MeleeEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_03_03","지혜_03",[["WISAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalResist",[100,120,140,160,180,200]]]],
+    ["지혜_03_04","지혜_03",[["WISAmplifyRate",[200,220,240,260,280,300]],["MeleeSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_03_05","지혜_03",[["WISAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_03_01","행운_03",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PhysicalDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_03_02","행운_03",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MeleeEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_03_03","행운_03",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalResist",[100,120,140,160,180,200]]]],
+    ["행운_03_04","행운_03",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MeleeSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_03_05","행운_03",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MeleeCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_03_01","힘&건강_03",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PhysicalDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_03_02","힘&건강_03",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MeleeEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_03_03","힘&건강_03",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MeleeCriticalResist",[100,120,140,160,180,200]]]],
+    ["힘&건강_03_04","힘&건강_03",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MeleeSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_03_05","힘&건강_03",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MeleeCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_03_01","민첩&순발_03",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PhysicalDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_03_02","민첩&순발_03",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MeleeEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_03_03","민첩&순발_03",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MeleeCriticalResist",[100,120,140,160,180,200]]]],
+    ["민첩&순발_03_04","민첩&순발_03",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MeleeSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_03_05","민첩&순발_03",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MeleeCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_03_01","자눙&지혜_03",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PhysicalDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_03_02","자눙&지혜_03",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MeleeEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_03_03","자눙&지혜_03",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MeleeCriticalResist",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_03_04","자눙&지혜_03",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MeleeSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_03_05","자눙&지혜_03",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MeleeCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_04_01","힘_04",[["STRAmplifyRate",[200,220,240,260,280,300]],["RangedDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_04_02","힘_04",[["STRAmplifyRate",[200,220,240,260,280,300]],["RangedEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_04_03","힘_04",[["STRAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalResist",[100,120,140,160,180,200]]]],
+    ["힘_04_04","힘_04",[["STRAmplifyRate",[200,220,240,260,280,300]],["RangedSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_04_05","힘_04",[["STRAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_04_01","민첩_04",[["DEXAmplifyRate",[200,220,240,260,280,300]],["RangedDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_04_02","민첩_04",[["DEXAmplifyRate",[200,220,240,260,280,300]],["RangedEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_04_03","민첩_04",[["DEXAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalResist",[100,120,140,160,180,200]]]],
+    ["민첩_04_04","민첩_04",[["DEXAmplifyRate",[200,220,240,260,280,300]],["RangedSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_04_05","민첩_04",[["DEXAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_04_01","지능_04",[["INTAmplifyRate",[200,220,240,260,280,300]],["RangedDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_04_02","지능_04",[["INTAmplifyRate",[200,220,240,260,280,300]],["RangedEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_04_03","지능_04",[["INTAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalResist",[100,120,140,160,180,200]]]],
+    ["지능_04_04","지능_04",[["INTAmplifyRate",[200,220,240,260,280,300]],["RangedSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_04_05","지능_04",[["INTAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_04_01","순발_04",[["AGIAmplifyRate",[200,220,240,260,280,300]],["RangedDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_04_02","순발_04",[["AGIAmplifyRate",[200,220,240,260,280,300]],["RangedEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_04_03","순발_04",[["AGIAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalResist",[100,120,140,160,180,200]]]],
+    ["순발_04_04","순발_04",[["AGIAmplifyRate",[200,220,240,260,280,300]],["RangedSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_04_05","순발_04",[["AGIAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_04_01","건강_04",[["CONAmplifyRate",[200,220,240,260,280,300]],["RangedDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_04_02","건강_04",[["CONAmplifyRate",[200,220,240,260,280,300]],["RangedEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_04_03","건강_04",[["CONAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalResist",[100,120,140,160,180,200]]]],
+    ["건강_04_04","건강_04",[["CONAmplifyRate",[200,220,240,260,280,300]],["RangedSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_04_05","건강_04",[["CONAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_04_01","지혜_04",[["WISAmplifyRate",[200,220,240,260,280,300]],["RangedDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_04_02","지혜_04",[["WISAmplifyRate",[200,220,240,260,280,300]],["RangedEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_04_03","지혜_04",[["WISAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalResist",[100,120,140,160,180,200]]]],
+    ["지혜_04_04","지혜_04",[["WISAmplifyRate",[200,220,240,260,280,300]],["RangedSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_04_05","지혜_04",[["WISAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_04_01","행운_04",[["LUKAmplifyRate",[200,220,240,260,280,300]],["RangedDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_04_02","행운_04",[["LUKAmplifyRate",[200,220,240,260,280,300]],["RangedEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_04_03","행운_04",[["LUKAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalResist",[100,120,140,160,180,200]]]],
+    ["행운_04_04","행운_04",[["LUKAmplifyRate",[200,220,240,260,280,300]],["RangedSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_04_05","행운_04",[["LUKAmplifyRate",[200,220,240,260,280,300]],["RangedCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_04_01","힘&건강_04",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["RangedDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_04_02","힘&건강_04",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["RangedEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_04_03","힘&건강_04",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["RangedCriticalResist",[100,120,140,160,180,200]]]],
+    ["힘&건강_04_04","힘&건강_04",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["RangedSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_04_05","힘&건강_04",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["RangedCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_04_01","민첩&순발_04",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["RangedDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_04_02","민첩&순발_04",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["RangedEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_04_03","민첩&순발_04",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["RangedCriticalResist",[100,120,140,160,180,200]]]],
+    ["민첩&순발_04_04","민첩&순발_04",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["RangedSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_04_05","민첩&순발_04",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["RangedCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_04_01","자눙&지혜_04",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["RangedDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_04_02","자눙&지혜_04",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["RangedEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_04_03","자눙&지혜_04",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["RangedCriticalResist",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_04_04","자눙&지혜_04",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["RangedSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_04_05","자눙&지혜_04",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["RangedCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_05_01","힘_05",[["STRAmplifyRate",[200,220,240,260,280,300]],["MagicDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_05_02","힘_05",[["STRAmplifyRate",[200,220,240,260,280,300]],["MagicEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_05_03","힘_05",[["STRAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalResist",[100,120,140,160,180,200]]]],
+    ["힘_05_04","힘_05",[["STRAmplifyRate",[200,220,240,260,280,300]],["MagicSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_05_05","힘_05",[["STRAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_05_01","민첩_05",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MagicDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_05_02","민첩_05",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MagicEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_05_03","민첩_05",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalResist",[100,120,140,160,180,200]]]],
+    ["민첩_05_04","민첩_05",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MagicSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_05_05","민첩_05",[["DEXAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_05_01","지능_05",[["INTAmplifyRate",[200,220,240,260,280,300]],["MagicDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_05_02","지능_05",[["INTAmplifyRate",[200,220,240,260,280,300]],["MagicEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_05_03","지능_05",[["INTAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalResist",[100,120,140,160,180,200]]]],
+    ["지능_05_04","지능_05",[["INTAmplifyRate",[200,220,240,260,280,300]],["MagicSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_05_05","지능_05",[["INTAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_05_01","순발_05",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MagicDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_05_02","순발_05",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MagicEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_05_03","순발_05",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalResist",[100,120,140,160,180,200]]]],
+    ["순발_05_04","순발_05",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MagicSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_05_05","순발_05",[["AGIAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_05_01","건강_05",[["CONAmplifyRate",[200,220,240,260,280,300]],["MagicDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_05_02","건강_05",[["CONAmplifyRate",[200,220,240,260,280,300]],["MagicEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_05_03","건강_05",[["CONAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalResist",[100,120,140,160,180,200]]]],
+    ["건강_05_04","건강_05",[["CONAmplifyRate",[200,220,240,260,280,300]],["MagicSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_05_05","건강_05",[["CONAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_05_01","지혜_05",[["WISAmplifyRate",[200,220,240,260,280,300]],["MagicDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_05_02","지혜_05",[["WISAmplifyRate",[200,220,240,260,280,300]],["MagicEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_05_03","지혜_05",[["WISAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalResist",[100,120,140,160,180,200]]]],
+    ["지혜_05_04","지혜_05",[["WISAmplifyRate",[200,220,240,260,280,300]],["MagicSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_05_05","지혜_05",[["WISAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_05_01","행운_05",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MagicDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_05_02","행운_05",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MagicEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_05_03","행운_05",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalResist",[100,120,140,160,180,200]]]],
+    ["행운_05_04","행운_05",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MagicSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_05_05","행운_05",[["LUKAmplifyRate",[200,220,240,260,280,300]],["MagicCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_05_01","힘&건강_05",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MagicDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_05_02","힘&건강_05",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MagicEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_05_03","힘&건강_05",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MagicCriticalResist",[100,120,140,160,180,200]]]],
+    ["힘&건강_05_04","힘&건강_05",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MagicSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_05_05","힘&건강_05",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["MagicCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_05_01","민첩&순발_05",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MagicDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_05_02","민첩&순발_05",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MagicEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_05_03","민첩&순발_05",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MagicCriticalResist",[100,120,140,160,180,200]]]],
+    ["민첩&순발_05_04","민첩&순발_05",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MagicSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_05_05","민첩&순발_05",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["MagicCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_05_01","자눙&지혜_05",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MagicDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_05_02","자눙&지혜_05",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MagicEvasionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_05_03","자눙&지혜_05",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MagicCriticalResist",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_05_04","자눙&지혜_05",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MagicSkillDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_05_05","자눙&지혜_05",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["MagicCriticalDamageReductionAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_06_01","힘_06",[["STRAmplifyRate",[200,220,240,260,280,300]],["StunResist",[300,340,380,420,460,500]]]],
+    ["힘_06_02","힘_06",[["STRAmplifyRate",[200,220,240,260,280,300]],["ParalysisResist",[300,340,380,420,460,500]]]],
+    ["힘_06_03","힘_06",[["STRAmplifyRate",[200,220,240,260,280,300]],["SilenceResist",[300,340,380,420,460,500]]]],
+    ["힘_06_04","힘_06",[["STRAmplifyRate",[200,220,240,260,280,300]],["HoldResist",[300,340,380,420,460,500]]]],
+    ["힘_06_05","힘_06",[["STRAmplifyRate",[200,220,240,260,280,300]],["ProvokeResist",[300,340,380,420,460,500]]]],
+    ["민첩_06_01","민첩_06",[["DEXAmplifyRate",[200,220,240,260,280,300]],["StunResist",[300,340,380,420,460,500]]]],
+    ["민첩_06_02","민첩_06",[["DEXAmplifyRate",[200,220,240,260,280,300]],["ParalysisResist",[300,340,380,420,460,500]]]],
+    ["민첩_06_03","민첩_06",[["DEXAmplifyRate",[200,220,240,260,280,300]],["SilenceResist",[300,340,380,420,460,500]]]],
+    ["민첩_06_04","민첩_06",[["DEXAmplifyRate",[200,220,240,260,280,300]],["HoldResist",[300,340,380,420,460,500]]]],
+    ["민첩_06_05","민첩_06",[["DEXAmplifyRate",[200,220,240,260,280,300]],["ProvokeResist",[300,340,380,420,460,500]]]],
+    ["지능_06_01","지능_06",[["INTAmplifyRate",[200,220,240,260,280,300]],["StunResist",[300,340,380,420,460,500]]]],
+    ["지능_06_02","지능_06",[["INTAmplifyRate",[200,220,240,260,280,300]],["ParalysisResist",[300,340,380,420,460,500]]]],
+    ["지능_06_03","지능_06",[["INTAmplifyRate",[200,220,240,260,280,300]],["SilenceResist",[300,340,380,420,460,500]]]],
+    ["지능_06_04","지능_06",[["INTAmplifyRate",[200,220,240,260,280,300]],["HoldResist",[300,340,380,420,460,500]]]],
+    ["지능_06_05","지능_06",[["INTAmplifyRate",[200,220,240,260,280,300]],["ProvokeResist",[300,340,380,420,460,500]]]],
+    ["순발_06_01","순발_06",[["AGIAmplifyRate",[200,220,240,260,280,300]],["StunResist",[300,340,380,420,460,500]]]],
+    ["순발_06_02","순발_06",[["AGIAmplifyRate",[200,220,240,260,280,300]],["ParalysisResist",[300,340,380,420,460,500]]]],
+    ["순발_06_03","순발_06",[["AGIAmplifyRate",[200,220,240,260,280,300]],["SilenceResist",[300,340,380,420,460,500]]]],
+    ["순발_06_04","순발_06",[["AGIAmplifyRate",[200,220,240,260,280,300]],["HoldResist",[300,340,380,420,460,500]]]],
+    ["순발_06_05","순발_06",[["AGIAmplifyRate",[200,220,240,260,280,300]],["ProvokeResist",[300,340,380,420,460,500]]]],
+    ["건강_06_01","건강_06",[["CONAmplifyRate",[200,220,240,260,280,300]],["StunResist",[300,340,380,420,460,500]]]],
+    ["건강_06_02","건강_06",[["CONAmplifyRate",[200,220,240,260,280,300]],["ParalysisResist",[300,340,380,420,460,500]]]],
+    ["건강_06_03","건강_06",[["CONAmplifyRate",[200,220,240,260,280,300]],["SilenceResist",[300,340,380,420,460,500]]]],
+    ["건강_06_04","건강_06",[["CONAmplifyRate",[200,220,240,260,280,300]],["HoldResist",[300,340,380,420,460,500]]]],
+    ["건강_06_05","건강_06",[["CONAmplifyRate",[200,220,240,260,280,300]],["ProvokeResist",[300,340,380,420,460,500]]]],
+    ["지혜_06_01","지혜_06",[["WISAmplifyRate",[200,220,240,260,280,300]],["StunResist",[300,340,380,420,460,500]]]],
+    ["지혜_06_02","지혜_06",[["WISAmplifyRate",[200,220,240,260,280,300]],["ParalysisResist",[300,340,380,420,460,500]]]],
+    ["지혜_06_03","지혜_06",[["WISAmplifyRate",[200,220,240,260,280,300]],["SilenceResist",[300,340,380,420,460,500]]]],
+    ["지혜_06_04","지혜_06",[["WISAmplifyRate",[200,220,240,260,280,300]],["HoldResist",[300,340,380,420,460,500]]]],
+    ["지혜_06_05","지혜_06",[["WISAmplifyRate",[200,220,240,260,280,300]],["ProvokeResist",[300,340,380,420,460,500]]]],
+    ["행운_06_01","행운_06",[["LUKAmplifyRate",[200,220,240,260,280,300]],["StunResist",[300,340,380,420,460,500]]]],
+    ["행운_06_02","행운_06",[["LUKAmplifyRate",[200,220,240,260,280,300]],["ParalysisResist",[300,340,380,420,460,500]]]],
+    ["행운_06_03","행운_06",[["LUKAmplifyRate",[200,220,240,260,280,300]],["SilenceResist",[300,340,380,420,460,500]]]],
+    ["행운_06_04","행운_06",[["LUKAmplifyRate",[200,220,240,260,280,300]],["HoldResist",[300,340,380,420,460,500]]]],
+    ["행운_06_05","행운_06",[["LUKAmplifyRate",[200,220,240,260,280,300]],["ProvokeResist",[300,340,380,420,460,500]]]],
+    ["힘&건강_06_01","힘&건강_06",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["StunResist",[300,340,380,420,460,500]]]],
+    ["힘&건강_06_02","힘&건강_06",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["ParalysisResist",[300,340,380,420,460,500]]]],
+    ["힘&건강_06_03","힘&건강_06",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["SilenceResist",[300,340,380,420,460,500]]]],
+    ["힘&건강_06_04","힘&건강_06",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["HoldResist",[300,340,380,420,460,500]]]],
+    ["힘&건강_06_05","힘&건강_06",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["ProvokeResist",[300,340,380,420,460,500]]]],
+    ["민첩&순발_06_01","민첩&순발_06",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["StunResist",[300,340,380,420,460,500]]]],
+    ["민첩&순발_06_02","민첩&순발_06",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["ParalysisResist",[300,340,380,420,460,500]]]],
+    ["민첩&순발_06_03","민첩&순발_06",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["SilenceResist",[300,340,380,420,460,500]]]],
+    ["민첩&순발_06_04","민첩&순발_06",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["HoldResist",[300,340,380,420,460,500]]]],
+    ["민첩&순발_06_05","민첩&순발_06",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["ProvokeResist",[300,340,380,420,460,500]]]],
+    ["자눙&지혜_06_01","자눙&지혜_06",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["StunResist",[300,340,380,420,460,500]]]],
+    ["자눙&지혜_06_02","자눙&지혜_06",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["ParalysisResist",[300,340,380,420,460,500]]]],
+    ["자눙&지혜_06_03","자눙&지혜_06",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["SilenceResist",[300,340,380,420,460,500]]]],
+    ["자눙&지혜_06_04","자눙&지혜_06",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["HoldResist",[300,340,380,420,460,500]]]],
+    ["자눙&지혜_06_05","자눙&지혜_06",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["ProvokeResist",[300,340,380,420,460,500]]]],
+    ["힘_07_01","힘_07",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVECritical",[200,220,240,260,280,300]]]],
+    ["힘_07_02","힘_07",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVENormalExtraCritical",[200,220,240,260,280,300]]]],
+    ["힘_07_03","힘_07",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVESkillExtraCritical",[200,220,240,260,280,300]]]],
+    ["힘_07_04","힘_07",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVEAccuracyAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘_07_05","힘_07",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVETargetDefenseAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩_07_01","민첩_07",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVECritical",[200,220,240,260,280,300]]]],
+    ["민첩_07_02","민첩_07",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVENormalExtraCritical",[200,220,240,260,280,300]]]],
+    ["민첩_07_03","민첩_07",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVESkillExtraCritical",[200,220,240,260,280,300]]]],
+    ["민첩_07_04","민첩_07",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVEAccuracyAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩_07_05","민첩_07",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVETargetDefenseAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지능_07_01","지능_07",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVECritical",[200,220,240,260,280,300]]]],
+    ["지능_07_02","지능_07",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVENormalExtraCritical",[200,220,240,260,280,300]]]],
+    ["지능_07_03","지능_07",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVESkillExtraCritical",[200,220,240,260,280,300]]]],
+    ["지능_07_04","지능_07",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVEAccuracyAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지능_07_05","지능_07",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVETargetDefenseAmplifyRate",[200,220,240,260,280,300]]]],
+    ["순발_07_01","순발_07",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVECritical",[200,220,240,260,280,300]]]],
+    ["순발_07_02","순발_07",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVENormalExtraCritical",[200,220,240,260,280,300]]]],
+    ["순발_07_03","순발_07",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVESkillExtraCritical",[200,220,240,260,280,300]]]],
+    ["순발_07_04","순발_07",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVEAccuracyAmplifyRate",[200,220,240,260,280,300]]]],
+    ["순발_07_05","순발_07",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVETargetDefenseAmplifyRate",[200,220,240,260,280,300]]]],
+    ["건강_07_01","건강_07",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVECritical",[200,220,240,260,280,300]]]],
+    ["건강_07_02","건강_07",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVENormalExtraCritical",[200,220,240,260,280,300]]]],
+    ["건강_07_03","건강_07",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVESkillExtraCritical",[200,220,240,260,280,300]]]],
+    ["건강_07_04","건강_07",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVEAccuracyAmplifyRate",[200,220,240,260,280,300]]]],
+    ["건강_07_05","건강_07",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVETargetDefenseAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지혜_07_01","지혜_07",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVECritical",[200,220,240,260,280,300]]]],
+    ["지혜_07_02","지혜_07",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVENormalExtraCritical",[200,220,240,260,280,300]]]],
+    ["지혜_07_03","지혜_07",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVESkillExtraCritical",[200,220,240,260,280,300]]]],
+    ["지혜_07_04","지혜_07",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVEAccuracyAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지혜_07_05","지혜_07",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVETargetDefenseAmplifyRate",[200,220,240,260,280,300]]]],
+    ["행운_07_01","행운_07",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVECritical",[200,220,240,260,280,300]]]],
+    ["행운_07_02","행운_07",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVENormalExtraCritical",[200,220,240,260,280,300]]]],
+    ["행운_07_03","행운_07",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVESkillExtraCritical",[200,220,240,260,280,300]]]],
+    ["행운_07_04","행운_07",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVEAccuracyAmplifyRate",[200,220,240,260,280,300]]]],
+    ["행운_07_05","행운_07",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVETargetDefenseAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘&건강_07_01","힘&건강_07",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVECritical",[200,220,240,260,280,300]]]],
+    ["힘&건강_07_02","힘&건강_07",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVENormalExtraCritical",[200,220,240,260,280,300]]]],
+    ["힘&건강_07_03","힘&건강_07",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVESkillExtraCritical",[200,220,240,260,280,300]]]],
+    ["힘&건강_07_04","힘&건강_07",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVEAccuracyAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘&건강_07_05","힘&건강_07",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVETargetDefenseAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩&순발_07_01","민첩&순발_07",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVECritical",[200,220,240,260,280,300]]]],
+    ["민첩&순발_07_02","민첩&순발_07",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVENormalExtraCritical",[200,220,240,260,280,300]]]],
+    ["민첩&순발_07_03","민첩&순발_07",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVESkillExtraCritical",[200,220,240,260,280,300]]]],
+    ["민첩&순발_07_04","민첩&순발_07",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVEAccuracyAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩&순발_07_05","민첩&순발_07",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVETargetDefenseAmplifyRate",[200,220,240,260,280,300]]]],
+    ["자눙&지혜_07_01","자눙&지혜_07",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVECritical",[200,220,240,260,280,300]]]],
+    ["자눙&지혜_07_02","자눙&지혜_07",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVENormalExtraCritical",[200,220,240,260,280,300]]]],
+    ["자눙&지혜_07_03","자눙&지혜_07",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVESkillExtraCritical",[200,220,240,260,280,300]]]],
+    ["자눙&지혜_07_04","자눙&지혜_07",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVEAccuracyAmplifyRate",[200,220,240,260,280,300]]]],
+    ["자눙&지혜_07_05","자눙&지혜_07",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVETargetDefenseAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘_08_01","힘_08",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVEAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘_08_02","힘_08",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVENormalAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘_08_03","힘_08",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVESkillAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘_08_04","힘_08",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVESkillDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘_08_05","힘_08",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVECriticalDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩_08_01","민첩_08",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVEAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩_08_02","민첩_08",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVENormalAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩_08_03","민첩_08",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVESkillAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩_08_04","민첩_08",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVESkillDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩_08_05","민첩_08",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVECriticalDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지능_08_01","지능_08",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVEAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지능_08_02","지능_08",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVENormalAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지능_08_03","지능_08",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVESkillAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지능_08_04","지능_08",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVESkillDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지능_08_05","지능_08",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVECriticalDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["순발_08_01","순발_08",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVEAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["순발_08_02","순발_08",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVENormalAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["순발_08_03","순발_08",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVESkillAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["순발_08_04","순발_08",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVESkillDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["순발_08_05","순발_08",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVECriticalDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["건강_08_01","건강_08",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVEAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["건강_08_02","건강_08",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVENormalAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["건강_08_03","건강_08",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVESkillAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["건강_08_04","건강_08",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVESkillDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["건강_08_05","건강_08",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVECriticalDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지혜_08_01","지혜_08",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVEAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지혜_08_02","지혜_08",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVENormalAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지혜_08_03","지혜_08",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVESkillAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지혜_08_04","지혜_08",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVESkillDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["지혜_08_05","지혜_08",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVECriticalDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["행운_08_01","행운_08",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVEAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["행운_08_02","행운_08",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVENormalAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["행운_08_03","행운_08",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVESkillAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["행운_08_04","행운_08",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVESkillDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["행운_08_05","행운_08",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVECriticalDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘&건강_08_01","힘&건강_08",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVEAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘&건강_08_02","힘&건강_08",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVENormalAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘&건강_08_03","힘&건강_08",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVESkillAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘&건강_08_04","힘&건강_08",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVESkillDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘&건강_08_05","힘&건강_08",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVECriticalDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩&순발_08_01","민첩&순발_08",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVEAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩&순발_08_02","민첩&순발_08",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVENormalAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩&순발_08_03","민첩&순발_08",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVESkillAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩&순발_08_04","민첩&순발_08",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVESkillDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["민첩&순발_08_05","민첩&순발_08",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVECriticalDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["자눙&지혜_08_01","자눙&지혜_08",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVEAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["자눙&지혜_08_02","자눙&지혜_08",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVENormalAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["자눙&지혜_08_03","자눙&지혜_08",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVESkillAttackAmplifyRate",[200,220,240,260,280,300]]]],
+    ["자눙&지혜_08_04","자눙&지혜_08",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVESkillDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["자눙&지혜_08_05","자눙&지혜_08",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVECriticalDamageReductionIgnoreAmplifyRate",[200,220,240,260,280,300]]]],
+    ["힘_09_01","힘_09",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVPCritical",[100,120,140,160,180,200]]]],
+    ["힘_09_02","힘_09",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVPNormalExtraCritical",[100,120,140,160,180,200]]]],
+    ["힘_09_03","힘_09",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVPSkillExtraCritical",[100,120,140,160,180,200]]]],
+    ["힘_09_04","힘_09",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVPAccuracyAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_09_05","힘_09",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVPTargetDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_09_01","민첩_09",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVPCritical",[100,120,140,160,180,200]]]],
+    ["민첩_09_02","민첩_09",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVPNormalExtraCritical",[100,120,140,160,180,200]]]],
+    ["민첩_09_03","민첩_09",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVPSkillExtraCritical",[100,120,140,160,180,200]]]],
+    ["민첩_09_04","민첩_09",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVPAccuracyAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_09_05","민첩_09",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVPTargetDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_09_01","지능_09",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVPCritical",[100,120,140,160,180,200]]]],
+    ["지능_09_02","지능_09",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVPNormalExtraCritical",[100,120,140,160,180,200]]]],
+    ["지능_09_03","지능_09",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVPSkillExtraCritical",[100,120,140,160,180,200]]]],
+    ["지능_09_04","지능_09",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVPAccuracyAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_09_05","지능_09",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVPTargetDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_09_01","순발_09",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVPCritical",[100,120,140,160,180,200]]]],
+    ["순발_09_02","순발_09",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVPNormalExtraCritical",[100,120,140,160,180,200]]]],
+    ["순발_09_03","순발_09",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVPSkillExtraCritical",[100,120,140,160,180,200]]]],
+    ["순발_09_04","순발_09",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVPAccuracyAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_09_05","순발_09",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVPTargetDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_09_01","건강_09",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVPCritical",[100,120,140,160,180,200]]]],
+    ["건강_09_02","건강_09",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVPNormalExtraCritical",[100,120,140,160,180,200]]]],
+    ["건강_09_03","건강_09",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVPSkillExtraCritical",[100,120,140,160,180,200]]]],
+    ["건강_09_04","건강_09",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVPAccuracyAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_09_05","건강_09",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVPTargetDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_09_01","지혜_09",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVPCritical",[100,120,140,160,180,200]]]],
+    ["지혜_09_02","지혜_09",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVPNormalExtraCritical",[100,120,140,160,180,200]]]],
+    ["지혜_09_03","지혜_09",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVPSkillExtraCritical",[100,120,140,160,180,200]]]],
+    ["지혜_09_04","지혜_09",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVPAccuracyAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_09_05","지혜_09",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVPTargetDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_09_01","행운_09",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVPCritical",[100,120,140,160,180,200]]]],
+    ["행운_09_02","행운_09",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVPNormalExtraCritical",[100,120,140,160,180,200]]]],
+    ["행운_09_03","행운_09",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVPSkillExtraCritical",[100,120,140,160,180,200]]]],
+    ["행운_09_04","행운_09",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVPAccuracyAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_09_05","행운_09",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVPTargetDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_09_01","힘&건강_09",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVPCritical",[100,120,140,160,180,200]]]],
+    ["힘&건강_09_02","힘&건강_09",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVPNormalExtraCritical",[100,120,140,160,180,200]]]],
+    ["힘&건강_09_03","힘&건강_09",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVPSkillExtraCritical",[100,120,140,160,180,200]]]],
+    ["힘&건강_09_04","힘&건강_09",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVPAccuracyAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_09_05","힘&건강_09",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVPTargetDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_09_01","민첩&순발_09",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVPCritical",[100,120,140,160,180,200]]]],
+    ["민첩&순발_09_02","민첩&순발_09",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVPNormalExtraCritical",[100,120,140,160,180,200]]]],
+    ["민첩&순발_09_03","민첩&순발_09",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVPSkillExtraCritical",[100,120,140,160,180,200]]]],
+    ["민첩&순발_09_04","민첩&순발_09",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVPAccuracyAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_09_05","민첩&순발_09",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVPTargetDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_09_01","자눙&지혜_09",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVPCritical",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_09_02","자눙&지혜_09",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVPNormalExtraCritical",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_09_03","자눙&지혜_09",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVPSkillExtraCritical",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_09_04","자눙&지혜_09",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVPAccuracyAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_09_05","자눙&지혜_09",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVPTargetDefenseAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_10_01","힘_10",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVPAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_10_02","힘_10",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVPNormalAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_10_03","힘_10",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVPSkillAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_10_04","힘_10",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVPSkillDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘_10_05","힘_10",[["STRAmplifyRate",[200,220,240,260,280,300]],["PVPCriticalDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_10_01","민첩_10",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVPAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_10_02","민첩_10",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVPNormalAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_10_03","민첩_10",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVPSkillAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_10_04","민첩_10",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVPSkillDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩_10_05","민첩_10",[["DEXAmplifyRate",[200,220,240,260,280,300]],["PVPCriticalDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_10_01","지능_10",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVPAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_10_02","지능_10",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVPNormalAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_10_03","지능_10",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVPSkillAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_10_04","지능_10",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVPSkillDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지능_10_05","지능_10",[["INTAmplifyRate",[200,220,240,260,280,300]],["PVPCriticalDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_10_01","순발_10",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVPAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_10_02","순발_10",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVPNormalAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_10_03","순발_10",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVPSkillAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_10_04","순발_10",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVPSkillDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["순발_10_05","순발_10",[["AGIAmplifyRate",[200,220,240,260,280,300]],["PVPCriticalDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_10_01","건강_10",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVPAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_10_02","건강_10",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVPNormalAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_10_03","건강_10",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVPSkillAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_10_04","건강_10",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVPSkillDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["건강_10_05","건강_10",[["CONAmplifyRate",[200,220,240,260,280,300]],["PVPCriticalDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_10_01","지혜_10",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVPAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_10_02","지혜_10",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVPNormalAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_10_03","지혜_10",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVPSkillAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_10_04","지혜_10",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVPSkillDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["지혜_10_05","지혜_10",[["WISAmplifyRate",[200,220,240,260,280,300]],["PVPCriticalDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_10_01","행운_10",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVPAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_10_02","행운_10",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVPNormalAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_10_03","행운_10",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVPSkillAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_10_04","행운_10",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVPSkillDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["행운_10_05","행운_10",[["LUKAmplifyRate",[200,220,240,260,280,300]],["PVPCriticalDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_10_01","힘&건강_10",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVPAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_10_02","힘&건강_10",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVPNormalAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_10_03","힘&건강_10",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVPSkillAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_10_04","힘&건강_10",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVPSkillDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["힘&건강_10_05","힘&건강_10",[["STRAmplifyRate",[100,120,140,160,180,200]],["CONAmplifyRate",[100,120,140,160,180,200]],["PVPCriticalDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_10_01","민첩&순발_10",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVPAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_10_02","민첩&순발_10",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVPNormalAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_10_03","민첩&순발_10",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVPSkillAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_10_04","민첩&순발_10",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVPSkillDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["민첩&순발_10_05","민첩&순발_10",[["DEXAmplifyRate",[100,120,140,160,180,200]],["AGIAmplifyRate",[100,120,140,160,180,200]],["PVPCriticalDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_10_01","자눙&지혜_10",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVPAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_10_02","자눙&지혜_10",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVPNormalAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_10_03","자눙&지혜_10",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVPSkillAttackAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_10_04","자눙&지혜_10",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVPSkillDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+    ["자눙&지혜_10_05","자눙&지혜_10",[["INTAmplifyRate",[100,120,140,160,180,200]],["WISAmplifyRate",[100,120,140,160,180,200]],["PVPCriticalDamageReductionIgnoreAmplifyRate",[100,120,140,160,180,200]]]],
+];
+
+// 데이터 → 런타임 객체 변환 — 추가 헬퍼 필드(statKeys, isComp, valuesByGrade=첫 옵션 값) 포함
+const SANCTUARY_LEGACIES = SANCTUARY_LEGACIES_DATA.map(([name, typeKey, opts]) => {
+    const isComp = typeKey.includes('&');
+    return {
+        name,
+        typeKey,
+        isComp,
+        // 신구조: 각 레거시는 1~3개의 독립 옵션을 가짐 (en + 등급별 6값)
+        opts: opts.map(([en, vals]) => ({ en, valuesByGrade: vals.slice() })),
+        // 호환 — 기존 코드에서 statKeys / valuesByGrade를 단일 참조하던 자리에 안전한 fallback 제공
+        statKeys: opts.map(([en]) => en),
+        valuesByGrade: opts[0][1].slice(),
+    };
+});
+
+// 이름 → def 빠른 조회
+const _SANCTUARY_LEGACY_BY_NAME = {};
+SANCTUARY_LEGACIES.forEach(l => _SANCTUARY_LEGACY_BY_NAME[l.name] = l);
+// 타입별 변종 5개 그룹 (도감 표시·5개 한도 체크에 활용)
+const SANCTUARY_TYPE_GROUPS = (function() {
+    const g = {};
+    for (const l of SANCTUARY_LEGACIES) {
+        if (!g[l.typeKey]) g[l.typeKey] = [];
+        g[l.typeKey].push(l.name);
+    }
+    return g;
+})();
+
+// 상태 저장
+//   level: 0~100
+//   acquired: { name: { grade:int(0~5) } }
+//   pending: 추천 진행 중 상태 { kind: 'inherit'|'swap', replacing: name|null, picks: [{name, grade}] }
+const SANCTUARY_STATE_KEY = 'versione_sanctuary_state';
+let SANCTUARY_STATE = { level: 0, acquired: {}, pending: null };
+
+function loadSanctuaryState() {
+    try {
+        const raw = localStorage.getItem(SANCTUARY_STATE_KEY);
+        if (raw) {
+            const d = JSON.parse(raw);
+            const acquired = {};
+            if (d.acquired && typeof d.acquired === 'object') {
+                for (const name of Object.keys(d.acquired)) {
+                    if (!_SANCTUARY_LEGACY_BY_NAME[name]) continue;
+                    const g = Math.max(0, Math.min(5, parseInt(d.acquired[name] && d.acquired[name].grade) || 0));
+                    acquired[name] = { grade: g };
+                }
+            }
+            const lv = Math.max(0, Math.min(SANCTUARY_MAX_LEVEL, parseInt(d.level) || 0));
+            // pending은 복원하지 않음 (모달 재진입 시 초기화)
+            SANCTUARY_STATE = { level: lv, acquired, pending: null };
+            return;
+        }
+    } catch (_) {}
+    SANCTUARY_STATE = { level: 0, acquired: {}, pending: null };
+}
+function saveSanctuaryState() {
+    try {
+        const out = { level: SANCTUARY_STATE.level, acquired: SANCTUARY_STATE.acquired };
+        localStorage.setItem(SANCTUARY_STATE_KEY, JSON.stringify(out));
+    } catch (_) {}
+}
+
+// 등급 추첨 (누적 확률)
+function _rollSanctuaryGrade() {
+    const r = Math.random();
+    let acc = 0;
+    for (let g = 0; g < SANCTUARY_GRADES.length; g++) {
+        acc += SANCTUARY_GRADES[g].prob;
+        if (r <= acc) return g;
+    }
+    return 0;
+}
+// 보유 타입별 카운트 (5개 한도 체크용)
+function _sanctuaryTypeCount(typeKey) {
+    let c = 0;
+    for (const name of Object.keys(SANCTUARY_STATE.acquired)) {
+        const l = _SANCTUARY_LEGACY_BY_NAME[name];
+        if (l && l.typeKey === typeKey) c++;
+    }
+    return c;
+}
+// 추천 후보 풀 — 명칭이 미보유 + (해당 타입 보유<5)인 레거시
+// excludeNames: 같은 추천 셋 내 중복 방지 (이미 슬롯에 든 이름)
+// excludeOnSwap: 교체 시 교체 대상 자기 자신을 제외
+function _sanctuaryEligiblePool(excludeNames, swapReplacingName) {
+    const out = [];
+    const ex = new Set(excludeNames || []);
+    if (swapReplacingName) ex.add(swapReplacingName);
+    for (const l of SANCTUARY_LEGACIES) {
+        if (ex.has(l.name)) continue;
+        if (SANCTUARY_STATE.acquired[l.name]) continue;
+        if (_sanctuaryTypeCount(l.typeKey) >= 5) continue;
+        out.push(l);
+    }
+    return out;
+}
+// 3개 추천 생성 — 슬롯마다 등급 추첨 + 풀에서 랜덤 선택
+//   kind: 'inherit' | 'swap'
+//   swapReplacingName: 교체 시 자기 자신 제외
+function _sanctuaryRollRecommendations(kind, swapReplacingName) {
+    const picks = [];
+    const used = [];
+    for (let i = 0; i < 3; i++) {
+        const grade = _rollSanctuaryGrade();
+        const pool  = _sanctuaryEligiblePool(used, swapReplacingName);
+        if (pool.length === 0) return null; // 풀 고갈
+        const idx = Math.floor(Math.random() * pool.length);
+        const pick = pool[idx];
+        used.push(pick.name);
+        picks.push({ name: pick.name, grade });
+    }
+    return picks;
+}
+
+// 계승 시작 — 비용 차감 후 추천 3개 생성. UI에서 _showSanctuaryPickPopup 호출
+function tryStartInheritance() {
+    if (SANCTUARY_STATE.level >= SANCTUARY_MAX_LEVEL) return { error: 'maxlv' };
+    const cost = _sanctuaryInheritCost(SANCTUARY_STATE.level);
+    const have = (typeof getScrollCount === 'function') ? getScrollCount('legacy_stone') : 0;
+    if (have < cost) return { error: 'nostone', need: cost, have };
+    const picks = _sanctuaryRollRecommendations('inherit', null);
+    if (!picks) return { error: 'poolempty' };
+    if (typeof consumeScrolls === 'function') consumeScrolls('legacy_stone', cost);
+    SANCTUARY_STATE.pending = { kind: 'inherit', replacing: null, picks, cost };
+    saveSanctuaryState();
+    return { success: true, picks, cost };
+}
+// 교체 시작 — 250 계승석 차감 후 추천 3개 생성 (자기 자신 제외)
+function tryStartSwap(replacingName) {
+    if (SANCTUARY_STATE.level < 1) return { error: 'lvtoolow' };
+    if (!SANCTUARY_STATE.acquired[replacingName]) return { error: 'notowned' };
+    const cost = SANCTUARY_SWAP_COST;
+    const have = (typeof getScrollCount === 'function') ? getScrollCount('legacy_stone') : 0;
+    if (have < cost) return { error: 'nostone', need: cost, have };
+    const picks = _sanctuaryRollRecommendations('swap', replacingName);
+    if (!picks) return { error: 'poolempty' };
+    if (typeof consumeScrolls === 'function') consumeScrolls('legacy_stone', cost);
+    SANCTUARY_STATE.pending = { kind: 'swap', replacing: replacingName, picks, cost };
+    saveSanctuaryState();
+    return { success: true, picks, cost };
+}
+// 추천 중 하나 선택 → 획득(계승) 또는 교체(스왑)
+function trySanctuaryPick(pickIdx) {
+    const pending = SANCTUARY_STATE.pending;
+    if (!pending || !pending.picks || pickIdx < 0 || pickIdx >= pending.picks.length) return { error: 'badpick' };
+    const pick = pending.picks[pickIdx];
+    if (!pick || !pick.name) return { error: 'badpick' };
+    if (pending.kind === 'inherit') {
+        // 계승 — 신규 명칭에 추가 + 레벨 +1
+        SANCTUARY_STATE.acquired[pick.name] = { grade: pick.grade };
+        SANCTUARY_STATE.level = Math.min(SANCTUARY_MAX_LEVEL, SANCTUARY_STATE.level + 1);
+    } else if (pending.kind === 'swap') {
+        // 교체 — 기존 명칭 제거 + 신규 추가 (레벨은 유지)
+        if (pending.replacing) delete SANCTUARY_STATE.acquired[pending.replacing];
+        SANCTUARY_STATE.acquired[pick.name] = { grade: pick.grade };
+    }
+    SANCTUARY_STATE.pending = null;
+    saveSanctuaryState();
+    if (typeof applyLvStatToCharacter === 'function') applyLvStatToCharacter();
+    if (typeof _publishCharBonuses === 'function') _publishCharBonuses();
+    if (typeof saveGameProgress === 'function') saveGameProgress();
+    return { success: true, kind: pending.kind, picked: pick };
+}
+// 추천 취소 — 비용 환불 없이 그냥 닫음 (이미 차감됨, 게임 디자인상 환불 없음)
+function cancelSanctuaryPick() {
+    SANCTUARY_STATE.pending = null;
+    saveSanctuaryState();
+}
+
+// 능력치 합산 — 보유 레거시의 모든 옵션 누적 (단독 2개, 복합 3개)
+function getSanctuaryBonuses() {
+    const out = {};
+    for (const name of Object.keys(SANCTUARY_STATE.acquired)) {
+        const a = SANCTUARY_STATE.acquired[name]; if (!a) continue;
+        const def = _SANCTUARY_LEGACY_BY_NAME[name]; if (!def) continue;
+        const opts = def.opts || [];
+        for (const o of opts) {
+            const v = (o.valuesByGrade && o.valuesByGrade[a.grade]) || 0;
+            if (v <= 0) continue;
+            out[o.en] = (out[o.en] || 0) + v;
+        }
+    }
+    return out;
+}
+
+function getSanctuaryStats() {
+    const totalLegacies = SANCTUARY_LEGACIES.length;
+    const ownedCount = Object.keys(SANCTUARY_STATE.acquired).length;
+    return { totalLegacies, ownedCount, level: SANCTUARY_STATE.level };
+}
+
+// ════════════════════════════════════════════════════════════════════════════
 // ⛩️ 제단(Altar) 시스템 — 3개 하위: 자원 채취 / 농장 / 제단 제련
 // ────────────────────────────────────────────────────────────────────────────
 // [자원 채취]
@@ -18535,6 +19731,11 @@ function calcCharStats(lv) {
     const sealstoneBonuses = (typeof getSealstoneBonuses === 'function') ? getSealstoneBonuses() : {};
     for (const k in sealstoneBonuses) {
         lvBonuses[k] = (lvBonuses[k] || 0) + sealstoneBonuses[k];
+    }
+    // 🏛 영웅의 성소 — 보유 레거시의 능력치 합산
+    const sanctuaryBonuses = (typeof getSanctuaryBonuses === 'function') ? getSanctuaryBonuses() : {};
+    for (const k in sanctuaryBonuses) {
+        lvBonuses[k] = (lvBonuses[k] || 0) + sanctuaryBonuses[k];
     }
     // 클래스 고유 공격속도·이동속도 보너스를 레벨 보너스에 합산
     const spd = loadClassSpeed(currentClass);
@@ -21268,6 +22469,344 @@ function onSealstoneBreakthrough(ti, si) {
     }
     renderSealstoneModal();
 }
+
+// ════════════════════════════════════════════════════════════════════════════
+// 🏛 영웅의 성소 모달 — 메인 탭(계승의 전당) + 도감 탭
+// ════════════════════════════════════════════════════════════════════════════
+let _sanctuaryModalPaused = false;
+let _sanctuaryTab = 'main'; // 'main' | 'codex'
+let _sanctuaryCodexTypeFilter = 'all'; // 'all' | typeKey
+let _sanctuaryCodexPrefixFilter = 'all'; // 'all' | prefix (힘, 민첩, ...)
+
+function openSanctuaryModal() {
+    const menuPanel = document.getElementById('ab-menu-panel');
+    if (menuPanel && menuPanel.classList.contains('open')) {
+        menuPanel.classList.remove('open');
+        const mBtn = document.getElementById('ab-menu');
+        if (mBtn) mBtn.classList.remove('active');
+    }
+    document.getElementById('sanctuary-overlay').classList.add('open');
+    if (gameState === 'playing') { _sanctuaryModalPaused = true; gameState = 'paused'; }
+    else { _sanctuaryModalPaused = false; }
+    sanctuarySwitchTab(_sanctuaryTab || 'main');
+}
+function closeSanctuaryModal() {
+    document.getElementById('sanctuary-overlay').classList.remove('open');
+    if (_sanctuaryModalPaused) { gameState = 'playing'; lastTime = performance.now(); }
+    _sanctuaryModalPaused = false;
+}
+function sanctuarySwitchTab(tab) {
+    _sanctuaryTab = tab;
+    ['main', 'codex'].forEach(t => {
+        const b = document.getElementById('sanctuary-tab-' + t);
+        if (b) b.classList.toggle('active', t === tab);
+    });
+    renderSanctuaryModal();
+}
+function renderSanctuaryModal() {
+    if (_sanctuaryTab === 'codex') return _renderSanctuaryCodexTab();
+    return _renderSanctuaryMainTab();
+}
+
+// 라벨 헬퍼 — en 키 1개 → 한글 라벨
+function _sanctuaryStatLabel(en) {
+    const sk = (typeof SEALSTONE_OPTION_LABELS !== 'undefined' && SEALSTONE_OPTION_LABELS[en]) ? SEALSTONE_OPTION_LABELS[en] : null;
+    if (sk) return sk;
+    if (typeof STAT_LIST !== 'undefined') {
+        const r = STAT_LIST.find(x => x.en === en);
+        if (r && r.kr) return r.kr;
+    }
+    return en;
+}
+// 구버전 호환 — statKeys 배열 → 라벨 배열
+function _sanctuaryStatLabels(legacy) {
+    return (legacy.statKeys || []).map(_sanctuaryStatLabel);
+}
+// 값 포맷 — en 키에 따라 % 또는 정수 표시
+//   - RAW_PCT_STAT_KEYS / COMPUTED_PCT_STAT_KEYS 에 포함되면 (raw/100).toFixed(2)+'%'
+//   - HealthRegenFixedPoint / ManaRegenFixedPoint 등 flat 스탯은 정수 표시
+function _sanctuaryFmtValByEn(en, raw) {
+    const isPct = (typeof RAW_PCT_STAT_KEYS !== 'undefined' && RAW_PCT_STAT_KEYS.has(en))
+               || (typeof COMPUTED_PCT_STAT_KEYS !== 'undefined' && COMPUTED_PCT_STAT_KEYS.has(en));
+    if (isPct) return '+' + (raw / 100).toFixed(2) + '%';
+    return '+' + Math.floor(raw).toLocaleString();
+}
+// 구버전 호환 (% 가정)
+function _sanctuaryFmtVal(raw) {
+    return '+' + (raw / 100).toFixed(2) + '%';
+}
+// 옵션 행 HTML — 단일 옵션의 라벨 + 등급에 따른 값
+function _sanctuaryOptRow(opt, grade, rowClass) {
+    const lbl = _sanctuaryStatLabel(opt.en);
+    const v = (opt.valuesByGrade && opt.valuesByGrade[grade]) || 0;
+    return `<div class="${rowClass}"><span>${lbl}</span><span style="color:#58d364;">${_sanctuaryFmtValByEn(opt.en, v)}</span></div>`;
+}
+
+// 메인 탭 — 헤더 + 보유 레거시 카드 그리드
+function _renderSanctuaryMainTab() {
+    const body = document.getElementById('sanctuary-modal-body');
+    if (!body) return;
+    const lv = SANCTUARY_STATE.level;
+    const stats = getSanctuaryStats();
+    const inheritCost = _sanctuaryInheritCost(lv);
+    const isMaxLv = lv >= SANCTUARY_MAX_LEVEL;
+    const stones = (typeof getScrollCount === 'function') ? getScrollCount('legacy_stone') : 0;
+    const canInherit = !isMaxLv && stones >= (inheritCost > 0 ? inheritCost : Infinity);
+    const swapCost = SANCTUARY_SWAP_COST;
+    const canSwap = lv >= 1;
+
+    // 보유 레거시 카운트 (타입별 카운트)
+    const typeCountsArr = [];
+    for (const tk of Object.keys(SANCTUARY_TYPE_GROUPS)) {
+        const cnt = _sanctuaryTypeCount(tk);
+        if (cnt > 0) typeCountsArr.push({ typeKey: tk, count: cnt });
+    }
+    typeCountsArr.sort((a, b) => b.count - a.count);
+
+    const headerHtml = `<div class="mm-header-card" style="background:linear-gradient(135deg,rgba(167,139,250,0.10),rgba(255,204,68,0.05));border-color:rgba(167,139,250,0.45);">
+        <div class="mm-header-title" style="color:#a78bfa;">🏛 영웅의 성소 — 계승의 전당</div>
+        <div class="mm-header-desc">
+            계승을 통해 레거시를 획득하여 캐릭터 능력치를 강화합니다. 6등급 추첨 후 3개 추천 중 1개 선택.
+            <br>동일 명칭 레거시는 중복 획득 불가, 동일 능력치 타입은 최대 <b>5개</b>까지 보유 가능.
+        </div>
+        <div class="mm-active-row">
+            <span class="lbl">계승 레벨</span><span class="val" style="color:#ffd86b;">${lv} / ${SANCTUARY_MAX_LEVEL}</span>
+            <span class="lbl" style="margin-left:14px;">보유 레거시</span><span class="val">${stats.ownedCount.toLocaleString()} / ${stats.totalLegacies.toLocaleString()}</span>
+            <span class="lbl" style="margin-left:14px;">🏛 계승석</span><span class="val" style="color:#a78bfa;">${stones.toLocaleString()}개</span>
+        </div>
+        <div class="sanctuary-action-row">
+            <button class="sanctuary-btn inherit" onclick="onSanctuaryInherit()" ${!canInherit ? 'disabled' : ''} title="${isMaxLv ? 'MAX 레벨 — 더 이상 계승 불가' : (stones < inheritCost ? `계승석 부족 (필요 ${inheritCost}개)` : '3개 레거시 추천 후 1개 선택')}">
+                ${isMaxLv ? '✅ MAX 레벨' : `🏛 계승 시도 (${inheritCost.toLocaleString()} 계승석)`}
+            </button>
+            <span class="sanctuary-info-text">교체 비용 항상 <b style="color:#a78bfa;">${swapCost.toLocaleString()}</b>개 (계승 레벨 1+ 필요)</span>
+        </div>
+    </div>`;
+
+    // 보유 레거시 카드 (등급 내림차순, 타입별 묶음)
+    const owned = Object.keys(SANCTUARY_STATE.acquired).map(name => {
+        const def = _SANCTUARY_LEGACY_BY_NAME[name]; if (!def) return null;
+        const a = SANCTUARY_STATE.acquired[name];
+        return { name, def, grade: a.grade };
+    }).filter(Boolean);
+    owned.sort((a, b) => (b.grade - a.grade) || a.name.localeCompare(b.name));
+
+    let cardsHtml = '';
+    if (owned.length === 0) {
+        cardsHtml = `<div class="sanctuary-empty">아직 획득한 레거시가 없습니다.<br><span style="color:#6e7681;font-size:13px;">계승 시도 버튼으로 첫 레거시를 획득하세요.</span></div>`;
+    } else {
+        cardsHtml = owned.map(({ name, def, grade }) => {
+            const g = SANCTUARY_GRADES[grade];
+            const opts = def.opts || [];
+            const statRows = opts.map(o => _sanctuaryOptRow(o, grade, 'sct-card-stat')).join('');
+            const typeCnt = _sanctuaryTypeCount(def.typeKey);
+            const swapHave = (typeof getScrollCount === 'function') ? getScrollCount('legacy_stone') : 0;
+            const swapDisabled = !canSwap || swapHave < swapCost;
+            return `<div class="sct-card" style="border-left:3px solid ${g.color};">
+                <div class="sct-card-head">
+                    <span class="sct-card-name" title="${name}">${name}</span>
+                    <span class="sct-card-grade" style="background:${g.color}30;color:${g.color};border:1px solid ${g.color};">${g.label}</span>
+                </div>
+                <div class="sct-card-type">타입: <b style="color:#c4b5fd;">${def.typeKey}</b> · ${def.isComp ? '복합' : '단독'} · 타입 보유 ${typeCnt}/5</div>
+                <div class="sct-card-stats">${statRows}</div>
+                <button class="sct-swap-btn" onclick="onSanctuarySwap('${name.replace(/'/g, "\\'")}')" ${swapDisabled ? 'disabled' : ''} title="${!canSwap ? '계승 레벨 1 이상 필요' : (swapHave < swapCost ? `계승석 부족 (필요 ${swapCost})` : `${swapCost} 계승석으로 교체`)}">🔄 교체 (${swapCost})</button>
+            </div>`;
+        }).join('');
+    }
+
+    // 타입별 보유 카운트 패널
+    let typesPanel = '';
+    if (typeCountsArr.length > 0) {
+        const chips = typeCountsArr.map(({ typeKey, count }) => {
+            const color = count >= 5 ? '#ff5060' : (count >= 3 ? '#ffd86b' : '#56c774');
+            return `<span class="sct-type-chip" style="border-color:${color};color:${color};">${typeKey} ${count}/5${count >= 5 ? ' 🔒' : ''}</span>`;
+        }).join('');
+        typesPanel = `<div class="sct-type-panel">
+            <div class="sct-type-panel-title">📋 보유 타입 현황 (5개 도달 시 추천에서 제외)</div>
+            <div class="sct-type-chips">${chips}</div>
+        </div>`;
+    }
+
+    body.innerHTML = `<div class="mm-fixed-header">${headerHtml}</div>` +
+        `<div class="mm-scroll-area">
+            ${typesPanel}
+            <div class="sct-grid">${cardsHtml}</div>
+        </div>`;
+}
+
+// 도감 탭 — 500 레거시 전체 표시 (옵션 prefix 필터 + 등급별 수치 매트릭스)
+function _renderSanctuaryCodexTab() {
+    const body = document.getElementById('sanctuary-modal-body');
+    if (!body) return;
+    const allPrefixes = [
+        ...Object.keys(SANCTUARY_STAT_SOLO),
+        ...Object.keys(SANCTUARY_STAT_COMP),
+    ];
+
+    const headerHtml = `<div class="mm-header-card" style="background:linear-gradient(135deg,rgba(167,139,250,0.10),rgba(255,204,68,0.05));border-color:rgba(167,139,250,0.45);">
+        <div class="mm-header-title" style="color:#a78bfa;">📔 레거시 도감 — 전체 ${SANCTUARY_LEGACIES.length.toLocaleString()}장</div>
+        <div class="mm-header-desc">
+            계승으로 획득 가능한 모든 레거시 목록. 능력치 타입(prefix)으로 필터링 가능. 각 타입에는 <b>10개 인덱스 × 5개 변종</b> = 50장씩 존재.
+        </div>
+    </div>`;
+
+    // 필터 탭 (prefix)
+    const tabs = ['<button class="mm-grade-filter-tab' + (_sanctuaryCodexPrefixFilter === 'all' ? ' active' : '') + '" onclick="sanctuaryCodexSetPrefix(\'all\')">전체 <span class="mgf-cnt">' + SANCTUARY_LEGACIES.length + '</span></button>'];
+    for (const p of allPrefixes) {
+        const cnt = SANCTUARY_LEGACIES.filter(l => l.name.startsWith(p + '_')).length;
+        const active = _sanctuaryCodexPrefixFilter === p;
+        const isComp = !!SANCTUARY_STAT_COMP[p];
+        tabs.push(`<button class="mm-grade-filter-tab${active ? ' active' : ''}" style="--grade-color:${isComp ? '#ff80c0' : '#56c774'};" onclick="sanctuaryCodexSetPrefix('${p}')">${p} <span class="mgf-cnt">${cnt}</span></button>`);
+    }
+    const filterHtml = `<div class="mm-grade-filter-bar">${tabs.join('')}</div>`;
+
+    // 필터 적용
+    const filtered = (_sanctuaryCodexPrefixFilter === 'all')
+        ? SANCTUARY_LEGACIES
+        : SANCTUARY_LEGACIES.filter(l => l.name.startsWith(_sanctuaryCodexPrefixFilter + '_'));
+
+    // 타입별 그룹 (typeKey 단위)
+    const groups = {};
+    for (const l of filtered) {
+        if (!groups[l.typeKey]) groups[l.typeKey] = [];
+        groups[l.typeKey].push(l);
+    }
+    const groupKeys = Object.keys(groups).sort();
+
+    const sectionsHtml = groupKeys.map(tk => {
+        const list = groups[tk];
+        const def = list[0];
+        const ownedCnt = list.filter(l => SANCTUARY_STATE.acquired[l.name]).length;
+        const typeColor = def.isComp ? '#ff80c0' : '#56c774';
+        // 등급 헤더 (6개)
+        const gradeHeaders = SANCTUARY_GRADES.map(g => `<th style="color:${g.color};font-weight:700;">${g.label}</th>`).join('');
+        // 각 레거시 = (opts.length) 개의 sub-row (각 옵션이 한 행)
+        const rows = list.map(l => {
+            const a = SANCTUARY_STATE.acquired[l.name];
+            const ownedIcon = a ? `<span style="color:${SANCTUARY_GRADES[a.grade].color};font-weight:700;">★${SANCTUARY_GRADES[a.grade].label}</span>` : '<span style="color:#6e7681;">미보유</span>';
+            const opts = l.opts || [];
+            return opts.map((o, oi) => {
+                const cells = SANCTUARY_GRADES.map((g, gi) => {
+                    const v = (o.valuesByGrade && o.valuesByGrade[gi]) || 0;
+                    const highlight = a && a.grade === gi ? ` style="background:${g.color}22;color:${g.color};font-weight:700;"` : '';
+                    return `<td${highlight}>${_sanctuaryFmtValByEn(o.en, v)}</td>`;
+                }).join('');
+                // 첫 번째 옵션 행만 명칭/획득 상태를 표시 (rowspan)
+                if (oi === 0) {
+                    return `<tr><td rowspan="${opts.length}" style="text-align:left;font-weight:600;vertical-align:top;">${l.name}</td><td rowspan="${opts.length}" style="text-align:center;vertical-align:top;">${ownedIcon}</td><td style="text-align:left;color:#c4b5fd;">${_sanctuaryStatLabel(o.en)}</td>${cells}</tr>`;
+                }
+                return `<tr><td style="text-align:left;color:#c4b5fd;">${_sanctuaryStatLabel(o.en)}</td>${cells}</tr>`;
+            }).join('');
+        }).join('');
+        return `<div class="sct-codex-section">
+            <div class="sct-codex-section-title" style="color:${typeColor};">${tk} · ${def.isComp ? '복합' : '단독'} · 옵션 ${(def.opts||[]).length}개 (메인 ${def.isComp ? 2 : 1} + 부가 1) · 보유 ${ownedCnt}/${list.length}</div>
+            <table class="mc-total-table sct-codex-table">
+                <thead><tr><th style="text-align:left;">명칭</th><th style="text-align:center;width:70px;">획득 등급</th><th style="text-align:left;width:160px;">능력치</th>${gradeHeaders}</tr></thead>
+                <tbody>${rows}</tbody>
+            </table>
+        </div>`;
+    }).join('');
+
+    body.innerHTML = `<div class="mm-fixed-header">${headerHtml}${filterHtml}</div>` +
+        `<div class="mm-scroll-area">${sectionsHtml || '<div class="sanctuary-empty">해당 필터에 표시할 레거시가 없습니다.</div>'}</div>`;
+}
+function sanctuaryCodexSetPrefix(p) {
+    _sanctuaryCodexPrefixFilter = p;
+    _renderSanctuaryCodexTab();
+}
+
+// 추천 팝업 — 계승/교체 공통
+function _showSanctuaryPickPopup() {
+    const pending = SANCTUARY_STATE.pending;
+    if (!pending) return;
+    const titleEl = document.getElementById('sanctuary-pick-title');
+    const body = document.getElementById('sanctuary-pick-body');
+    const overlay = document.getElementById('sanctuary-pick-overlay');
+    if (!body || !overlay) return;
+    const titleText = pending.kind === 'inherit' ? '🏛 계승 — 레거시 1개 선택' : `🔄 교체 — ${pending.replacing} → 신규 레거시 1개 선택`;
+    if (titleEl) titleEl.textContent = titleText;
+
+    const cards = pending.picks.map((p, i) => {
+        const def = _SANCTUARY_LEGACY_BY_NAME[p.name]; if (!def) return '';
+        const g = SANCTUARY_GRADES[p.grade];
+        const opts = def.opts || [];
+        const statRows = opts.map(o => _sanctuaryOptRow(o, p.grade, 'sct-pick-stat-row')).join('');
+        return `<div class="sct-pick-card" style="border-color:${g.color}aa;">
+            <div class="sct-pick-grade" style="background:${g.color}30;border:1px solid ${g.color};color:${g.color};">${g.label}</div>
+            <div class="sct-pick-name">${p.name}</div>
+            <div class="sct-pick-type">타입 <b style="color:#c4b5fd;">${def.typeKey}</b> · ${def.isComp ? '복합' : '단독'}</div>
+            <div class="sct-pick-stats">${statRows}</div>
+            <button class="sct-pick-btn" onclick="onSanctuaryPickConfirm(${i})">✓ 선택</button>
+        </div>`;
+    }).join('');
+
+    body.innerHTML = `
+        <div class="sct-pick-info">3개 중 1개를 선택하세요. ${pending.kind === 'inherit' ? '계승 후 계승 레벨이 +1 됩니다.' : '교체 후 기존 레거시는 사라집니다.'}<br>
+        <span style="color:#8b949e;">※ 비용 ${pending.cost.toLocaleString()} 계승석은 이미 차감되었습니다. 취소 시 환불 없음.</span></div>
+        <div class="sct-pick-grid">${cards}</div>
+        <div class="sct-pick-btn-row">
+            <button class="sac-btn cancel" onclick="onSanctuaryPickCancel()">취소 (환불 없음)</button>
+        </div>
+    `;
+    overlay.classList.add('open');
+}
+function onSanctuaryInherit() {
+    const r = tryStartInheritance();
+    if (r.error === 'nostone') {
+        if (typeof addLog === 'function') addLog(`⚠ 계승석 부족 (필요 ${r.need.toLocaleString()}개, 보유 ${r.have.toLocaleString()}개)`, 'info');
+        return;
+    }
+    if (r.error === 'maxlv') {
+        if (typeof addLog === 'function') addLog(`✅ MAX 레벨 도달 — 더 이상 계승 불가`, 'info');
+        return;
+    }
+    if (r.error === 'poolempty') {
+        if (typeof addLog === 'function') addLog(`⚠ 추천 풀 고갈 — 모든 레거시를 획득했거나 타입 한도 도달`, 'info');
+        return;
+    }
+    if (r.success) {
+        _showSanctuaryPickPopup();
+    }
+}
+function onSanctuarySwap(replacingName) {
+    const r = tryStartSwap(replacingName);
+    if (r.error === 'nostone') {
+        if (typeof addLog === 'function') addLog(`⚠ 계승석 부족 (필요 ${r.need.toLocaleString()}개)`, 'info');
+        return;
+    }
+    if (r.error === 'lvtoolow') {
+        if (typeof addLog === 'function') addLog(`⚠ 계승 레벨 1 이상부터 교체 가능`, 'info');
+        return;
+    }
+    if (r.error === 'poolempty') {
+        if (typeof addLog === 'function') addLog(`⚠ 추천 풀 고갈 — 모든 레거시를 획득했거나 타입 한도 도달`, 'info');
+        return;
+    }
+    if (r.success) {
+        _showSanctuaryPickPopup();
+    }
+}
+function onSanctuaryPickConfirm(idx) {
+    const r = trySanctuaryPick(idx);
+    const overlay = document.getElementById('sanctuary-pick-overlay');
+    if (overlay) overlay.classList.remove('open');
+    if (r.success) {
+        if (typeof addLog === 'function') {
+            const picked = r.picked;
+            const grade = SANCTUARY_GRADES[picked.grade];
+            const msg = r.kind === 'inherit'
+                ? `🏛 계승 완료 — [${grade.label}] ${picked.name} 획득 (레벨 ${SANCTUARY_STATE.level})`
+                : `🔄 교체 완료 — [${grade.label}] ${picked.name}으로 교체`;
+            addLog(msg, 'reward');
+        }
+    }
+    renderSanctuaryModal();
+}
+function onSanctuaryPickCancel() {
+    cancelSanctuaryPick();
+    const overlay = document.getElementById('sanctuary-pick-overlay');
+    if (overlay) overlay.classList.remove('open');
+    renderSanctuaryModal();
+}
 function onSealstoneAutoStop() {
     _autoResonanceStop('manual');
 }
@@ -23801,6 +25340,8 @@ function initGame() {
     if (typeof renderOracleActiveBadge === 'function') renderOracleActiveBadge();
     // 💎 봉인석 상태 로드 (공명·승화 + 빛의 파동석)
     loadSealstoneState();
+    // 🏛 영웅의 성소 상태 로드 (계승 레벨 + 보유 레거시)
+    loadSanctuaryState();
     updateClassBadge();
     buildMonsterBaseStats(); // 몬스터 레벨 1 기준 능력치 (knight Default 기반) 재계산
 
@@ -29642,7 +31183,7 @@ const GAME_PROGRESS_KEY     = 'versione_game_progress';
 //       - level > 20 → 20으로 클램프, exp는 새 공식의 maxNeeds로 클램프
 //       - options 배열은 모두 폐기(이전 윈도우 가정의 등급·값이 새 모델과 다름) — 재제련 필요
 //     기존 5단계(Lv 21~30) 제련 진행은 동등한 깊이의 Lv 20으로 통합됨.
-const GAME_PROGRESS_VERSION = 15;
+const GAME_PROGRESS_VERSION = 16;
 
 function saveGameProgress() {
     if (gameState === 'title') return; // 타이틀에서는 저장 안 함
@@ -29727,6 +31268,8 @@ function saveGameProgress() {
             oracleState: JSON.parse(JSON.stringify(ORACLE_STATE)),
             // 💎 v15 — 봉인석 상태 (빛의 파동석 + 60개 봉인석 옵션/잠금/승화)
             sealstoneState: JSON.parse(JSON.stringify(SEALSTONE_STATE)),
+            // 🏛 v16 — 영웅의 성소 상태 (계승 레벨 + 보유 레거시)
+            sanctuaryState: { level: SANCTUARY_STATE.level, acquired: { ...SANCTUARY_STATE.acquired } },
             // v3 — 클리어 기록 버퍼 + 누적 게임 시간 (새로고침 후에도 R1~R4 기록 보존)
             gameTimeMs: _gameTimeMs,
             stageRecBuf: _stageRecBuf ? {
@@ -29763,7 +31306,7 @@ function saveGameProgress() {
 // 저장 데이터 유효성 검사 — v1~v7 모두 허용 (구버전은 applyGameProgress에서 호환 처리)
 function _isGameProgressValid(snap) {
     if (!snap || typeof snap !== 'object') return false;
-    if (snap.version !== 1 && snap.version !== 2 && snap.version !== 3 && snap.version !== 4 && snap.version !== 5 && snap.version !== 6 && snap.version !== 7 && snap.version !== 8 && snap.version !== 9 && snap.version !== 10 && snap.version !== 11 && snap.version !== 12 && snap.version !== 13 && snap.version !== 14 && snap.version !== 15) return false;
+    if (snap.version !== 1 && snap.version !== 2 && snap.version !== 3 && snap.version !== 4 && snap.version !== 5 && snap.version !== 6 && snap.version !== 7 && snap.version !== 8 && snap.version !== 9 && snap.version !== 10 && snap.version !== 11 && snap.version !== 12 && snap.version !== 13 && snap.version !== 14 && snap.version !== 15 && snap.version !== 16) return false;
     if (!snap.character || typeof snap.character.level !== 'number') return false;
     if (!snap.stage    || typeof snap.stage.currentStage !== 'number') return false;
     if (!Array.isArray(snap.inventory)) return false;
@@ -30250,6 +31793,11 @@ function confirmResetGameProgress() {
         localStorage.removeItem(SEALSTONE_STATE_KEY);
         SEALSTONE_STATE = { lightFragments: 0, stones: {} };
     } catch (e) {}
+    // 🏛 영웅의 성소 상태 초기화 (계승 레벨 + 보유 레거시)
+    try {
+        localStorage.removeItem(SANCTUARY_STATE_KEY);
+        SANCTUARY_STATE = { level: 0, acquired: {}, pending: null };
+    } catch (e) {}
 
     // ── 2. 분해 모드가 켜져 있으면 종료 (인벤토리 UI 일관성) ────────────
     try { if (_invDisMode) exitInvDisMode(); } catch (e) {}
@@ -30547,6 +32095,13 @@ function applyGameProgress(snap) {
         try {
             localStorage.setItem(SEALSTONE_STATE_KEY, JSON.stringify(snap.sealstoneState));
             loadSealstoneState();
+        } catch (_) {}
+    }
+    // 🏛 v16 — 영웅의 성소 상태 복원
+    if (snap.sanctuaryState && typeof snap.sanctuaryState === 'object') {
+        try {
+            localStorage.setItem(SANCTUARY_STATE_KEY, JSON.stringify(snap.sanctuaryState));
+            loadSanctuaryState();
         } catch (_) {}
     }
     return true;
@@ -31029,6 +32584,10 @@ const _BONUS_SOURCES = [
     { key: 'sealstone', fn: () => {
         return (typeof getSealstoneBonuses === 'function') ? (getSealstoneBonuses() || {}) : {};
     }},
+    // 🏛 영웅의 성소 — 보유 레거시 능력치
+    { key: 'sanctuary', fn: () => {
+        return (typeof getSanctuaryBonuses === 'function') ? (getSanctuaryBonuses() || {}) : {};
+    }},
 ];
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -31229,28 +32788,83 @@ function _updateItemDescription(item) {
     }
     item.description = txt;
 }
-// 1개 감정
+// 1개 감정 — 성공 시 결과 snapshot 반환 / 실패 시 null
 function appraiseItem(invIdx) {
     const item = inventory[invIdx];
-    if (!isItemAppraisable(item)) return false;
+    if (!isItemAppraisable(item)) return null;
     item.subOptions = _rollItemSubOptions(item);
     item.appraised  = true;
     _updateItemDescription(item);
-    return true;
+    return {
+        name:       item.name,
+        icon:       item.icon || '',
+        gradeIdx:   item.gradeIdx,
+        gradeColor: item.gradeColor || ((typeof EQ_GRADES !== 'undefined' && EQ_GRADES[item.gradeIdx]) ? EQ_GRADES[item.gradeIdx].color : '#ffd86b'),
+        gradeLabel: (typeof EQ_GRADES !== 'undefined' && EQ_GRADES[item.gradeIdx]) ? EQ_GRADES[item.gradeIdx].label : '',
+        subOptions: { ...item.subOptions },
+    };
 }
-// 일괄 감정 — 인덱스 배열 → {success, fail}
+// 일괄 감정 — 인덱스 배열 → {success, fail, results: [snapshot, ...]}
 function appraiseItems(invIdxList) {
     let success = 0, fail = 0;
+    const results = [];
     for (const idx of invIdxList) {
-        if (appraiseItem(idx)) success++; else fail++;
+        const r = appraiseItem(idx);
+        if (r) { success++; results.push(r); } else { fail++; }
     }
     if (success > 0) {
         if (typeof saveGameProgress === 'function') saveGameProgress();
         if (typeof applyLvStatToCharacter === 'function') applyLvStatToCharacter();
         if (typeof _publishCharBonuses === 'function') _publishCharBonuses();
         if (typeof refreshUI === 'function') refreshUI();
+        // 결과 알림 모달 표시
+        if (typeof openAppraiseResultModal === 'function') openAppraiseResultModal(results);
     }
-    return { success, fail };
+    return { success, fail, results };
+}
+
+// ── 🔍 감정 결과 알림 모달 ────────────────────────────────────────────────
+let _appraiseResultPaused = false;
+function openAppraiseResultModal(results) {
+    const body = document.getElementById('appraise-result-body');
+    const cntEl = document.getElementById('appraise-result-count');
+    const overlay = document.getElementById('appraise-result-overlay');
+    if (!body || !overlay) return;
+    if (cntEl) cntEl.textContent = results.length.toLocaleString();
+    if (!results || results.length === 0) {
+        body.innerHTML = '<div class="appraise-result-empty">감정된 장비가 없습니다.</div>';
+    } else {
+        body.innerHTML = results.map(r => {
+            // 파츠명만 추출 — name 형식 "[등급] 파츠명"
+            const partName = (r.name || '').replace(/^\[[^\]]+\]\s*/, '') || r.name || '';
+            const gc = r.gradeColor || '#ffd86b';
+            const iconBg = `style="background:${gc}26;border-color:${gc};color:${gc};"`;
+            const gradeTag = `<span class="appraise-result-grade-tag" style="background:${gc}30;color:${gc};border:1px solid ${gc};">${r.gradeLabel || ''}</span>`;
+            const opts = r.subOptions || {};
+            const optsHtml = Object.keys(opts).length === 0
+                ? '<span style="color:#6e7681;font-size:12px;">부옵션 없음</span>'
+                : Object.entries(opts).map(([k, v]) => {
+                    const lbl = (typeof APPRAISE_LABELS !== 'undefined' && APPRAISE_LABELS[k]) ? APPRAISE_LABELS[k] : k;
+                    const val = _fmtAppraiseValue(v || 0);
+                    return `<span class="appraise-result-opt"><span class="opt-label">${lbl}</span><span class="opt-value">${val}</span></span>`;
+                }).join('');
+            return `<div class="appraise-result-card" style="border-left-color:${gc};">
+                <div class="appraise-result-icon" ${iconBg}>${r.icon || '📦'}</div>
+                <div class="appraise-result-name" title="${r.name || ''}">${partName}</div>
+                ${gradeTag}
+                <div class="appraise-result-opts">${optsHtml}</div>
+            </div>`;
+        }).join('');
+    }
+    overlay.classList.add('open');
+    if (typeof gameState !== 'undefined' && gameState === 'playing') {
+        gameState = 'paused'; _appraiseResultPaused = true;
+    } else { _appraiseResultPaused = false; }
+}
+function closeAppraiseResultModal() {
+    const overlay = document.getElementById('appraise-result-overlay');
+    if (overlay) overlay.classList.remove('open');
+    if (_appraiseResultPaused) { gameState = 'playing'; lastTime = performance.now(); _appraiseResultPaused = false; }
 }
 // 착용 장비의 부옵션 합산 — STAT_LIST en 키 기준
 // computeStats 파이프라인에서 자동 처리 (AmplifyRate /10000, ExtraCritical /100 등)
@@ -32002,18 +33616,27 @@ function tryAutoEquipDroppedItem(invIdx) {
     return null;
 }
 
-// 드랍된 아이템 목록을 인벤토리에 추가 + 자동 착용 시도
-// 반환: { accepted: [item, ...], equipEvents: [{item, prev, action}, ...] }
+// 드랍된 아이템 목록을 인벤토리에 추가 + 자동 착용 시도 + 자동 분해 (규칙: 자동 착용 > 자동 분해)
+// 반환: { accepted: [item, ...], equipEvents: [{item, prev, action}, ...], autoDisCount: int }
 function commitDroppedItems(items) {
     const accepted = [];
     const equipEvents = [];
+    let autoDisCount = 0;
+    const autoDisGradeCnt = {}; // gradeIdx → 카운트 (토스트 요약용)
     for (const it of items) {
         const idx = addToInventory(it);
         if (idx < 0) continue;
         const liveItem = inventory[idx];
         accepted.push(liveItem);
         const evt = tryAutoEquipDroppedItem(idx);
-        if (evt) equipEvents.push(evt);
+        if (evt) { equipEvents.push(evt); continue; }
+        // 자동 착용이 안 됐을 때만 자동 분해 검사
+        if (_isAutoDisTarget(liveItem)) {
+            const gi = liveItem.gradeIdx;
+            inventory[idx] = null;
+            autoDisCount++;
+            autoDisGradeCnt[gi] = (autoDisGradeCnt[gi] || 0) + 1;
+        }
     }
     // 인벤토리/장비 패널이 열려 있으면 즉시 갱신 (실시간 반영)
     if (accepted.length > 0) {
@@ -32025,7 +33648,14 @@ function commitDroppedItems(items) {
         try { onLevelChanged && onLevelChanged(false); } catch (e) {}
         try { refreshUI && refreshUI(); } catch (e) {}
     }
-    return { accepted, equipEvents };
+    // 자동 분해 발생 알림 (로그 한 줄로 요약)
+    if (autoDisCount > 0) {
+        const parts = Object.keys(autoDisGradeCnt).sort((a,b) => Number(a)-Number(b)).map(gi => {
+            const g = EQ_GRADES[gi]; return `${g ? g.label : 'gradeIdx '+gi} ${autoDisGradeCnt[gi]}`;
+        }).join(' · ');
+        addLog(`⚙ 자동 분해: ${autoDisCount}개 (${parts})`, 'info');
+    }
+    return { accepted, equipEvents, autoDisCount };
 }
 
 // ── 인게임 토스트 (캔버스 좌측 하단) ────────────────────────────────────────
@@ -32427,6 +34057,7 @@ function enterInvDisMode() {
     document.getElementById('invtab-dis').classList.add('active');
     document.getElementById('inv-dis-bar').classList.add('active');
     updateDisBar();
+    _updateAutoDisStatusBadge();
     renderInventory();
 }
 function exitInvDisMode() {
@@ -32500,6 +34131,112 @@ function confirmDisassemble() {
     addLog(`🔨 아이템 ${targets.length}개를 분해했습니다.`, 'info');
     closeDisassembleConfirm();
 }
+
+// ════════════════════════════════════════════════════════════════════════════
+// ⚙ 자동 분해 (Auto-Disassemble) — 획득 즉시 선택 등급 장비 자동 분해
+//   - 설정은 localStorage 키 `versione_auto_dis_cfg` 에 보존 (진행 데이터 아님 → 진행 초기화 시에도 유지)
+//   - 자동 착용이 발생한 드랍은 자동 분해하지 않음 (자동 착용 우선)
+//   - 자동 분해 발생 횟수는 토스트로 누적 통보
+// ════════════════════════════════════════════════════════════════════════════
+const AUTO_DIS_CFG_KEY = 'versione_auto_dis_cfg';
+// gradeIdx(숫자) → bool 셋 (체크된 등급)
+let AUTO_DIS_CFG = { enabled: false, grades: {} };
+
+function loadAutoDisCfg() {
+    try {
+        const raw = localStorage.getItem(AUTO_DIS_CFG_KEY);
+        if (raw) {
+            const d = JSON.parse(raw);
+            AUTO_DIS_CFG.enabled = !!d.enabled;
+            AUTO_DIS_CFG.grades = {};
+            if (d.grades && typeof d.grades === 'object') {
+                for (const k of Object.keys(d.grades)) {
+                    const gi = parseInt(k);
+                    if (!isNaN(gi) && gi >= 0 && gi < EQ_GRADES.length) {
+                        AUTO_DIS_CFG.grades[gi] = !!d.grades[k];
+                    }
+                }
+            }
+        }
+    } catch (_) {}
+}
+function saveAutoDisCfg() {
+    try { localStorage.setItem(AUTO_DIS_CFG_KEY, JSON.stringify(AUTO_DIS_CFG)); } catch (_) {}
+}
+// 자동 분해 대상 여부 — 활성 + 등급 체크 + (장비 타입만)
+function _isAutoDisTarget(item) {
+    if (!AUTO_DIS_CFG.enabled) return false;
+    if (!item || item.type !== 'equipment') return false;
+    const gi = item.gradeIdx;
+    return !!AUTO_DIS_CFG.grades[gi];
+}
+
+// 모달 열기 — 게임 일시정지(다른 모달과 동일 동작)
+let _autoDisPaused = false;
+function openAutoDisassembleModal() {
+    loadAutoDisCfg();
+    document.getElementById('autodis-enabled').checked = !!AUTO_DIS_CFG.enabled;
+    _renderAutoDisGrid();
+    document.getElementById('autodis-overlay').classList.add('open');
+    if (typeof gameState !== 'undefined' && gameState === 'playing') {
+        gameState = 'paused'; _autoDisPaused = true;
+    } else { _autoDisPaused = false; }
+}
+function closeAutoDisassembleModal() {
+    document.getElementById('autodis-overlay').classList.remove('open');
+    if (_autoDisPaused) { gameState = 'playing'; lastTime = performance.now(); _autoDisPaused = false; }
+    _updateAutoDisStatusBadge();
+}
+function _renderAutoDisGrid() {
+    const grid = document.getElementById('autodis-grid');
+    if (!grid) return;
+    const html = EQ_GRADES.map((g, gi) => {
+        const checked = !!AUTO_DIS_CFG.grades[gi];
+        return `<div class="autodis-grade-chip${checked ? ' selected' : ''}" onclick="toggleAutoDisGrade(${gi})" style="${checked ? `border-color:${g.color};color:${g.color};` : ''}">
+            <span class="gradeBox" style="background:${g.color};"></span>${g.label}
+        </div>`;
+    }).join('');
+    grid.innerHTML = html;
+}
+function onAutoDisEnabledChange(checked) {
+    AUTO_DIS_CFG.enabled = !!checked;
+    saveAutoDisCfg();
+    _updateAutoDisStatusBadge();
+}
+function toggleAutoDisGrade(gi) {
+    AUTO_DIS_CFG.grades[gi] = !AUTO_DIS_CFG.grades[gi];
+    if (!AUTO_DIS_CFG.grades[gi]) delete AUTO_DIS_CFG.grades[gi];
+    saveAutoDisCfg();
+    _renderAutoDisGrid();
+    _updateAutoDisStatusBadge();
+}
+function autoDisSelectAll() {
+    for (let gi = 0; gi < EQ_GRADES.length; gi++) AUTO_DIS_CFG.grades[gi] = true;
+    saveAutoDisCfg();
+    _renderAutoDisGrid();
+    _updateAutoDisStatusBadge();
+}
+function autoDisClearAll() {
+    AUTO_DIS_CFG.grades = {};
+    saveAutoDisCfg();
+    _renderAutoDisGrid();
+    _updateAutoDisStatusBadge();
+}
+// 인벤토리 상태바에 표시되는 자동 분해 활성 상태 배지
+function _updateAutoDisStatusBadge() {
+    const el = document.getElementById('inv-autodis-status');
+    if (!el) return;
+    if (AUTO_DIS_CFG.enabled) {
+        const cnt = Object.values(AUTO_DIS_CFG.grades).filter(Boolean).length;
+        el.textContent = `⚙ 자동 분해 ON · ${cnt}등급`;
+        el.classList.remove('off');
+    } else {
+        el.textContent = '⚙ 자동 분해 OFF';
+        el.classList.add('off');
+    }
+}
+// 시작 시 한 번 로드
+loadAutoDisCfg();
 
 // 장비 슬롯 패널 렌더링
 function renderEquipPanel() {
@@ -32779,6 +34516,21 @@ function renderInvTooltip() {
                     <div class="tt-section-title">용도</div>
                     <div style="font-size:15px;color:#8b949e;line-height:1.55;padding:4px 6px;">
                         메뉴 → 💎 <strong style="color:#ffd86b;">봉인석</strong>에서 공명 시 소모됩니다. 봉인석 타입별 1회 공명 비용 <code>1,000~1,250</code>개 (타입 6단계마다 +50). 3개 신화 옵션 달성 시 <strong style="color:#ff5060;">승화 완성</strong>.
+                    </div>
+                `;
+            } else if (def && def.applicableGroup === 'sanctuary') {
+                extraHtml = `
+                    <div class="tt-info">📦 스택형 아이템 — 같은 종류는 자동으로 합쳐집니다</div>
+                    <div class="tt-section-title">아이템 정보</div>
+                    <div class="tt-stats">
+                        <div class="tt-stat-row"><span class="tt-stat-lbl">분류</span><span class="tt-stat-val">영웅의 성소 계승 재료</span></div>
+                        <div class="tt-stat-row"><span class="tt-stat-lbl">적용 시스템</span><span class="tt-stat-val" style="color:#a78bfa;">🏛 영웅의 성소</span></div>
+                        <div class="tt-stat-row"><span class="tt-stat-lbl">보유 수량 (이 스택)</span><span class="tt-stat-val">${(item.quantity || 1).toLocaleString()}개</span></div>
+                        <div class="tt-stat-row"><span class="tt-stat-lbl">보유 수량 (전체)</span><span class="tt-stat-val">${totalCount.toLocaleString()}개</span></div>
+                    </div>
+                    <div class="tt-section-title">용도</div>
+                    <div style="font-size:15px;color:#8b949e;line-height:1.55;padding:4px 6px;">
+                        메뉴 → 🏛 <strong style="color:#a78bfa;">영웅의 성소</strong>에서 계승·교체 시 소모됩니다. 계승 비용은 레벨에 따라 <code>5 + 5×Lv</code>개, 교체 비용은 항상 <code>250</code>개.
                     </div>
                 `;
             } else {
