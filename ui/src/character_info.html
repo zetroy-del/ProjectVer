@@ -277,6 +277,362 @@ body {
 .main-tab-btn:hover { color: var(--text); }
 .main-tab-btn.on { color: var(--gold); border-bottom-color: var(--gold); }
 
+/* 🧮 능력치 적용 공식 탭 */
+#formula-list { padding: 12px 14px 24px; overflow-y: auto; }
+.formula-intro {
+    background: rgba(79,195,247,0.06);
+    border: 1px solid rgba(79,195,247,0.25);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    color: var(--sub);
+    line-height: 1.55;
+}
+.formula-intro code {
+    background: rgba(167,139,250,0.12);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #a78bfa;
+    font-family: 'Consolas','D2Coding',monospace;
+    font-size: 13px;
+}
+.formula-cat-section { margin-bottom: 18px; }
+.formula-cat-header {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold);
+    padding: 6px 10px;
+    border-left: 4px solid var(--gold);
+    background: rgba(245,208,98,0.08);
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.formula-cat-count {
+    font-size: 13px;
+    color: var(--sub);
+    background: rgba(255,255,255,0.06);
+    padding: 1px 8px;
+    border-radius: 10px;
+}
+.formula-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 12px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid #21262d;
+    border-radius: 6px;
+}
+.formula-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.formula-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.formula-eq code {
+    display: block;
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-family: 'Consolas','D2Coding',monospace;
+    font-size: 13px;
+    color: #b3e0ff;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+}
+.formula-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    flex-wrap: wrap;
+}
+.formula-meta-lbl { color: var(--sub); flex-shrink: 0; }
+.formula-output {
+    color: #58d364;
+    font-weight: 600;
+    font-family: 'Consolas','D2Coding',monospace;
+    font-size: 13px;
+}
+.formula-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.formula-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: rgba(79,195,247,0.10);
+    border: 1px solid rgba(79,195,247,0.35);
+    border-radius: 10px;
+    font-size: 13px;
+    color: #4fc3f7;
+    cursor: help;
+}
+.formula-chip small {
+    color: var(--dim);
+    font-size: 11px;
+    font-family: 'Consolas','D2Coding',monospace;
+    font-weight: 400;
+}
+/* 1차 능력치의 인게임 획득 경로 라벨 — chip 내부 우측에 작게 표시 */
+.formula-route {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 4px;
+    padding: 0 4px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid currentColor;
+    line-height: 1.3;
+}
+.formula-empty { color: var(--dim); font-style: italic; font-size: 13px; }
+.formula-chip.meta {
+    background: rgba(167,139,250,0.10);
+    border-color: rgba(167,139,250,0.35);
+    color: #a78bfa;
+}
+.formula-note {
+    font-size: 13px;
+    color: var(--sub);
+    line-height: 1.5;
+    margin-top: 2px;
+    padding-left: 6px;
+    border-left: 2px solid #30363d;
+}
+@media (max-width: 720px) {
+    .formula-row { grid-template-columns: 1fr; }
+}
+
+/* 🎯 스탯 분배 패널 */
+#mtab-distrib {
+    overflow-y: auto;
+    padding: 14px 18px 18px;
+}
+.dst-header-card {
+    background: linear-gradient(135deg, rgba(102,187,106,0.10), rgba(79,195,247,0.06));
+    border: 1px solid rgba(102,187,106,0.45);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+}
+.dst-header-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #66bb6a;
+    margin-bottom: 6px;
+}
+.dst-header-desc {
+    font-size: 15px;
+    color: var(--sub);
+    line-height: 1.55;
+}
+.dst-header-desc code {
+    background: rgba(0,0,0,0.4);
+    padding: 1px 7px;
+    border-radius: 4px;
+    color: #ffd86b;
+}
+.dst-summary-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(102,187,106,0.35);
+    font-size: 15px;
+}
+.dst-summary-row .lbl { color: var(--sub); margin-right: 4px; }
+.dst-summary-row .val { color: var(--green); font-weight: 700; font-variant-numeric: tabular-nums; }
+.dst-summary-row .val.warn { color: #ff7b72; }
+.dst-summary-row .val.dim { color: var(--sub); font-weight: 600; }
+
+.dst-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 14px;
+    font-size: 15px;
+}
+.dst-table th, .dst-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #21262d;
+    text-align: center;
+}
+.dst-table th {
+    background: rgba(255,255,255,0.04);
+    color: var(--sub);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+}
+.dst-table td.dst-stat-name {
+    text-align: left;
+    color: var(--text);
+    font-weight: 600;
+    min-width: 110px;
+}
+.dst-stat-abbr { color: var(--sub); font-weight: 500; margin-left: 2px; }
+.dst-table td.dst-base { color: var(--sub); }
+.dst-table td.dst-eff { color: var(--green); font-weight: 700; font-variant-numeric: tabular-nums; }
+.dst-table td.dst-delta { color: #79c0ff; font-weight: 600; font-variant-numeric: tabular-nums; }
+.dst-table td.dst-delta.zero { color: var(--dim); font-weight: 500; }
+
+.dst-ctrl {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.dst-btn {
+    width: 26px; height: 26px;
+    border-radius: 5px;
+    border: 1px solid #30363d;
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.dst-btn:hover:not(:disabled) {
+    background: rgba(102,187,106,0.22);
+    border-color: var(--green);
+    color: var(--green);
+}
+.dst-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.dst-input {
+    width: 64px;
+    padding: 3px 6px;
+    text-align: center;
+    background: var(--bg-panel);
+    color: var(--text);
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    font-size: 15px;
+    font-family: inherit;
+    font-variant-numeric: tabular-nums;
+}
+.dst-input:focus { outline: none; border-color: var(--green); }
+
+.dst-buttons-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+}
+.dst-action-btn {
+    padding: 7px 18px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 5px;
+    border: 1px solid #30363d;
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.dst-action-btn:hover:not(:disabled) { background: rgba(255,255,255,0.08); }
+.dst-action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.dst-action-btn.apply { border-color: var(--green); color: var(--green); }
+.dst-action-btn.apply:hover:not(:disabled) { background: rgba(102,187,106,0.18); }
+.dst-action-btn.reset { border-color: #e3b341; color: #e3b341; }
+.dst-action-btn.reset:hover:not(:disabled) { background: rgba(227,179,65,0.15); }
+.dst-action-btn.revert { border-color: #8b949e; color: var(--sub); }
+
+.dst-msg {
+    font-size: 15px;
+    color: var(--sub);
+    margin-right: auto;
+    align-self: center;
+}
+.dst-msg.ok { color: #58a6ff; }
+.dst-msg.warn { color: #ff7b72; }
+
+.dst-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+    margin-top: 4px;
+}
+
+/* 치환 결과 미리보기 — 치환 능력치 탭과 동일한 2컬럼 그룹 레이아웃
+   (.key-group-header / .key-item / .key-item-name / .key-item-val 재활용 + dst-* 보강) */
+.dst-subst-key-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 12px;
+}
+.dst-key-group-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+.dst-key-grp-dist {
+    font-size: 15px;
+    font-weight: 700;
+    color: #58d364;
+    background: rgba(88, 211, 100, 0.12);
+    border: 1px solid rgba(88, 211, 100, 0.35);
+    border-radius: 10px;
+    padding: 1px 8px;
+}
+.dst-key-item .key-item-val {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+}
+.dst-key-item-delta {
+    font-size: 15px;
+    font-weight: 700;
+    padding: 0 6px;
+    border-radius: 4px;
+    font-variant-numeric: tabular-nums;
+}
+.dst-key-item-delta.pos {
+    color: #58d364;
+    background: rgba(88, 211, 100, 0.12);
+}
+.dst-key-item-delta.neg {
+    color: #ff7b72;
+    background: rgba(255, 123, 114, 0.12);
+}
+.dst-subst-empty {
+    font-size: 15px;
+    color: var(--dim);
+    font-style: italic;
+    padding: 8px 4px;
+}
+.dst-subst-note {
+    font-size: 15px;
+    color: var(--sub);
+    margin: -4px 0 8px;
+    padding: 0 2px;
+}
+
+.dst-not-available {
+    background: rgba(255,123,114,0.05);
+    border: 1px solid rgba(255,123,114,0.30);
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: var(--sub);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-top: 6px;
+}
+.dst-not-available code {
+    background: rgba(0,0,0,0.4);
+    padding: 1px 7px;
+    border-radius: 4px;
+    color: #ffd86b;
+}
+
 /* 패널 공통 */
 .main-panel-page {
     flex: 1;
@@ -655,8 +1011,9 @@ body {
 
     <!-- 메인 탭 바 -->
     <div class="main-tab-bar">
-        <button class="main-tab-btn on" id="mtab-btn-subst" onclick="setMainTab('subst')">⚡ 치환 능력치</button>
-        <button class="main-tab-btn"    id="mtab-btn-stat"  onclick="setMainTab('stat')">📋 전체 능력치</button>
+        <button class="main-tab-btn on" id="mtab-btn-subst"   onclick="setMainTab('subst')">⚡ 치환 능력치</button>
+        <button class="main-tab-btn"    id="mtab-btn-stat"    onclick="setMainTab('stat')">📋 전체 능력치</button>
+        <button class="main-tab-btn"    id="mtab-btn-formula" onclick="setMainTab('formula')">🧮 2차 능력치 산출 공식</button>
     </div>
 
     <!-- 치환 능력치 패널 -->
@@ -683,6 +1040,14 @@ body {
             <!-- JS로 그룹별 섹션 동적 생성 -->
         </div>
     </div>
+
+    <!-- 능력치 적용 공식 패널 — 인게임에 적용된 능력치 계산식 + 연결된 능력치 키 표시 -->
+    <div class="main-panel-page" id="mtab-formula">
+        <div id="formula-list">
+            <!-- JS로 동적 생성 (renderFormulas) -->
+        </div>
+    </div>
+
 
 </div>
 
@@ -804,6 +1169,32 @@ function syncNow() {
             }
         } catch (_) { delete bonusReg['__lv_stat_config__']; }
 
+        // ── 능력치 보너스 통합 수신 — field_battle.html이 publish하는 모든 소스 ──
+        // 키: versione_char_bonuses, 구조: { equipment: {...}, refine: {...}, classSpeed: {...}, _meta: {...}, ... }
+        // 각 카테고리는 stats_calc.js STAT_LIST의 en 키 → 수치(raw) 객체
+        // 신규 카테고리(세트 보너스·타이틀·버프 등)도 field_battle 측 _BONUS_SOURCES에 추가되면 여기로 자동 흘러옴
+        // → 신규 컨텐츠가 능력치 상세 보기에 자동 반영되는 확장 가능 구조
+        try {
+            const cbRaw = localStorage.getItem('versione_char_bonuses');
+            // 기존 외부 보너스(이전 sourceId 들) 일괄 제거 — 게임 기본값(__...__)은 보존
+            for (const k of Object.keys(bonusReg)) {
+                if (!k.startsWith('__') && k.startsWith('field:')) delete bonusReg[k];
+            }
+            if (cbRaw) {
+                const payload = JSON.parse(cbRaw) || {};
+                for (const [cat, stats] of Object.entries(payload)) {
+                    if (cat === '_meta' || !stats || typeof stats !== 'object') continue;
+                    // 비-0 항목만 추출
+                    const filtered = {};
+                    let hasAny = false;
+                    for (const [k, v] of Object.entries(stats)) {
+                        if (v !== 0 && v != null) { filtered[k] = v; hasAny = true; }
+                    }
+                    if (hasAny) bonusReg['field:' + cat] = filtered;
+                }
+            }
+        } catch (_) { /* publish 데이터 손상 시 무시 — 기본값만으로 표시 */ }
+
         // ── 현재 클래스 및 기본 스탯 로드 (클래스별 독립 저장)
         try {
             const classId = d.classId || localStorage.getItem('versione_current_class') || 'knight';
@@ -917,6 +1308,7 @@ function renderAll() {
 
     // 스탯 목록
     renderList();
+
 }
 
 // ════════════════════════════════════════════════════════════
@@ -999,10 +1391,14 @@ function renderKeyCards(lv, bon) {
 //  메인 탭 전환 (치환 능력치 ↔ 전체 능력치)
 // ════════════════════════════════════════════════════════════
 function setMainTab(tab) {
-    ['subst', 'stat'].forEach(t => {
-        document.getElementById('mtab-btn-' + t).classList.toggle('on', t === tab);
-        document.getElementById('mtab-' + t).classList.toggle('on', t === tab);
+    ['subst', 'stat', 'formula'].forEach(t => {
+        const btn  = document.getElementById('mtab-btn-' + t);
+        const page = document.getElementById('mtab-' + t);
+        if (btn)  btn.classList.toggle('on', t === tab);
+        if (page) page.classList.toggle('on', t === tab);
     });
+    // 공식 탭으로 전환 시 즉시 렌더 (최신 currentStats 반영)
+    if (tab === 'formula' && typeof renderFormulas === 'function') renderFormulas();
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1014,6 +1410,380 @@ function setTab(tab) {
     document.getElementById('tab-' + tab).classList.add('on');
     document.getElementById('search').value = '';
     renderList();
+}
+
+// ════════════════════════════════════════════════════════════
+//  🧮 능력치 적용 공식 — stats_calc.js computeStats() 내부 공식 정리
+// ════════════════════════════════════════════════════════════
+// 각 공식은 { name, category, formula, inputs, output, note }
+//   - name:     공식의 한글 이름
+//   - category: 카테고리 (기본 스탯 / HP·MP / 공격력 / 방어력 / 회피·명중 / 치명타 / 피해 감소 / 기타)
+//   - formula:  공식 본문 (수식 텍스트)
+//   - inputs:   공식 입력으로 사용되는 stats_calc.js STAT_LIST en 키 배열
+//   - output:   공식 결과 키(s.* 또는 result 키)
+//   - note:     보충 설명(선택)
+//
+// ★ 향후 신규 공식 추가 시 _FORMULAS 배열에 한 항목 추가만 하면 자동 표시됨
+const _FORMULAS = [
+    // ── 기본 스탯 ─────────────────────────────────────────────
+    { name: '실효 STR (힘)', category: '기본 스탯',
+      formula: 'floor( ( BASE_STATS.STR + STR보너스 + AllStat보너스 ) × (1 + STRAmplifyRate/10000 + AllStatAmplifyRate/10000) )',
+      inputs: ['STR','AllStat','STRAmplifyRate','AllStatAmplifyRate'], output: 'STR',
+      note: '실효 힘 — 기본 스탯이 실효값 기준으로 PVE/PVP 공격력 등으로 치환된다. DEX/INT/AGI/CON/WIS/LUK도 동일 구조'
+    },
+    { name: '실효 DEX·INT·AGI·CON·WIS·LUK', category: '기본 스탯',
+      formula: '동일 공식 — floor( ( 기본값 + 보너스 + AllStat ) × (1 + 해당 AmplifyRate/10000 + AllStatAmplifyRate/10000) )',
+      inputs: ['DEX','INT','AGI','CON','WIS','LUK','AllStat','DEXAmplifyRate','INTAmplifyRate','AGIAmplifyRate','CONAmplifyRate','WISAmplifyRate','LUKAmplifyRate','AllStatAmplifyRate'],
+      output: 'DEX/INT/AGI/CON/WIS/LUK'
+    },
+    // ── HP / MP ──────────────────────────────────────────────
+    { name: '최대 HP', category: 'HP / MP',
+      formula: 'floor( MaxHealthPoint × (1 + MaxHealthPointAmplifyRate/10000) )',
+      inputs: ['MaxHealthPoint','MaxHealthPointAmplifyRate'], output: 'MaxHP',
+      note: 'CON 치환을 통해 MaxHealthPointAmplifyRate가 누적됨'
+    },
+    { name: '최대 MP', category: 'HP / MP',
+      formula: 'floor( MaxManaPoint × (1 + MaxManaPointAmplifyRate/10000) )',
+      inputs: ['MaxManaPoint','MaxManaPointAmplifyRate'], output: 'MaxMP',
+      note: 'WIS 치환을 통해 MaxManaPointAmplifyRate가 누적됨'
+    },
+    { name: 'HP 자연 회복', category: 'HP / MP',
+      formula: 'floor( HealthRegenPoint )',
+      inputs: ['HealthRegenPoint'], output: 'HPRegen'
+    },
+    { name: 'MP 자연 회복', category: 'HP / MP',
+      formula: 'floor( ManaRegenPoint )',
+      inputs: ['ManaRegenPoint'], output: 'MPRegen'
+    },
+    { name: '물약 회복률 %', category: 'HP / MP',
+      formula: 'floor( PotionRecoveryRate / 100 )',
+      inputs: ['PotionRecoveryRate'], output: 'PotionRecovery',
+      note: 'raw 10000 단위(예: 1500 → 15%)'
+    },
+    // ── 공격력 ───────────────────────────────────────────────
+    { name: '근거리 최소 공격력', category: '공격력',
+      formula: 'floor( ( MeleeMinAttack + PVEMeleeMinAttack + PVENormalAttack + PVESkillAttack + PVEAttack + PVEMeleeAttack ) × (1 + MeleeAttackPct/10000) )',
+      inputs: ['MeleeMinAttack','PVEMeleeMinAttack','PVENormalAttack','PVESkillAttack','PVEAttack','PVEMeleeAttack','MeleeAttackPct'],
+      output: 'MeleeMinAttack',
+      note: 'STR 치환으로 PVEMeleeMinAttack 자동 가산. 장신구 일반/스킬 공격력도 합산됨'
+    },
+    { name: '근거리 최대 공격력', category: '공격력',
+      formula: 'floor( ( MeleeMaxAttack + PVEMeleeMaxAttack + PVENormalAttack + PVESkillAttack + PVEAttack + PVEMeleeAttack ) × (1 + MeleeAttackPct/10000) )',
+      inputs: ['MeleeMaxAttack','PVEMeleeMaxAttack','PVENormalAttack','PVESkillAttack','PVEAttack','PVEMeleeAttack','MeleeAttackPct'],
+      output: 'MeleeMaxAttack'
+    },
+    { name: '원거리 최소·최대 공격력', category: '공격력',
+      formula: 'floor( ( RangedMin/MaxAttack + PVERangedMin/MaxAttack + PVENormalAttack + PVESkillAttack + PVEAttack + PVERangedAttack ) × (1 + RangedAttackPct/10000) )',
+      inputs: ['RangedMinAttack','RangedMaxAttack','PVERangedMinAttack','PVERangedMaxAttack','PVENormalAttack','PVESkillAttack','PVEAttack','PVERangedAttack','RangedAttackPct'],
+      output: 'RangedMinAttack/RangedMaxAttack',
+      note: 'DEX 치환으로 PVERangedMin/MaxAttack 자동 가산'
+    },
+    { name: '마법 최소·최대 공격력', category: '공격력',
+      formula: 'floor( ( MagicMin/MaxAttack + PVEMagicMin/MaxAttack + PVENormalAttack + PVESkillAttack + PVEAttack + PVEMagicAttack ) × (1 + MagicAttackPct/10000) )',
+      inputs: ['MagicMinAttack','MagicMaxAttack','PVEMagicMinAttack','PVEMagicMaxAttack','PVENormalAttack','PVESkillAttack','PVEAttack','PVEMagicAttack','MagicAttackPct'],
+      output: 'MagicMinAttack/MagicMaxAttack',
+      note: 'INT 치환으로 PVEMagicMin/MaxAttack 자동 가산'
+    },
+    // ── 방어력 ───────────────────────────────────────────────
+    { name: '근거리 방어력', category: '방어력',
+      formula: 'floor( PhysicalDefense × (1 + PhysicalDefenseAmplifyRate/10000) )',
+      inputs: ['PhysicalDefense','PhysicalDefenseAmplifyRate'], output: 'MeleeDefense',
+      note: 'CON 치환으로 PhysicalDefense 자동 가산. 장비 meleeDef도 합산'
+    },
+    { name: '원거리 방어력', category: '방어력',
+      formula: 'floor( RangedDefense × (1 + RangedDefenseAmplifyRate/10000) )',
+      inputs: ['RangedDefense','RangedDefenseAmplifyRate'], output: 'RangedDefense',
+      note: 'AGI 치환'
+    },
+    { name: '마법 방어력', category: '방어력',
+      formula: 'floor( MagicDefense × (1 + MagicDefenseAmplifyRate/10000) )',
+      inputs: ['MagicDefense','MagicDefenseAmplifyRate'], output: 'MagicDefense',
+      note: 'WIS 치환'
+    },
+    // ── 명중·회피 ────────────────────────────────────────────
+    { name: '근거리·원거리·마법 명중', category: '명중·회피',
+      formula: 'floor( PVE(Melee/Ranged/Magic)Accuracy )',
+      inputs: ['PVEMeleeAccuracy','PVERangedAccuracy','PVEMagicAccuracy'],
+      output: 'MeleeAccuracy/RangedAccuracy/MagicAccuracy',
+      note: 'STR/DEX/INT 치환으로 누적'
+    },
+    { name: '근거리·원거리·마법 회피', category: '명중·회피',
+      formula: 'floor( MeleeEvasion / RangedEvasion / MagicEvasion )',
+      inputs: ['MeleeEvasion','RangedEvasion','MagicEvasion'],
+      output: 'MeleeEvasion/RangedEvasion/MagicEvasion',
+      note: 'CON/AGI/WIS 치환. raw 10000 단위 → /100 = % 표기'
+    },
+    // ── 치명타 ───────────────────────────────────────────────
+    { name: '근거리·원거리·마법 치명타율', category: '치명타',
+      formula: 'min( 100, ( PVECritical + PVE(Melee/Ranged/Magic)Critical ) / 100 )',
+      inputs: ['PVECritical','PVEMeleeCritical','PVERangedCritical','PVEMagicCritical'],
+      output: 'MeleeCritRate/RangedCritRate/MagicCritRate',
+      note: 'LUK 치환으로 PVECritical 누적. 공격 유형별 PVE*Critical은 STR/DEX/INT 치환'
+    },
+    { name: '치명타 추가 공격력 (근거리/원거리/마법)', category: '치명타',
+      formula: 'PVEAtCriticalAttack + PVEAtCritical(Melee/Ranged/Magic)Attack',
+      inputs: ['PVEAtCriticalAttack','PVEAtCriticalMeleeAttack','PVEAtCriticalRangedAttack','PVEAtCriticalMagicAttack'],
+      output: 'CritMeleeAtk/CritRangedAtk/CritMagicAtk',
+      note: '치명타 발생 시 MaxAtk에 절대값으로 가산. 장비 pveCritAtk 합산'
+    },
+    { name: '치명타 저항 (근거리/원거리/마법)', category: '치명타',
+      formula: '(Melee/Ranged/Magic)CriticalResist / 100 (전투 적용 시 /100 = % 변환)',
+      inputs: ['MeleeCriticalResist','RangedCriticalResist','MagicCriticalResist'],
+      output: 'MeleeCritResist/RangedCritResist/MagicCritResist',
+      note: 'CON/AGI/WIS 치환'
+    },
+    // ── 피해 감소 ────────────────────────────────────────────
+    { name: '치명타 피해 감소 (근거리/원거리/마법)', category: '피해 감소',
+      formula: '(Melee/Ranged/Magic)CriticalDamageReduction (raw → /100 = %)',
+      inputs: ['MeleeCriticalDamageReduction','RangedCriticalDamageReduction','MagicCriticalDamageReduction'],
+      output: '동일 키',
+      note: 'CriticalDamageReductionAmplifyRate(CON 치환)로 증폭'
+    },
+    { name: '스킬 피해 감소 (근거리/원거리/마법)', category: '피해 감소',
+      formula: '(Melee/Ranged/Magic)SkillDamageReduction (raw → /100 = %)',
+      inputs: ['MeleeSkillDamageReduction','RangedSkillDamageReduction','MagicSkillDamageReduction','SkillDamageReductionAmplifyRate'],
+      output: '동일 키'
+    },
+    // ── 상태이상 저항 ────────────────────────────────────────
+    { name: '상태이상 저항', category: '상태이상',
+      formula: '각 저항 키 그대로 (raw → /100 = %)',
+      inputs: ['StunResist','ParalysisResist','SilenceResist','HoldResist','SlowResist','ProvokeResist'],
+      output: '동일 키',
+      note: 'CON/WIS/LUK/AGI 치환으로 누적'
+    },
+    // ── 방어력 관통 ──────────────────────────────────────────
+    { name: '방어력 관통 (근거리/원거리/마법)', category: '관통',
+      formula: 'PVETargetMeleeDefense / PVETargetRangedDefense / PVETargetMagicDefense (raw 절대값)',
+      inputs: ['PVETargetMeleeDefense','PVETargetRangedDefense','PVETargetMagicDefense'],
+      output: 'defPenetration(Melee/Ranged/Magic)',
+      note: 'STR/DEX/INT 치환'
+    },
+    // ── 보스·정예 추가 능력치 ────────────────────────────────
+    { name: '보스/정예 몬스터 추가 공격력', category: '보스/정예',
+      formula: 'BossMonsterExtraAttack / EliteMonsterExtraAttack (raw 가산)',
+      inputs: ['BossMonsterExtraAttack','EliteMonsterExtraAttack','WorldBossMonsterExtraAttack','StrongPointBossMonsterExtraAttack'],
+      output: 'BossExtraAtk/EliteExtraAtk',
+      note: 'STR/DEX/INT 치환으로 보스 전투 시 최대 공격력에 추가'
+    },
+    { name: '보스/정예 몬스터 추가 방어력', category: '보스/정예',
+      formula: 'BossMonsterExtraDefense / EliteMonsterExtraDefense (raw 가산)',
+      inputs: ['BossMonsterExtraDefense','EliteMonsterExtraDefense','WorldBossMonsterExtraDefense','StrongPointBossMonsterExtraDefense'],
+      output: '동일 키',
+      note: 'CON/AGI/WIS/LUK 치환'
+    },
+    // ── 속도 ─────────────────────────────────────────────────
+    { name: '공격속도 / 이동속도', category: '속도',
+      formula: 'floor( AttackSpeed ) / floor( MoveSpeed )',
+      inputs: ['AttackSpeed','MoveSpeed','AttackSpeedAmplifyRate'],
+      output: 'AttackSpeed/MoveSpeed',
+      note: '클래스 고유 값 + LV_STAT_CONFIG 보너스. AttackSpeedAmplifyRate는 AGI 치환으로 증감 가능(현재 별도 곱셈 미구현)'
+    },
+    // ── 기타·보너스 ──────────────────────────────────────────
+    { name: '경험치 획득량 / 아이템 드랍률', category: '기타',
+      formula: 'EXPBonus / ItemDropBonus (raw → /100 = %)',
+      inputs: ['EXPBonus','ItemDropBonus','CoolTimeRate'],
+      output: 'EXPBonus/ItemDropBonus/CoolTimeRate',
+      note: 'LUK 치환으로 ItemDropBonus 누적'
+    },
+    // ── 외부 보너스 합산 ────────────────────────────────────
+    { name: '🛠 외부 보너스 합산 흐름', category: '시스템',
+      formula: 'lvBonuses(LV_STAT_CONFIG) + 클래스속도 + 제련(getRefineBonuses) + 장비(getEquipmentBonusesAsStatList) → computeStats(bonuses, BASE_STATS)',
+      inputs: ['LV_STAT_CONFIG','classSpeed','RefineBonuses','EquipmentBonuses'],
+      output: 'computeStats 입력 bonuses',
+      note: '신규 보너스 시스템(세트·타이틀·버프 등)도 동일 경로로 합산됨'
+    },
+    // ── 기본 스탯 치환 ──────────────────────────────────────
+    { name: '🔁 기본 스탯 → 2차 능력치 치환', category: '시스템',
+      formula: 'subBon[key] = floor( baseStatValue / c1 × c2 ) — BASE_STAT_SUBSTITUTION 테이블',
+      inputs: ['STR','DEX','INT','AGI','CON','WIS','LUK'],
+      output: 'computeSubstitutedBonuses 결과',
+      note: '예: STR=100 → PVEMeleeMinAttack += 100/1×1=100, PVEMeleeMaxAttack += 100/1×3=300. 자세한 c1·c2 계수는 stats_calc.js BASE_STAT_SUBSTITUTION 참조'
+    },
+];
+
+// 한글 라벨 조회 — STAT_LIST에서 en → kr
+function _statLabelOf(en) {
+    if (typeof STAT_LIST === 'undefined') return en;
+    const row = STAT_LIST.find(s => s.en === en);
+    return row ? row.kr : en;
+}
+
+// Total* 출력 키에서 카테고리 자동 추정 (TOTAL_STAT_FORMULAS에 c가 없는 경우 fallback)
+function _inferCategory(o) {
+    if (!o) return '99_미분류';
+    if (/^Total(STR|DEX|INT|AGI|CON|WIS|LUK|AllStat)(?:AmplifyRate|WeakenRate)?$/.test(o)) return '01_기본 스탯';
+    if (/MaxHealthPoint|MaxManaPoint|HealthRegen|ManaRegen/.test(o)) return '02_HP / MP';
+    if (/PotionRecovery/.test(o))                                    return '03_물약 회복';
+    if (/Critical(?:Resist|DamageReduction)/.test(o))                return '07_치명타 저항/감소';
+    if (/ExtraCriticalResist/.test(o))                               return '07_치명타 저항/감소';
+    if (/(?:^Total|Pve|Pvp|Normal|Skill)?(?:Melee|Ranged|Magic)?(?:Min|Max)?Attack(?:AmplifyRate|WeakenRate)?$/.test(o)) return '04_공격력';
+    if (/AtCritical.*Attack/.test(o))                                return '04_공격력';
+    if (/(?:^Total)?(?:Melee|Ranged|Magic|All|Physical)?Defense(?:AmplifyRate|WeakenRate)?$/.test(o)) return '05_방어력';
+    if (/Critical(?:AmplifyRate|WeakenRate)?$/.test(o) || /ExtraCritical(?:AmplifyRate|WeakenRate)?$/.test(o)) return '06_치명타';
+    if (/Evasion/.test(o))                                           return '08_회피';
+    if (/Accuracy/.test(o))                                          return '09_명중';
+    if (/Hit(?:AmplifyRate|WeakenRate)?$/.test(o))                   return '10_상태이상 적중';
+    if (/Resist(?:AmplifyRate|WeakenRate)?$/.test(o))                return '11_상태이상 저항';
+    if (/DamageReduction|DamageReductionRate|DamageReductionIgnore/.test(o)) return '12_피해 감소';
+    if (/Target.*Defense/.test(o))                                   return '13_방어 관통';
+    if (/AttackSpeed|MoveSpeed/.test(o))                             return '14_속도';
+    if (/Bonus$/.test(o))                                            return '15_경험치/재화/드랍';
+    if (/Monster.*Extra|Legion.*Extra|Beast.*Extra/.test(o))         return '16_몬스터 특수 대상';
+    if (/Range$|RangeRate$/.test(o))                                 return '17_사거리';
+    if (/Weight|CombatPower|ManaCostRate|CoolTimeRate/.test(o))      return '18_기타';
+    return '99_미분류';
+}
+
+// 1차 능력치(영문 en)의 인게임 획득 경로 추정 — character_info.html이 알 수 있는 범위 내에서 판별
+//   - "기본 스탯": STR/DEX/INT/AGI/CON/WIS/LUK
+//   - "레벨":     LV_STAT_CONFIG에 등록된 키
+//   - "장비":     장비 옵션 슬롯의 stats_calc.js 키 (EQ_TO_STAT_LIST 매핑된 21종)
+//   - "제련":     REFINE_OPTION_POOL의 키 (전 슬롯 합집합)
+//   - "클래스":   AttackSpeed/MoveSpeed (클래스 고유 속도 보너스)
+//   - "기본 스탯 치환": BASE_STAT_SUBSTITUTION이 생성하는 키 (STR→PVEMeleeMinAttack 등)
+function _statAcquireRoutes(en) {
+    const routes = [];
+    if (['STR','DEX','INT','AGI','CON','WIS','LUK'].includes(en)) routes.push('기본 스탯');
+    if (['AttackSpeed','MoveSpeed'].includes(en)) routes.push('클래스 속도');
+    // 레벨 능력치
+    try {
+        const lvRaw = localStorage.getItem('versione_lv_stat_config');
+        if (lvRaw) {
+            const cfg = JSON.parse(lvRaw);
+            if (Array.isArray(cfg) && cfg.some(r => r.en === en)) routes.push('레벨');
+        }
+    } catch(_) {}
+    // 장비 (EQ_TO_STAT_LIST에 매핑된 키)
+    const EQUIPMENT_KEYS = new Set([
+        'PVEMeleeMinAttack','PVEMeleeMaxAttack','PVPMeleeMinAttack','PVPMeleeMaxAttack',
+        'PVERangedMinAttack','PVERangedMaxAttack','PVPRangedMinAttack','PVPRangedMaxAttack',
+        'PVEMagicMinAttack','PVEMagicMaxAttack','PVPMagicMinAttack','PVPMagicMaxAttack',
+        'PVENormalAttack','PVPNormalAttack','PVEAtCriticalAttack','PVPAtCriticalAttack',
+        'PVESkillAttack','PVPSkillAttack',
+        'PhysicalDefense','RangedDefense','MagicDefense',
+    ]);
+    if (EQUIPMENT_KEYS.has(en)) routes.push('장비');
+    // 제련 (REFINE_OPTION_POOL 키 — field_battle.html 정의)
+    const REFINE_KEYS = new Set([
+        'STRAmplifyRate','DEXAmplifyRate','INTAmplifyRate','AGIAmplifyRate','CONAmplifyRate','WISAmplifyRate','LUKAmplifyRate','AllStatAmplifyRate',
+        'MaxHealthPointAmplifyRate','MaxManaPointAmplifyRate',
+        'PVECritical','PVEMeleeCritical','PVERangedCritical','PVEMagicCritical',
+        'PhysicalDefenseAmplifyRate','RangedDefenseAmplifyRate','MagicDefenseAmplifyRate',
+        'MeleeEvasion','RangedEvasion','MagicEvasion',
+        'MeleeCriticalResist','RangedCriticalResist','MagicCriticalResist',
+        'MeleeCriticalDamageReduction','RangedCriticalDamageReduction','MagicCriticalDamageReduction',
+        'MeleeSkillDamageReduction','RangedSkillDamageReduction','MagicSkillDamageReduction','SkillDamageReduction',
+        'StunResist','ParalysisResist','SilenceResist','HoldResist','SlowResist','ProvokeResist',
+    ]);
+    if (REFINE_KEYS.has(en)) routes.push('제련');
+    // 기본 스탯 치환 — BASE_STAT_SUBSTITUTION 결과 키
+    if (typeof BASE_STAT_SUBSTITUTION !== 'undefined') {
+        for (const entries of Object.values(BASE_STAT_SUBSTITUTION)) {
+            if (entries.some(e => e.key === en)) { routes.push('기본 스탯 치환'); break; }
+        }
+    }
+    return routes;
+}
+
+// 획득 경로 라벨 → 색상 매핑
+const _ROUTE_COLORS = {
+    '기본 스탯': '#79c0ff',
+    '레벨': '#56d364',
+    '장비': '#ff9966',
+    '제련': '#d8a8e8',
+    '클래스 속도': '#ffd166',
+    '기본 스탯 치환': '#a78bfa',
+};
+
+function renderFormulas() {
+    const container = document.getElementById('formula-list');
+    if (!container) return;
+
+    // ── 데이터 소스: stats_calc.js TOTAL_STAT_FORMULAS 우선 ──
+    let data = [];
+    if (typeof TOTAL_STAT_FORMULAS !== 'undefined' && Array.isArray(TOTAL_STAT_FORMULAS)) {
+        data = TOTAL_STAT_FORMULAS.map(it => ({
+            output:   it.o,
+            category: it.c || _inferCategory(it.o),
+            formula:  it.f || '',
+            inputs:   Array.isArray(it.i) ? it.i : [],
+        }));
+    }
+    // fallback: 데이터 없으면 안내 메시지
+    if (data.length === 0) {
+        container.innerHTML = `
+            <div class="formula-intro">
+                <strong>2차 능력치 산출 공식 데이터가 준비되지 않았습니다.</strong><br>
+                stats_calc.js의 <code>TOTAL_STAT_FORMULAS</code> 배열이 정의되어야 표시됩니다. (002 합산공식 기반)
+            </div>`;
+        return;
+    }
+
+    // 카테고리별로 묶기 (sortable prefix)
+    const byCat = new Map();
+    for (const it of data) {
+        const c = it.category;
+        if (!byCat.has(c)) byCat.set(c, []);
+        byCat.get(c).push(it);
+    }
+    const sortedCats = [...byCat.keys()].sort();
+
+    // 누락 한글명 카운트 (검증용)
+    let missingKrCount = 0;
+
+    const html = sortedCats.map(cat => {
+        const items = byCat.get(cat);
+        // 카테고리명 — 접두 숫자 제거하여 표시
+        const catLabel = cat.replace(/^\d+_/, '');
+        const rowsHtml = items.map(it => {
+            // 입력 1차 능력치 칩: "한글명(영문명)" 형식 + 획득 경로 라벨
+            const inputChips = it.inputs.map(k => {
+                const row = (typeof STAT_LIST !== 'undefined') ? STAT_LIST.find(s => s.en === k) : null;
+                const kr  = row ? row.kr : null;
+                if (!kr) missingKrCount++;
+                const label = kr ? `${kr}(${k})` : `${k}`;
+                const cls   = kr ? 'formula-chip' : 'formula-chip meta';
+                const title = kr ? row.desc || k : `${k} — STAT_LIST 한글명 미정의`;
+                const routes = _statAcquireRoutes(k);
+                const routesHtml = routes.map(r =>
+                    `<span class="formula-route" style="color:${_ROUTE_COLORS[r] || '#8b949e'};">${r}</span>`
+                ).join('');
+                return `<span class="${cls}" title="${title.replace(/"/g,"'")}">${label}${routesHtml}</span>`;
+            }).join('');
+            // 출력 키 라벨
+            const outRow  = (typeof STAT_LIST !== 'undefined') ? STAT_LIST.find(s => 'Total' + s.en === it.output) : null;
+            const outKr   = outRow ? outRow.kr : null;
+            const outName = outKr ? `${outKr}(${it.output})` : it.output;
+            return `<div class="formula-row">
+                <div class="formula-name">${outName}</div>
+                <div class="formula-body">
+                    <div class="formula-eq"><code>${it.formula || '(공식 없음)'}</code></div>
+                    <div class="formula-meta">
+                        <span class="formula-meta-lbl">사용 1차 능력치:</span>
+                        <span class="formula-chips">${inputChips || '<span class="formula-empty">(없음)</span>'}</span>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+        return `<div class="formula-cat-section">
+            <div class="formula-cat-header">${catLabel} <span class="formula-cat-count">${items.length}</span></div>
+            ${rowsHtml}
+        </div>`;
+    }).join('');
+
+    const headerNote = `
+        <div class="formula-intro">
+            <strong>2차 능력치 산출 공식 정리</strong> — <code>[베르시온] 002_스탯_합산공식.cs</code> 기반 자동 추출.
+            총 <strong>${data.length}개</strong> 2차 능력치(Total*) 각각의 산출 공식과 사용된 1차 능력치를
+            <strong>한글명(영문명)</strong> 형식으로 표시합니다.
+            <br><br>
+            <strong>1차 능력치 획득 경로:</strong>
+            ${Object.entries(_ROUTE_COLORS).map(([k,v]) => `<span class="formula-route" style="color:${v};">${k}</span>`).join(' ')}
+            <br>
+            ${missingKrCount > 0 ? `<span style="color:#ff7b72;">⚠ STAT_LIST에 한글명이 없는 1차 능력치가 ${missingKrCount}건 — 영문명으로 표시됨</span>` : ''}
+        </div>
+    `;
+    container.innerHTML = headerNote + html;
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1211,6 +1981,383 @@ function renderBonusSrcs() {
 }
 
 // ════════════════════════════════════════════════════════════
+//  🎯 스탯 분배 — character_info 측 UI 로직
+// ════════════════════════════════════════════════════════════
+// 데이터 출처 (모두 localStorage):
+//   versione_distrib_stat_config           — { startLv, perLv }   (전 클래스 공통 설정)
+//   versione_distributed_stats_<classId>   — 현재 클래스의 분배 결과 { STR,...,LUK }
+//   versione_char (.classId / .level)      — 현재 클래스 ID + 캐릭터 레벨
+//
+// 편집은 임시 객체(_dstPending)에 보관 → [적용] 누르면 localStorage에 저장 + parent로 postMessage
+// [전체 회수] / [편집 취소] 버튼은 임시 객체만 조작 — 적용 전엔 인게임 영향 없음
+
+const _DST_BASE_STATS = ['STR','DEX','INT','AGI','CON','WIS','LUK'];
+const _DST_STAT_META = {
+    STR: { kr: '힘',   desc: '근거리 계열' },
+    DEX: { kr: '민첩', desc: '원거리 계열' },
+    INT: { kr: '지능', desc: '마법 계열'   },
+    AGI: { kr: '순발', desc: '속도/회피'   },
+    CON: { kr: '건강', desc: 'HP/방어'     },
+    WIS: { kr: '지혜', desc: 'MP/마법방어' },
+    LUK: { kr: '행운', desc: '치명타/저항' },
+};
+
+// 편집 임시 객체 — 적용 전까지의 변경 상태
+let _dstPending = null;       // { STR:n, DEX:n, ... } 또는 null(편집 시작 전)
+let _dstSavedSnapshot = null; // 적용된 직후의 분배값 스냅샷 (외부 변경 감지용)
+
+function _dstReadConfig() {
+    try {
+        const raw = localStorage.getItem('versione_distrib_stat_config');
+        if (raw) {
+            const d = JSON.parse(raw);
+            const sl = parseInt(d.startLv);
+            const pl = parseInt(d.perLv);
+            if (Number.isFinite(sl) && Number.isFinite(pl)) {
+                return { startLv: Math.max(1, sl), perLv: Math.max(0, pl) };
+            }
+        }
+    } catch (_) {}
+    return { startLv: 10, perLv: 3 };
+}
+function _dstReadCurrentClass() {
+    try {
+        const raw = localStorage.getItem('versione_char');
+        if (raw) {
+            const d = JSON.parse(raw);
+            if (d.classId) return d.classId;
+        }
+        return localStorage.getItem('versione_current_class') || 'knight';
+    } catch (_) { return 'knight'; }
+}
+function _dstReadStats(classId) {
+    try {
+        const raw = localStorage.getItem('versione_distributed_stats_' + classId);
+        if (raw) {
+            const d = JSON.parse(raw) || {};
+            const out = {};
+            _DST_BASE_STATS.forEach(k => {
+                const v = parseInt(d[k]);
+                out[k] = Number.isFinite(v) && v > 0 ? v : 0;
+            });
+            return out;
+        }
+    } catch (_) {}
+    const out = {}; _DST_BASE_STATS.forEach(k => out[k] = 0); return out;
+}
+function _dstWriteStats(classId, dist) {
+    try {
+        localStorage.setItem('versione_distributed_stats_' + classId, JSON.stringify(dist));
+    } catch (_) {}
+}
+function _dstTotalPoints(lv) {
+    const c = _dstReadConfig();
+    if (!c || c.perLv <= 0) return 0;
+    if (lv < c.startLv) return 0;
+    return (lv - c.startLv + 1) * c.perLv;
+}
+function _dstUsedPoints(dist) {
+    let s = 0;
+    for (const k of _DST_BASE_STATS) s += (dist[k] || 0);
+    return s;
+}
+// 분배 임시값이 외부 변경(저장값)과 다른지 — '미적용 변경' 판별
+function _dstIsDirty() {
+    if (!_dstPending) return false;
+    const saved = _dstSavedSnapshot || {};
+    for (const k of _DST_BASE_STATS) {
+        if ((_dstPending[k] || 0) !== (saved[k] || 0)) return true;
+    }
+    return false;
+}
+
+// 메인 렌더링 — `forceReload=true`면 임시 편집값을 버리고 저장값 기준으로 재시작
+function renderDistribPanel(forceReload) {
+    const container = document.getElementById('distrib-panel-body');
+    if (!container) return;
+    const cfg     = _dstReadConfig();
+    const classId = _dstReadCurrentClass();
+    const lv      = currentLevel || 1;
+    const total   = _dstTotalPoints(lv);
+    const saved   = _dstReadStats(classId);
+    _dstSavedSnapshot = saved;
+
+    // 임시 편집값 초기화 — 강제 리로드 또는 처음 진입
+    if (forceReload || !_dstPending) {
+        _dstPending = { ...saved };
+    }
+
+    // 분배 기능이 비활성 상태 (perLv=0 또는 startLv 이후 → 보유 0)
+    if (cfg.perLv <= 0) {
+        container.innerHTML = `<div class="dst-not-available">
+            🛈 분배 스탯이 비활성 상태입니다.<br>
+            <b>캐릭터 공통 능력치 설정 > 📈 레벨 능력치</b> 탭의 <b>🎯 레벨업 분배 스탯</b> 섹션에서
+            <code>레벨당 획득</code>을 <code>1 이상</code>으로 설정하면 활성화됩니다.
+        </div>`;
+        return;
+    }
+    if (lv < cfg.startLv) {
+        container.innerHTML = `<div class="dst-not-available">
+            🛈 분배 스탯 획득 시작 레벨에 도달하지 않았습니다.<br>
+            현재 <b>Lv. ${lv}</b> · 획득 시작 <b>Lv. ${cfg.startLv}</b> ·
+            도달까지 <b>${cfg.startLv - lv}레벨</b> 남음.<br>
+            <span style="color:var(--dim);font-size:15px;">시작 레벨 도달 시 매 레벨업마다 <code>+${cfg.perLv}</code>포인트씩 누적됩니다.</span>
+        </div>`;
+        return;
+    }
+
+    const used  = _dstUsedPoints(_dstPending);
+    const remain = total - used;
+    const dirty = _dstIsDirty();
+
+    // 분배 결과 + 치환 미리보기 계산
+    // computeStats 입력: 현재 보너스(bonusReg에 이미 distribStats가 포함) 대신
+    // "기본 스탯 + 현재 임시 분배값"만 가지고 미리보기 계산
+    const previewBon = {};
+    // 다른 외부 보너스도 합치고 (장비 등) 임시 분배값만 STR/DEX 등으로 덮어쓰기
+    // → 가장 안전한 방법: bonusReg를 deep copy 후 'field:distribStats'를 임시값으로 교체
+    const bonusOverride = { ..._dstPending };
+    // 기존 bonusReg에서 STR/DEX 키가 있을 수 있으므로 명확히 따로 처리
+    const mergedAll = {};
+    for (const [src, stats] of Object.entries(bonusReg)) {
+        if (src === 'field:distribStats') continue; // 임시값으로 교체할 것이므로 스킵
+        for (const [k, v] of Object.entries(stats)) {
+            mergedAll[k] = (mergedAll[k] || 0) + v;
+        }
+    }
+    for (const k of _DST_BASE_STATS) {
+        if (bonusOverride[k] > 0) mergedAll[k] = (mergedAll[k] || 0) + bonusOverride[k];
+    }
+    const previewStats = (typeof computeStats === 'function')
+        ? computeStats(mergedAll, currentBaseStats) : {};
+
+    // 기준 비교용: 분배가 모두 0인 상태에서의 스탯
+    const baselineBon = {};
+    for (const [src, stats] of Object.entries(bonusReg)) {
+        if (src === 'field:distribStats') continue;
+        for (const [k, v] of Object.entries(stats)) {
+            baselineBon[k] = (baselineBon[k] || 0) + v;
+        }
+    }
+    const baselineStats = (typeof computeStats === 'function')
+        ? computeStats(baselineBon, currentBaseStats) : {};
+
+    // ── 헤더 카드 ──
+    const headerHtml = `
+        <div class="dst-header-card">
+            <div class="dst-header-title">🎯 스탯 분배 — Lv. ${lv} · ${(_classLabel(classId)) || classId}</div>
+            <div class="dst-header-desc">
+                레벨업으로 획득한 포인트를 7개 기본 스탯에 자유롭게 분배합니다.
+                분배 결과는 캐릭터의 기본 스탯에 더해지고 자동 치환되어 2차 능력치에 반영됩니다.
+                <br>분배 결과는 <b>클래스별로 개별 저장</b>되며 클래스를 변경해도 보존됩니다.
+                <br>
+                <span style="color:var(--dim);">획득 규칙: <code>Lv.${cfg.startLv}</code>부터 매 레벨업마다 <code>+${cfg.perLv}</code>포인트 누적</span>
+            </div>
+            <div class="dst-summary-row">
+                <span><span class="lbl">총 보유 포인트</span><span class="val">${total.toLocaleString()}</span></span>
+                <span><span class="lbl">사용</span><span class="val ${used > total ? 'warn' : ''}">${used.toLocaleString()}</span></span>
+                <span><span class="lbl">잔여</span><span class="val ${remain < 0 ? 'warn' : (remain === 0 ? 'dim' : '')}">${remain.toLocaleString()}</span></span>
+                ${dirty ? '<span class="dst-msg warn">• 미적용 변경 있음</span>' : ''}
+            </div>
+        </div>`;
+
+    // ── 분배 테이블 ──
+    const rowsHtml = _DST_BASE_STATS.map(k => {
+        const meta  = _DST_STAT_META[k];
+        const base  = currentBaseStats[k] || 0;
+        const cur   = _dstPending[k] || 0;
+        const eff   = previewStats[k] != null ? previewStats[k] : (base + cur);
+        const baseEff = baselineStats[k] != null ? baselineStats[k] : base;
+        const delta = eff - baseEff;
+        const minusDisabled = cur <= 0 ? 'disabled' : '';
+        const plusDisabled  = (remain <= 0) ? 'disabled' : '';
+        return `<tr>
+            <td class="dst-stat-name">${meta.kr}<span class="dst-stat-abbr">(${k})</span></td>
+            <td class="dst-base">${base.toLocaleString()}</td>
+            <td>
+                <div class="dst-ctrl">
+                    <button class="dst-btn" onclick="dstAdjust('${k}', -1)" ${minusDisabled}>−</button>
+                    <input class="dst-input" type="number" min="0" step="1"
+                           id="dst-in-${k}" value="${cur}"
+                           oninput="dstInputChange('${k}')"
+                           onblur="dstInputBlur('${k}')">
+                    <button class="dst-btn" onclick="dstAdjust('${k}', +1)" ${plusDisabled}>+</button>
+                </div>
+            </td>
+            <td class="dst-eff">${(eff).toLocaleString()}</td>
+            <td class="dst-delta ${delta <= 0 ? 'zero' : ''}">${delta > 0 ? '+' + delta.toLocaleString() : (delta < 0 ? delta.toLocaleString() : '0')}</td>
+        </tr>`;
+    }).join('');
+    const tableHtml = `
+        <table class="dst-table">
+            <thead>
+                <tr>
+                    <th style="text-align:left;">기본 스탯</th>
+                    <th>설정값</th>
+                    <th>분배</th>
+                    <th>실효</th>
+                    <th>변화</th>
+                </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+        </table>`;
+
+    // ── 버튼 행 ──
+    const applyDisabled = (!dirty || used > total) ? 'disabled' : '';
+    const resetDisabled = (_dstUsedPoints(saved) === 0 && _dstUsedPoints(_dstPending) === 0) ? 'disabled' : '';
+    const revertDisabled = !dirty ? 'disabled' : '';
+    const buttonsHtml = `
+        <div class="dst-buttons-row">
+            <span class="dst-msg" id="dst-status-msg"></span>
+            <button class="dst-action-btn revert" ${revertDisabled} onclick="dstRevertEdits()">↺ 편집 취소</button>
+            <button class="dst-action-btn reset"  ${resetDisabled}  onclick="dstResetAll()">🗑 전체 회수</button>
+            <button class="dst-action-btn apply"  ${applyDisabled}  onclick="dstApply()">✔ 적용</button>
+        </div>`;
+
+    // ── 치환 결과 미리보기 ──
+    // 치환 능력치 탭과 동일한 2컬럼 그룹 레이아웃(BASE_STAT_SUBSTITUTION 기반)으로 표시.
+    // 분배가 1포인트 이상 들어간 기본 스탯 그룹만 노출하여 변화 영역을 한눈에 파악.
+    // 각 항목은 "치환 후 값 (+델타)" 형태로, 변화가 없는 항목도 그룹 안에서 함께 보이도록 한다.
+    let substHtml = '';
+    let anyDistribGroup = false;
+    if (typeof BASE_STAT_SUBSTITUTION !== 'undefined') {
+        const pctSet = (typeof SUBST_PCT_STATS !== 'undefined') ? SUBST_PCT_STATS : new Set();
+        let bodyHtml = '';
+        for (const grp of KEY_GROUP_META) {
+            const distribVal = _dstPending[grp.stat] || 0;
+            if (distribVal <= 0) continue; // 분배 0인 그룹은 표시하지 않음
+            const entries = BASE_STAT_SUBSTITUTION[grp.stat] || [];
+            if (!entries.length) continue;
+            anyDistribGroup = true;
+            bodyHtml += `<div class="key-group-header dst-key-group-header">
+                <span>${grp.label}</span>
+                <span class="dst-key-grp-dist">분배 +${distribVal}</span>
+            </div>`;
+            for (const e of entries) {
+                const en      = e.key;
+                const after   = previewStats[en];
+                const before  = baselineStats[en];
+                if (after == null || before == null) continue;
+                const delta   = after - before;
+                const isPct   = pctSet.has(en);
+                const afterDisp = isPct
+                    ? (after / 100).toFixed(2) + '%'
+                    : Math.round(after).toLocaleString();
+                let deltaHtml = '';
+                if (Math.abs(delta) >= 0.5) {
+                    const dStr = isPct
+                        ? (Math.abs(delta) / 100).toFixed(2) + '%'
+                        : Math.round(Math.abs(delta)).toLocaleString();
+                    const sign = delta > 0 ? '+' : '−';
+                    deltaHtml = `<span class="dst-key-item-delta ${delta > 0 ? 'pos' : 'neg'}">${sign}${dStr}</span>`;
+                }
+                bodyHtml += `<div class="key-item dst-key-item ${grp.cls}">
+                    <span class="key-item-name">${e.label}(${en})</span>
+                    <span class="key-item-val">${afterDisp}${deltaHtml}</span>
+                </div>`;
+            }
+        }
+        substHtml = anyDistribGroup
+            ? `<div class="dst-subst-key-grid">${bodyHtml}</div>`
+            : `<div class="dst-subst-empty">분배가 0인 상태입니다. 위 표에서 1 이상 분배하면 해당 기본 스탯의 치환 능력치 변화가 표시됩니다.</div>`;
+    }
+    const substSectionHtml = `
+        <div class="dst-section-title">⚡ 분배에 의한 치환 능력치 변화 (미리보기)</div>
+        <div class="dst-subst-note">분배가 적용된 기본 스탯 그룹만 표시됩니다. 항목 우측의 <b style="color:#58d364;">+델타</b>가 분배 0 대비 증가량입니다.</div>
+        ${substHtml}`;
+
+    container.innerHTML = headerHtml + tableHtml + buttonsHtml + substSectionHtml;
+}
+
+function _classLabel(classId) {
+    const M = {
+        knight:'나이트', warrior:'워리어', assassin:'어쌔신',
+        archer:'아처', cleric:'클레릭', sorcerer:'소서러'
+    };
+    return M[classId] || classId;
+}
+
+function dstAdjust(stat, delta) {
+    if (!_dstPending) return;
+    const cfg = _dstReadConfig();
+    const total = _dstTotalPoints(currentLevel || 1);
+    const cur = _dstPending[stat] || 0;
+    const next = Math.max(0, cur + delta);
+    // 잔여 검증
+    const usedExcept = _dstUsedPoints(_dstPending) - cur;
+    const maxAllow = total - usedExcept;
+    _dstPending[stat] = Math.min(next, Math.max(0, maxAllow));
+    renderDistribPanel(false);
+}
+
+function dstInputChange(stat) {
+    const el = document.getElementById('dst-in-' + stat);
+    if (!el) return;
+    // 즉시 임시 객체 갱신 + 잔여 표시 갱신 (전체 재렌더 X — 포커스 보호)
+    const v = parseInt(el.value);
+    _dstPending[stat] = Number.isFinite(v) && v >= 0 ? v : 0;
+    // 잔여 / 미적용 메시지만 부분 갱신
+    const total = _dstTotalPoints(currentLevel || 1);
+    const used  = _dstUsedPoints(_dstPending);
+    const sumRow = document.querySelector('.dst-summary-row');
+    if (sumRow) {
+        const remain = total - used;
+        sumRow.innerHTML =
+            `<span><span class="lbl">총 보유 포인트</span><span class="val">${total.toLocaleString()}</span></span>` +
+            `<span><span class="lbl">사용</span><span class="val ${used > total ? 'warn' : ''}">${used.toLocaleString()}</span></span>` +
+            `<span><span class="lbl">잔여</span><span class="val ${remain < 0 ? 'warn' : (remain === 0 ? 'dim' : '')}">${remain.toLocaleString()}</span></span>` +
+            (_dstIsDirty() ? '<span class="dst-msg warn">• 미적용 변경 있음</span>' : '');
+    }
+}
+function dstInputBlur(stat) {
+    // 입력 종료 — 잔여 검증 + 전체 재렌더(미리보기 갱신)
+    const total = _dstTotalPoints(currentLevel || 1);
+    const used  = _dstUsedPoints(_dstPending);
+    if (used > total) {
+        // 초과 → 해당 입력값을 가능한 최대치로 조정
+        const usedExcept = used - (_dstPending[stat] || 0);
+        const maxAllow = Math.max(0, total - usedExcept);
+        _dstPending[stat] = maxAllow;
+        toast(`잔여 포인트 초과 — ${stat} 값을 ${maxAllow}로 조정`);
+    }
+    renderDistribPanel(false);
+}
+
+function dstResetAll() {
+    if (!_dstPending) return;
+    _DST_BASE_STATS.forEach(k => _dstPending[k] = 0);
+    renderDistribPanel(false);
+}
+
+function dstRevertEdits() {
+    _dstPending = null;
+    renderDistribPanel(true);
+}
+
+function dstApply() {
+    const total = _dstTotalPoints(currentLevel || 1);
+    const used  = _dstUsedPoints(_dstPending);
+    if (used > total) { toast('잔여 포인트 초과 — 적용 불가'); return; }
+    const classId = _dstReadCurrentClass();
+    _dstWriteStats(classId, _dstPending);
+    _dstSavedSnapshot = { ..._dstPending };
+    // parent(field_battle.html)에 알림 → DISTRIBUTED_STATS 재로드 + 전투 스탯 재계산
+    try {
+        if (window.parent && window.parent !== window) {
+            window.parent.postMessage({
+                type: 'distrib-applied',
+                classId: classId,
+                stats:   { ..._dstPending },
+            }, '*');
+        }
+    } catch (_) {}
+    toast(`✔ 분배 적용 — 사용 ${used} / 총 ${total}`);
+    // 잠시 후 syncNow로 캐릭터 스탯 다시 받기
+    setTimeout(syncNow, 50);
+    renderDistribPanel(false);
+}
+
+// ════════════════════════════════════════════════════════════
 //  토스트 알림
 // ════════════════════════════════════════════════════════════
 function toast(msg) {
@@ -1236,11 +2383,23 @@ syncNow();
 setInterval(syncNow, 1000);
 
 // localStorage 변경 즉시 반영 (field_battle.html이 저장하면 바로 갱신)
+// versione_char_bonuses: 장비/강화/제련/클래스속도 등 모든 능력치 보너스 통합 키 (field_battle._publishCharBonuses)
 window.addEventListener('storage', (e) => {
-    if (['versione_char', 'versione_lv_stat_config', 'versione_base_stats'].includes(e.key)) {
+    if (['versione_char', 'versione_lv_stat_config', 'versione_base_stats',
+         'versione_char_bonuses', 'versione_distrib_stat_config'].includes(e.key)) {
         syncNow();
     }
+    // 분배 결과 외부 변경(예: 진행 초기화) — 현재 클래스 키이면 분배 패널 강제 리로드
+    if (e.key && e.key.startsWith('versione_distributed_stats_')) {
+        const cid = e.key.slice('versione_distributed_stats_'.length);
+        if (cid === _dstReadCurrentClass()) {
+            _dstPending = null; // 외부 변경 → 임시 편집 초기화
+            const distribTab = document.getElementById('mtab-btn-distrib');
+            if (distribTab && distribTab.classList.contains('on')) renderDistribPanel(true);
+        }
+    }
 });
+
 </script>
 </body>
 </html>
