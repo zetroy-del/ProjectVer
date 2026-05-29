@@ -258,6 +258,7 @@ body {
     flex-shrink: 0;
     padding: 0 12px;
     gap: 0;
+    overflow-x: auto; /* 탭이 많아 좁은 폭에서 잘리지 않도록 수평 스크롤 허용 */
 }
 
 .main-tab-btn {
@@ -276,6 +277,70 @@ body {
 }
 .main-tab-btn:hover { color: var(--text); }
 .main-tab-btn.on { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* 🎁 보너스 출처별 능력치 탭 */
+#source-list { padding: 12px 14px 24px; overflow-y: auto; }
+.src-intro {
+    background: rgba(79,195,247,0.06);
+    border: 1px solid rgba(79,195,247,0.25);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    color: var(--sub);
+    line-height: 1.55;
+}
+.src-empty {
+    text-align: center;
+    color: var(--dim);
+    font-size: 14px;
+    padding: 36px 12px;
+}
+.src-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+.src-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+}
+.src-section-name {
+    font-size: 15px;
+    font-weight: 700;
+}
+.src-section-cnt {
+    background: var(--bg-panel);
+    color: var(--sub);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+.src-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 12px;
+    padding: 8px 12px 10px;
+}
+.src-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+    background: var(--bg-panel);
+    border-radius: 4px;
+    font-size: 13px;
+    min-height: 22px;
+}
+.src-stat-name { color: var(--text); }
+.src-stat-val { font-weight: 700; font-family: tabular-nums; }
 
 /* 🧮 능력치 적용 공식 탭 */
 #formula-list { padding: 12px 14px 24px; overflow-y: auto; }
@@ -1013,6 +1078,7 @@ body {
     <div class="main-tab-bar">
         <button class="main-tab-btn on" id="mtab-btn-subst"   onclick="setMainTab('subst')">⚡ 치환 능력치</button>
         <button class="main-tab-btn"    id="mtab-btn-stat"    onclick="setMainTab('stat')">📋 전체 능력치</button>
+        <button class="main-tab-btn"    id="mtab-btn-source"  onclick="setMainTab('source')">🎁 보너스 출처별 능력치</button>
         <button class="main-tab-btn"    id="mtab-btn-formula" onclick="setMainTab('formula')">🧮 2차 능력치 산출 공식</button>
     </div>
 
@@ -1038,6 +1104,13 @@ body {
         </div>
         <div id="stat-list">
             <!-- JS로 그룹별 섹션 동적 생성 -->
+        </div>
+    </div>
+
+    <!-- 🎁 보너스 출처별 능력치 — _BONUS_SOURCES 카테고리별 능력치 분류 -->
+    <div class="main-panel-page" id="mtab-source">
+        <div id="source-list">
+            <!-- JS로 동적 생성 (renderSourceBreakdown) -->
         </div>
     </div>
 
@@ -1306,6 +1379,9 @@ function renderAll() {
     // 보너스 출처 표시
     renderBonusSrcs();
 
+    // 보너스 출처별 능력치 (탭이 활성화되어 있지 않아도 백그라운드 갱신)
+    if (typeof renderSourceBreakdown === 'function') renderSourceBreakdown();
+
     // 스탯 목록
     renderList();
 
@@ -1391,7 +1467,7 @@ function renderKeyCards(lv, bon) {
 //  메인 탭 전환 (치환 능력치 ↔ 전체 능력치)
 // ════════════════════════════════════════════════════════════
 function setMainTab(tab) {
-    ['subst', 'stat', 'formula'].forEach(t => {
+    ['subst', 'stat', 'source', 'formula'].forEach(t => {
         const btn  = document.getElementById('mtab-btn-' + t);
         const page = document.getElementById('mtab-' + t);
         if (btn)  btn.classList.toggle('on', t === tab);
@@ -1399,6 +1475,8 @@ function setMainTab(tab) {
     });
     // 공식 탭으로 전환 시 즉시 렌더 (최신 currentStats 반영)
     if (tab === 'formula' && typeof renderFormulas === 'function') renderFormulas();
+    // 보너스 출처 탭으로 전환 시 즉시 렌더 (최신 bonusReg 반영)
+    if (tab === 'source' && typeof renderSourceBreakdown === 'function') renderSourceBreakdown();
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1976,8 +2054,138 @@ function renderBonusSrcs() {
     if (srcs.length === 0) {
         el.innerHTML = '<span style="color:var(--dim);">없음 — 장착 아이템 / 버프 / 스킬이 추가되면 여기에 표시됩니다.</span>';
     } else {
-        el.innerHTML = srcs.map(s => `<span class="bonus-tag">✦ ${s}</span>`).join('');
+        el.innerHTML = srcs.map(s => `<span class="bonus-tag">✦ ${_sourceLabel(s)}</span>`).join('');
     }
+}
+
+// ════════════════════════════════════════════════════════════
+//  🎁 보너스 출처별 능력치 — 신규 메인 탭
+// ════════════════════════════════════════════════════════════
+// _BONUS_SOURCES와 동기화된 라벨/색상/순서 메타데이터
+//   - field_battle.html이 publish하는 카테고리 키와 일치해야 함
+//   - 신규 카테고리 추가 시 여기에 한 줄 추가 → 자동 표시
+const SOURCE_META = {
+    equipment:    { label: '🗡 착용 장비',         color: '#9c9cf5', order: 10 },
+    eqSubOptions: { label: '🔍 장비 부옵션(감정)', color: '#ffd86b', order: 15 },
+    refine:       { label: '🔥 장비 제련',         color: '#ff7a45', order: 20 },
+    classSpeed:   { label: '🏃 클래스 속도',       color: '#58a6ff', order: 30 },
+    distribStats: { label: '🎯 스탯 분배',         color: '#56c774', order: 40 },
+    potential:    { label: '✨ 잠재력',            color: '#b388ff', order: 50 },
+    morph:        { label: '🌟 변신',              color: '#ff9ed8', order: 60 },
+    morphCodex:   { label: '📖 변신 도감',         color: '#ffd0e8', order: 65 },
+    doll:         { label: '🧸 마법인형',          color: '#a78bfa', order: 70 },
+    dollCodex:    { label: '📔 마법인형 도감',     color: '#c4b5fd', order: 75 },
+    beast:        { label: '🐉 환수',              color: '#ffae42', order: 80 },
+    beastCodex:   { label: '📓 환수 도감',         color: '#ffd599', order: 85 },
+    title:        { label: '🏅 명성',              color: '#e6c97a', order: 90 },
+    altar:        { label: '⛩️ 제단 제련',          color: '#8be9c1', order: 100 },
+    oracle:       { label: '🔮 오라클 카드',       color: '#7fdcff', order: 110 },
+    oracleCodex:  { label: '📖 오라클 도감',       color: '#b6ecff', order: 115 },
+    sealstone:    { label: '💎 봉인석 (공명+승화+해방)', color: '#ffd86b', order: 120 },
+    sanctuary:    { label: '🏛 영웅의 성소 (계승)',  color: '#a78bfa', order: 130 },
+};
+// sourceId → 친화 라벨 (모르면 원본 그대로)
+function _sourceLabel(srcId) {
+    const cat = (srcId && srcId.startsWith('field:')) ? srcId.slice(6) : srcId;
+    if (SOURCE_META[cat]) return SOURCE_META[cat].label;
+    return cat || srcId;
+}
+function _sourceColor(srcId) {
+    const cat = (srcId && srcId.startsWith('field:')) ? srcId.slice(6) : srcId;
+    return (SOURCE_META[cat] && SOURCE_META[cat].color) || '#58a6ff';
+}
+function _sourceOrder(srcId) {
+    const cat = (srcId && srcId.startsWith('field:')) ? srcId.slice(6) : srcId;
+    return (SOURCE_META[cat] && SOURCE_META[cat].order) || 9999;
+}
+
+// stats_calc.js에 정의된 fmtStatDisplay/STAT_LIST/RAW_PCT_STAT_KEYS/COMPUTED_PCT_STAT_KEYS 사용
+function _srcStatLabel(en) {
+    if (typeof STAT_LIST !== 'undefined') {
+        const row = STAT_LIST.find(x => x.en === en);
+        if (row && row.kr) return row.kr;
+    }
+    return en;
+}
+function _srcFmtVal(en, raw) {
+    const r = +raw || 0;
+    if (typeof COMPUTED_PCT_STAT_KEYS !== 'undefined' && COMPUTED_PCT_STAT_KEYS.has(en)) {
+        return '+' + r.toFixed(2) + '%';
+    }
+    if (typeof RAW_PCT_STAT_KEYS !== 'undefined' && RAW_PCT_STAT_KEYS.has(en)) {
+        return '+' + (r / 100).toFixed(2) + '%';
+    }
+    return '+' + Math.floor(r).toLocaleString();
+}
+
+function renderSourceBreakdown() {
+    const root = document.getElementById('source-list');
+    if (!root) return;
+    // 외부 보너스 출처만 (게임 기본값 __ 제외)
+    const entries = Object.keys(bonusReg)
+        .filter(s => !isGameDefault(s))
+        .map(srcId => ({ srcId, stats: bonusReg[srcId] || {} }))
+        // 비-0 stat이 1개 이상인 출처만 표시
+        .filter(e => Object.values(e.stats).some(v => Number.isFinite(v) && v !== 0))
+        .sort((a, b) => _sourceOrder(a.srcId) - _sourceOrder(b.srcId));
+
+    // 헤더 — 통합 합산 + 출처 카운트 + 안내
+    let totalStatCnt = 0;
+    const mergedAll = {};
+    for (const e of entries) {
+        for (const [k, v] of Object.entries(e.stats)) {
+            if (!Number.isFinite(v) || v === 0) continue;
+            mergedAll[k] = (mergedAll[k] || 0) + v;
+        }
+    }
+    totalStatCnt = Object.keys(mergedAll).length;
+    const intro = `<div class="src-intro">
+        🎁 외부 보너스 출처 <b style="color:var(--gold);">${entries.length.toLocaleString()}</b>개에서 <b style="color:var(--gold);">${totalStatCnt.toLocaleString()}</b>종의 능력치가 적용 중입니다.
+        <br><span style="color:var(--dim);font-size:12px;">※ 게임 기본값(레벨 능력치 등)은 제외. 같은 능력치가 여러 출처에 있으면 각 출처별로 따로 표시되며 내부 합산에서 모두 더해집니다.</span>
+    </div>`;
+
+    if (entries.length === 0) {
+        root.innerHTML = intro + `<div class="src-empty">아직 적용 중인 외부 보너스가 없습니다.<br><span style="color:var(--dim);font-size:13px;">장비 착용 · 변신 활성화 · 봉인석 공명 · 영웅의 성소 계승 등을 진행하면 여기에 출처별로 표시됩니다.</span></div>`;
+        return;
+    }
+
+    // 통합 합산 카드 (최상단)
+    const mergedSorted = Object.keys(mergedAll)
+        .map(en => ({ en, kr: _srcStatLabel(en), val: mergedAll[en], fmt: _srcFmtVal(en, mergedAll[en]) }))
+        .sort((a, b) => a.kr.localeCompare(b.kr, 'ko'));
+    const mergedRows = mergedSorted.map(it =>
+        `<div class="src-stat-row"><span class="src-stat-name" title="${it.en}">${it.kr}</span><span class="src-stat-val" style="color:#ffd86b;">${it.fmt}</span></div>`
+    ).join('');
+    const mergedSection = `<div class="src-section" style="border-left-color:#ffd86b;">
+        <div class="src-section-head" style="background:linear-gradient(90deg,rgba(255,216,107,0.18),transparent);">
+            <span class="src-section-name" style="color:#ffd86b;">🔢 전체 출처 통합 합산</span>
+            <span class="src-section-cnt">${mergedSorted.length}개 능력치</span>
+        </div>
+        <div class="src-stat-grid">${mergedRows}</div>
+    </div>`;
+
+    // 출처별 카드
+    const sections = entries.map(e => {
+        const list = Object.keys(e.stats)
+            .map(en => ({ en, val: e.stats[en] }))
+            .filter(it => Number.isFinite(it.val) && it.val !== 0)
+            .map(it => ({ ...it, kr: _srcStatLabel(it.en), fmt: _srcFmtVal(it.en, it.val) }))
+            .sort((a, b) => a.kr.localeCompare(b.kr, 'ko'));
+        const color = _sourceColor(e.srcId);
+        const label = _sourceLabel(e.srcId);
+        const rows = list.map(it =>
+            `<div class="src-stat-row"><span class="src-stat-name" title="${it.en}">${it.kr}</span><span class="src-stat-val" style="color:${color};">${it.fmt}</span></div>`
+        ).join('');
+        return `<div class="src-section" style="border-left-color:${color};">
+            <div class="src-section-head" style="background:linear-gradient(90deg,${color}22,transparent);">
+                <span class="src-section-name" style="color:${color};">${label}</span>
+                <span class="src-section-cnt">${list.length}개 능력치</span>
+            </div>
+            <div class="src-stat-grid">${rows}</div>
+        </div>`;
+    }).join('');
+
+    root.innerHTML = intro + mergedSection + sections;
 }
 
 // ════════════════════════════════════════════════════════════

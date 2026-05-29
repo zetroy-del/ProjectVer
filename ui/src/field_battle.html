@@ -1974,7 +1974,29 @@ body {
 
 /* 💎 봉인석 모달 — 변신 모달과 동일 크기 */
 .limit-modal.sealstone-modal { width: 1120px; max-width: 96vw; height: 90vh; max-height: 90vh; }
-.morph-tab.locked { opacity: 0.45; cursor: not-allowed; }
+/* 잠긴 봉인석 타입 탭 — 클릭 가능하되 시각적으로 흐림 처리 (미리보기 모드) */
+.morph-tab.locked { opacity: 0.55; cursor: pointer; }
+.morph-tab.locked:hover { opacity: 0.85; }
+/* 잠긴 타입 진입 시 헤더 카드 안내 배너 */
+.seal-type-lock-banner {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(255,123,114,0.12), rgba(255,123,114,0.04));
+    border: 1px solid rgba(255,123,114,0.45);
+    border-radius: 6px;
+    color: #ffcdc6;
+    font-size: 13px;
+    line-height: 1.55;
+}
+.seal-type-lock-banner b { color: #ff7b72; }
+/* 연속 공명 설정 영역 자체를 흐림 처리 */
+.seal-auto-settings.disabled { opacity: 0.55; }
+/* 잠긴 타입의 봉인석 그리드 — 카드 자체는 정상 표시하되 살짝 흐림 */
+.seal-grid.type-locked-preview .seal-card:not(.locked) { opacity: 0.92; }
+.seal-card.type-locked-card .seal-resonance-btn,
+.seal-card.type-locked-card .seal-opt-lock,
+.seal-card.type-locked-card .seal-lib-btn { cursor: not-allowed; }
+.seal-resonance-btn.type-locked { background: #21262d; color: #6e7681; border: 1px solid #30363d; }
 .seal-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -3202,6 +3224,56 @@ body {
 .mc-summary-row .lbl { color: #8b949e; margin-right: 4px; }
 .mc-summary-row .val { color: #d8a8e8; font-weight: 700; font-variant-numeric: tabular-nums; }
 .mc-summary-row .val.dim { color: #6e7681; font-weight: 600; }
+
+/* 🎁 보너스 출처 breakdown 패널 — 봉인석/성소/능력치 상세에 공통 사용 */
+.bonus-breakdown-section {
+    margin-bottom: 14px;
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+.bonus-breakdown-title {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-left: 4px solid;
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.bonus-breakdown-count {
+    background: #1f2430;
+    color: #c4c4c4;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: auto;
+}
+.bonus-breakdown-empty {
+    color: #6e7681;
+    font-size: 12px;
+    padding: 8px 4px;
+    text-align: center;
+}
+.bonus-breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 12px;
+}
+.bonus-breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 6px;
+    background: #161b22;
+    border-radius: 4px;
+    font-size: 12px;
+}
+.bbr-name { color: #c9d1d9; }
+.bbr-val { font-weight: 700; font-family: tabular-nums; }
 
 /* 📊 도감 능력치 총합 탭 — 등급/타입별 누적표 + 능력치별 합산표 */
 .mc-total-section { margin-bottom: 20px; }
@@ -4631,34 +4703,49 @@ body {
     border-top: 1px solid #21262d;
     font-size: 15px; text-align: center;
 }
-/* 분해 모드 하단 액션 바 */
+/* 분해 모드 하단 액션 바 — 인벤토리 우측 패널 폭(약 280~400px)에 모든 버튼이 들어가도록
+   3행 구조: (정보 행) / (보조 버튼 행: 자동분해·전체선택·전체해제) / (실행 버튼 행: 분해하기 full-width) */
 .inv-dis-bar {
     display: none;
     flex-direction: column;
-    gap: 6px;
-    padding: 8px 12px;
+    gap: 5px;
+    padding: 8px 10px;
     background: #0d1117;
     border-top: 2px solid #f85149;
     flex-shrink: 0;
 }
 .inv-dis-bar.active { display: flex; }
-.inv-dis-count { font-size: 15px; color: #8b949e; }
+.inv-dis-info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.inv-dis-count { font-size: 13px; color: #8b949e; }
 .inv-dis-count strong { color: #f85149; }
-.inv-dis-btn-row { display: flex; gap: 8px; align-items: center; }
+.inv-dis-btn-row {
+    display: flex;
+    gap: 4px;
+    align-items: stretch;
+    flex-wrap: nowrap;
+}
+.inv-dis-btn-row .inv-dis-btn { flex: 1; }
+.inv-dis-exec-row { display: flex; }
+.inv-dis-exec-row .inv-dis-btn.exec { flex: 1; }
 .inv-dis-btn {
-    padding: 4px 13px;
-    font-size: 15px;
+    padding: 5px 6px;
+    font-size: 13px;
     border-radius: 5px;
     cursor: pointer;
     white-space: nowrap;
+    text-align: center;
 }
 .inv-dis-btn.ghost { background: transparent; color: #e6edf3; border: 1px solid #30363d; }
 .inv-dis-btn.ghost:hover { color: #ffffff; border-color: #e6edf3; }
-.inv-dis-btn.exec { background: #f85149; color: #fff; border: 1px solid #f85149; }
+.inv-dis-btn.exec { background: #f85149; color: #fff; border: 1px solid #f85149; padding: 7px 12px; font-size: 14px; font-weight: 600; }
 .inv-dis-btn.exec:hover { background: #da3633; }
 .inv-dis-btn.exec:disabled { background: #21262d; color: #e6edf3; border-color: #21262d; cursor: default; }
 .inv-autodis-status {
-    margin-left: 10px;
     padding: 2px 8px;
     border-radius: 4px;
     background: #1f2430;
@@ -6383,6 +6470,9 @@ body {
 
 /* 🔨 분해 확인 모달은 인벤토리 모달(z-index:500) 안에서 열리므로 그 위에 표시되도록 상향 */
 #disassemble-confirm-overlay { z-index: 800; }
+/* ⚙ 자동 분해 설정 · 🔍 감정 결과 모달도 인벤토리 위에서 호출되므로 동일 z-index 적용 */
+#autodis-overlay { z-index: 800; }
+#appraise-result-overlay { z-index: 800; }
 .patchnote-body {
     flex: 1;
     overflow-y: auto;
@@ -8311,12 +8401,17 @@ body {
                 </div>
                 <!-- 분해 모드 액션 바 (분해 모드일 때만 표시) -->
                 <div class="inv-dis-bar" id="inv-dis-bar">
-                    <span class="inv-dis-count"><strong id="inv-dis-count">0</strong>개 선택됨 <span id="inv-autodis-status" class="inv-autodis-status"></span></span>
+                    <div class="inv-dis-info-row">
+                        <span class="inv-dis-count"><strong id="inv-dis-count">0</strong>개 선택됨</span>
+                        <span id="inv-autodis-status" class="inv-autodis-status"></span>
+                    </div>
                     <div class="inv-dis-btn-row">
-                        <button class="inv-dis-btn ghost" onclick="openAutoDisassembleModal()" title="획득 즉시 자동 분해 등급 설정">⚙ 자동 분해 설정</button>
+                        <button class="inv-dis-btn ghost" onclick="openAutoDisassembleModal()" title="획득 즉시 자동 분해 등급 설정">⚙ 자동 분해</button>
                         <button class="inv-dis-btn ghost" onclick="selectAllDisassemble()">전체 선택</button>
                         <button class="inv-dis-btn ghost" onclick="clearDisassembleSelect()">전체 해제</button>
-                        <button class="inv-dis-btn exec" id="inv-dis-exec" onclick="doDisassemble()" disabled>분해하기</button>
+                    </div>
+                    <div class="inv-dis-exec-row">
+                        <button class="inv-dis-btn exec" id="inv-dis-exec" onclick="doDisassemble()" disabled>🔨 분해하기</button>
                     </div>
                 </div>
             </div><!-- /inv-right-panel -->
@@ -8417,9 +8512,66 @@ body {
             <div class="pn-month-header" data-pn-year="2026" data-pn-month="5">
                 <span class="pn-month-year">2026년</span>
                 <span class="pn-month-label">5월</span>
-                <span class="pn-month-count">347건</span>
+                <span class="pn-month-count">353건</span>
             </div>
             <div class="pn-month-section" data-pn-year="2026" data-pn-month="5">
+
+            <!-- ── 2026-05-29 17:16 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-29</span>
+                <span class="pn-ver-time">17:16</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item">
+                    <span class="pn-tag sys">시스템</span>
+                    <span class="pn-summary">봉인석 <strong>잠금 타입 미리보기</strong> 모드 추가</span>
+                    <span class="pn-detail">잠긴 타입 탭도 클릭 가능하여 헤더·10종 봉인석 카드·공명 수치·해방 정보를 모두 확인 가능. 공명·연속 공명·잠금 토글·해방·돌파 등 모든 기능 버튼은 <code>disabled</code> + 안내 툴팁. <code>toggleSealstoneLock</code>·<code>tryLiberation</code>·<code>tryBreakthrough</code>·<code>onSealstoneAutoStart</code>에 백엔드 가드 추가하여 UI 우회도 방어</span>
+                </li>
+            </ul>
+
+            <!-- ── 2026-05-29 17:02 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-29</span>
+                <span class="pn-ver-time">17:02</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item">
+                    <span class="pn-tag sys">시스템</span>
+                    <span class="pn-summary">봉인석 모달 <strong>획득 능력치 총합</strong> 추가</span>
+                    <span class="pn-detail">정보 탭 최상단에 통합 합산 + <code>공명</code>·<code>승화</code>·<code>해방</code> 세부 분류 카드 표시. <code>getSealstoneBonusesByPart()</code> 신설로 세 소스를 색상별로 구분(<code>#56c774</code>·<code>#b060ee</code>·<code>#5b9bf3</code>)</span>
+                </li>
+                <li class="pn-item">
+                    <span class="pn-tag sys">시스템</span>
+                    <span class="pn-summary">영웅의 성소 모달 <strong>계승 능력치 총합</strong> 추가</span>
+                    <span class="pn-detail">메인 탭의 보유 타입 패널 아래에 보유 모든 레거시(단독 2옵션·복합 3옵션) 합산 카드 추가. 한글 가나다순 정렬 · 색상 <code>#a78bfa</code></span>
+                </li>
+                <li class="pn-item">
+                    <span class="pn-tag ui">UI</span>
+                    <span class="pn-summary">능력치 상세에 <strong>🎁 보너스 출처별 능력치</strong> 탭 신설</span>
+                    <span class="pn-detail">통합 합산 카드 + 18종 출처별 카드(장비·제련·변신·인형·환수·명성·제단·오라클·봉인석·성소 등) 각각 2열 능력치 그리드 표시. <code>fmtStatDisplay</code> 규칙대로 % / 정수 자동 분기 · 한글 가나다순 정렬</span>
+                </li>
+            </ul>
+
+            <!-- ── 2026-05-29 14:55 ── -->
+            <div class="pn-ver">
+                <span class="pn-ver-date">2026-05-29</span>
+                <span class="pn-ver-time">14:55</span>
+                <div class="pn-divider"></div>
+            </div>
+            <ul class="pn-list">
+                <li class="pn-item">
+                    <span class="pn-tag fix">수정</span>
+                    <span class="pn-summary">분해 모드 액션 바 <strong>버튼 영역 이탈</strong> 수정</span>
+                    <span class="pn-detail">3행 구조로 재구성 — 정보 행(선택 카운트 + 자동 분해 ON/OFF 배지) · 보조 버튼 행(<code>⚙ 자동 분해 · 전체 선택 · 전체 해제</code> <code>flex:1</code> 균등 분배) · 실행 버튼 행(<code>🔨 분해하기</code> full-width). 우측 패널 폭 ~<code>320px</code>에서 정상 fit</span>
+                </li>
+                <li class="pn-item">
+                    <span class="pn-tag fix">수정</span>
+                    <span class="pn-summary">자동 분해 설정 모달 <strong>인벤토리 뒤에 가려지는 문제</strong> 수정</span>
+                    <span class="pn-detail">동일 z-index에서 인벤토리 모달이 위에 그려지던 문제. <code>#autodis-overlay { z-index: 800 }</code>·<code>#appraise-result-overlay { z-index: 800 }</code> 명시로 인벤토리(<code>z-index:500</code>) 위에 정상 표시</span>
+                </li>
+            </ul>
 
             <!-- ── 2026-05-28 22:49 ── -->
             <div class="pn-ver">
@@ -17942,6 +18094,7 @@ function tryResonance(ti, si) {
 
 // 잠금 토글 — 최대 2개까지
 function toggleSealstoneLock(ti, si, optIdx) {
+    if (!isSealstoneTypeUnlocked(ti)) return false; // 잠긴 타입은 잠금 토글 불가 (미리보기 모드)
     const st = getSealstoneStoneState(ti, si);
     if (st.sublimated) return false;
     const opt = st.options[optIdx];
@@ -18045,6 +18198,7 @@ function _sealstoneLibNextBreakthrough(libState) {
 // premium=true: 골드 + 빛의 파동석 둘 다 소비
 // 반환: { success, gainedExp, leveledUp, levelsGained, hitMax } or { error }
 function tryLiberation(ti, si, premium) {
+    if (!isSealstoneTypeUnlocked(ti)) return { error: 'typeLocked' }; // 미리보기 모드 — 기능 불가
     if (!isSealstoneLiberationActive(ti, si)) return { error: 'inactive' };
     const lib = getSealstoneLibState(ti, si);
     const maxLv = _sealstoneLibMaxLevel(lib.breakthroughs);
@@ -18084,6 +18238,7 @@ function tryLiberation(ti, si, premium) {
 }
 // 돌파 — 빛의 파동석으로 MAX 레벨 확장
 function tryBreakthrough(ti, si) {
+    if (!isSealstoneTypeUnlocked(ti)) return { error: 'typeLocked' }; // 미리보기 모드 — 기능 불가
     const lib = getSealstoneLibState(ti, si);
     const idx = _sealstoneLibNextBreakthrough(lib);
     if (idx < 0) return { error: 'cannot' };
@@ -18115,7 +18270,18 @@ function tryLiberationBulk(ti, si, premium, count) {
 
 // 능력치 합산 — 공명 + 승화 + 해방
 function getSealstoneBonuses() {
+    const parts = getSealstoneBonusesByPart();
     const out = {};
+    for (const part of Object.values(parts)) {
+        for (const [k, v] of Object.entries(part)) out[k] = (out[k] || 0) + v;
+    }
+    return out;
+}
+// 세부 분류 — { resonance: {...}, sublimation: {...}, liberation: {...} }
+function getSealstoneBonusesByPart() {
+    const resonance = {};
+    const sublimation = {};
+    const liberation = {};
     const cls = (typeof currentClass !== 'undefined') ? currentClass : 'knight';
     for (let ti = 0; ti < SEALSTONE_TYPES.length; ti++) {
         for (let si = 0; si < SEALSTONE_STONES.length; si++) {
@@ -18123,28 +18289,25 @@ function getSealstoneBonuses() {
             if (!st) continue;
             const stone = SEALSTONE_STONES[si];
             const vals  = SEALSTONE_RESONANCE_VALUES_BY_TYPE[ti] || [];
-            // 공명 옵션 합산 (3개) — 옵션이 있을 때만
             if (st.options && st.options.length > 0) {
                 for (const opt of st.options) {
                     const v = vals[opt.grade] || 0;
-                    if (v > 0) out[stone.resonanceStat] = (out[stone.resonanceStat] || 0) + v;
+                    if (v > 0) resonance[stone.resonanceStat] = (resonance[stone.resonanceStat] || 0) + v;
                 }
             }
-            // 승화 옵션 — 클래스별 2개
             if (st.sublimated && SEALSTONE_SUBLIMATION_DATA[ti] && SEALSTONE_SUBLIMATION_DATA[ti][si]) {
                 const subOpts = SEALSTONE_SUBLIMATION_DATA[ti][si][cls] || [];
                 for (const [en, val] of subOpts) {
-                    if (en && val > 0) out[en] = (out[en] || 0) + val;
+                    if (en && val > 0) sublimation[en] = (sublimation[en] || 0) + val;
                 }
             }
-            // 해방 능력치 — 항상 적용 (활성/비활성 무관, 레벨이 1 이상이면 lv≥2부터 값 발생)
             if (st.liberation && st.liberation.level >= 2) {
                 const libV = _sealstoneLibValueAt(ti, st.liberation.level);
-                if (libV > 0) out[stone.resonanceStat] = (out[stone.resonanceStat] || 0) + libV;
+                if (libV > 0) liberation[stone.resonanceStat] = (liberation[stone.resonanceStat] || 0) + libV;
             }
         }
     }
-    return out;
+    return { resonance, sublimation, liberation };
 }
 
 // 통계 — 보유/완성도/공명 횟수
@@ -18905,6 +19068,67 @@ function getSanctuaryStats() {
     const totalLegacies = SANCTUARY_LEGACIES.length;
     const ownedCount = Object.keys(SANCTUARY_STATE.acquired).length;
     return { totalLegacies, ownedCount, level: SANCTUARY_STATE.level };
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// 🎁 보너스 출처별 능력치 표시 — 공용 헬퍼
+//   - getStatLabel(en):       STAT_LIST/SEALSTONE_OPTION_LABELS/APPRAISE_LABELS 우선순으로 한글 라벨 룩업
+//   - fmtBonusValue(en, raw): RAW_PCT_STAT_KEYS/COMPUTED_PCT_STAT_KEYS 자동 판별, raw 정수도 천 단위 콤마
+//   - renderBonusBreakdownHTML(bonusMap, title, color, opts):
+//       카드 1개 HTML 반환 — 빈 맵이면 "없음" 표시
+//   - renderBonusMultiSection(sections):
+//       [{title, color, bonusMap}, ...] 다중 섹션 HTML 반환 (정렬 + 그룹 합산 동시)
+// ════════════════════════════════════════════════════════════════════════════
+function getStatLabel(en) {
+    if (typeof SEALSTONE_OPTION_LABELS !== 'undefined' && SEALSTONE_OPTION_LABELS[en]) return SEALSTONE_OPTION_LABELS[en];
+    if (typeof APPRAISE_LABELS !== 'undefined' && APPRAISE_LABELS[en]) return APPRAISE_LABELS[en];
+    if (typeof STAT_LIST !== 'undefined') {
+        const row = STAT_LIST.find(x => x.en === en);
+        if (row && row.kr) return row.kr;
+    }
+    return en;
+}
+function fmtBonusValue(en, raw) {
+    const r = +raw || 0;
+    const isPct = (typeof RAW_PCT_STAT_KEYS !== 'undefined' && RAW_PCT_STAT_KEYS.has(en))
+               || (typeof COMPUTED_PCT_STAT_KEYS !== 'undefined' && COMPUTED_PCT_STAT_KEYS.has(en));
+    if (isPct) return '+' + (r / 100).toFixed(2) + '%';
+    return '+' + Math.floor(r).toLocaleString();
+}
+// 보너스 맵 → 정렬된 [{en, kr, val, fmt}] 리스트
+function _bonusListSorted(bonusMap) {
+    const arr = [];
+    if (!bonusMap || typeof bonusMap !== 'object') return arr;
+    for (const en of Object.keys(bonusMap)) {
+        const raw = bonusMap[en];
+        if (!Number.isFinite(raw) || raw === 0) continue;
+        arr.push({ en, kr: getStatLabel(en), val: raw, fmt: fmtBonusValue(en, raw) });
+    }
+    arr.sort((a, b) => a.kr.localeCompare(b.kr, 'ko'));
+    return arr;
+}
+// 한 섹션 — 헤더 + 능력치 그리드 (제목 색상 강조, 합계 옆 N개 능력치)
+function renderBonusBreakdownHTML(bonusMap, title, color) {
+    const list = _bonusListSorted(bonusMap);
+    color = color || '#58d364';
+    if (list.length === 0) {
+        return `<div class="bonus-breakdown-section">
+            <div class="bonus-breakdown-title" style="color:${color};border-left-color:${color};">${title} <span class="bonus-breakdown-count">0개</span></div>
+            <div class="bonus-breakdown-empty">획득한 능력치가 없습니다.</div>
+        </div>`;
+    }
+    const rows = list.map(it =>
+        `<div class="bonus-breakdown-row"><span class="bbr-name">${it.kr}</span><span class="bbr-val" style="color:${color};">${it.fmt}</span></div>`
+    ).join('');
+    return `<div class="bonus-breakdown-section">
+        <div class="bonus-breakdown-title" style="color:${color};border-left-color:${color};">${title} <span class="bonus-breakdown-count">${list.length}개</span></div>
+        <div class="bonus-breakdown-grid">${rows}</div>
+    </div>`;
+}
+// 다중 섹션 — 각 sources는 [{title, color, bonusMap}, ...]
+function renderBonusMultiSection(sources) {
+    if (!Array.isArray(sources)) return '';
+    return sources.map(s => renderBonusBreakdownHTML(s.bonusMap || {}, s.title, s.color)).join('');
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -21877,10 +22101,12 @@ function _sealstoneSyncTabs() {
     const tabs = [];
     for (const t of SEALSTONE_TYPES) {
         const unlocked = isSealstoneTypeUnlocked(t.idx);
+        // 잠긴 타입도 선택 가능(미리보기 모드) — 시각적으로는 locked 클래스(투명도)로 구분
         const cls = `morph-tab${_sealstoneTab === t.idx ? ' active' : ''}${unlocked ? '' : ' locked'}`;
-        const onclick = unlocked ? `onclick="sealstoneSwitchTab(${t.idx})"` : '';
+        const onclick = `onclick="sealstoneSwitchTab(${t.idx})"`;
         const lockHint = unlocked ? '' : ` (Lv.${t.openLv})`;
-        tabs.push(`<button class="${cls}" style="${_sealstoneTab === t.idx ? `color:${t.color};border-color:${t.color} ${t.color} #0d1117;` : ''}" ${onclick} title="${t.label}${lockHint}">${t.icon} ${t.label}${lockHint}</button>`);
+        const titleSuffix = unlocked ? '' : ` — 미리보기 (잠금)`;
+        tabs.push(`<button class="${cls}" style="${_sealstoneTab === t.idx ? `color:${t.color};border-color:${t.color} ${t.color} #0d1117;` : ''}" ${onclick} title="${t.label}${lockHint}${titleSuffix}">${t.icon} ${t.label}${lockHint}</button>`);
     }
     tabs.push(`<button class="morph-tab${_sealstoneTab === 'info' ? ' active' : ''}" onclick="sealstoneSwitchTab('info')">📋 공명·승화 정보</button>`);
     row.innerHTML = tabs.join('');
@@ -21892,6 +22118,8 @@ function renderSealstoneModal() {
 }
 
 // ── 타입 탭 — 10종 봉인석 그리드 ────────────────────────────────────────
+//   타입이 잠겨있어도 (캐릭터 레벨 < openLv) 내용은 모두 표시하되,
+//   상단에 잠금 안내 배너 + 모든 기능 버튼(공명·연속·해방·돌파·잠금)은 비활성화한다 — 미리보기 모드
 function _renderSealstoneTypeTab(ti) {
     const body = document.getElementById('sealstone-modal-body');
     if (!body) return;
@@ -21899,49 +22127,46 @@ function _renderSealstoneTypeTab(ti) {
 
     const charLv = (character && character.level) || 1;
     const soulLv = (character && character.soulLevel) || 1;
+    const typeUnlocked = isSealstoneTypeUnlocked(ti);
     // 빛의 파동석은 인벤토리 스택에서 조회
     const fragments = (typeof getScrollCount === 'function') ? getScrollCount('light_fragment') : 0;
     const stats = getSealstoneStats();
-
-    // 타입 잠금 안내
-    if (!isSealstoneTypeUnlocked(ti)) {
-        body.innerHTML = `<div class="mm-header-card" style="background:linear-gradient(135deg,${t.color}15,#0d1117);border-color:${t.color}55;">
-            <div class="mm-header-title" style="color:${t.color};">${t.icon} ${t.label} — 잠금</div>
-            <div class="mm-header-desc">
-                현재 캐릭터 레벨 <b>${charLv}</b>. 이 봉인석을 사용하려면 캐릭터 레벨 <b style="color:${t.color};">${t.openLv}</b> 이상이어야 합니다.
-            </div>
-        </div>`;
-        return;
-    }
 
     // 헤더 — 빛의 파동석 인벤토리 보유량 + 타입 정보 + 🔁 연속 공명 설정
     const ar = _autoResonanceSettings;
     const autoActive = _autoResonanceState.active;
     const minGradeOpts = SEALSTONE_GRADES.map(g => `<option value="${g.idx}" ${ar.minGrade === g.idx ? 'selected' : ''}>${g.label}</option>`).join('');
-    const autoSettingsHtml = `<div class="seal-auto-settings ${autoActive ? 'running' : ''}">
+    // 잠긴 타입에서는 연속 공명 설정 입력 자체를 비활성화
+    const autoCtlDisabled = autoActive || !typeUnlocked;
+    const autoSettingsHtml = `<div class="seal-auto-settings ${autoActive ? 'running' : ''}${typeUnlocked ? '' : ' disabled'}">
         <span class="seal-auto-title">🔁 연속 공명 조건 (AND)</span>
         <span class="seal-auto-field">최소 등급:
-            <select id="seal-auto-grade" onchange="onSealstoneAutoSettingChange('minGrade', this.value)" ${autoActive ? 'disabled' : ''}>${minGradeOpts}</select>
+            <select id="seal-auto-grade" onchange="onSealstoneAutoSettingChange('minGrade', this.value)" ${autoCtlDisabled ? 'disabled' : ''}>${minGradeOpts}</select>
         </span>
         <span class="seal-auto-field">최소 수량:
-            <select id="seal-auto-count" onchange="onSealstoneAutoSettingChange('minCount', this.value)" ${autoActive ? 'disabled' : ''}>
+            <select id="seal-auto-count" onchange="onSealstoneAutoSettingChange('minCount', this.value)" ${autoCtlDisabled ? 'disabled' : ''}>
                 <option value="1" ${ar.minCount === 1 ? 'selected' : ''}>1개</option>
                 <option value="2" ${ar.minCount === 2 ? 'selected' : ''}>2개</option>
                 <option value="3" ${ar.minCount === 3 ? 'selected' : ''}>3개</option>
             </select>
         </span>
         <span class="seal-auto-field">최대 횟수:
-            <input id="seal-auto-iters" type="number" min="1" max="999999" value="${ar.maxIters}" onchange="onSealstoneAutoSettingChange('maxIters', this.value)" ${autoActive ? 'disabled' : ''} style="width:80px;">회
+            <input id="seal-auto-iters" type="number" min="1" max="999999" value="${ar.maxIters}" onchange="onSealstoneAutoSettingChange('maxIters', this.value)" ${autoCtlDisabled ? 'disabled' : ''} style="width:80px;">회
         </span>
         ${autoActive ? `<span class="seal-auto-progress">진행: ${_autoResonanceState.iters} / ${_autoResonanceState.maxIters}회 (${SEALSTONE_TYPES[_autoResonanceState.ti].label} ${SEALSTONE_STONES[_autoResonanceState.si].label})</span>
         <button class="seal-auto-stop-btn" onclick="onSealstoneAutoStop()">⏹ 연속 공명 중단</button>` : ''}
     </div>`;
     const headerHtml = `<div class="mm-header-card" style="background:linear-gradient(135deg,${t.color}15,rgba(255,204,68,0.05));border-color:${t.color}55;">
-        <div class="mm-header-title" style="color:${t.color};">${t.icon} ${t.label} — 봉인석 공명·승화</div>
+        <div class="mm-header-title" style="color:${t.color};">${t.icon} ${t.label} — 봉인석 공명·승화${typeUnlocked ? '' : ' <span style=\"color:#ff7b72;font-size:14px;font-weight:600;margin-left:8px;\">🔒 잠금 (미리보기)</span>'}</div>
         <div class="mm-header-desc">
             10개 종류의 봉인석을 영혼 레벨에 따라 순차 오픈. 공명으로 3개 옵션을 추첨 → 잠금(최대 2개)으로 유지 → 3개 모두 신화 시 자동 <b>승화</b>.
             <br>승화된 봉인석은 더 이상 공명 불가하며 클래스별 승화 능력치가 자동 활성화됩니다.
         </div>
+        ${typeUnlocked ? '' : `<div class="seal-type-lock-banner">
+            🔒 <b>잠금 타입 — 미리보기 모드</b><br>
+            현재 캐릭터 레벨 <b>${charLv}</b>. 이 타입을 사용하려면 캐릭터 레벨 <b style="color:${t.color};">${t.openLv}</b> 이상이어야 합니다.
+            모든 봉인석 카드와 능력치를 확인할 수 있으나 공명·해방·돌파 등 기능 사용은 불가합니다.
+        </div>`}
         <div class="mm-active-row">
             <span class="lbl">🔆 빛의 파동석 (인벤토리)</span><span class="val" style="color:#ffd86b;">${fragments.toLocaleString()}개</span>
             <span class="lbl" style="margin-left:14px;">공명 비용</span><span class="val">${t.resonanceCost.toLocaleString()}개</span>
@@ -21951,16 +22176,18 @@ function _renderSealstoneTypeTab(ti) {
         ${autoSettingsHtml}
     </div>`;
 
-    // 봉인석 카드 그리드
-    const cards = SEALSTONE_STONES.map((stone, si) => _renderSealstoneCard(ti, si, stone, t)).join('');
+    // 봉인석 카드 그리드 — 타입 잠금 여부를 카드 렌더링에 전달
+    const cards = SEALSTONE_STONES.map((stone, si) => _renderSealstoneCard(ti, si, stone, t, typeUnlocked)).join('');
 
     body.innerHTML =
         `<div class="mm-fixed-header">${headerHtml}</div>` +
-        `<div class="mm-scroll-area"><div class="seal-grid">${cards}</div></div>`;
+        `<div class="mm-scroll-area"><div class="seal-grid${typeUnlocked ? '' : ' type-locked-preview'}">${cards}</div></div>`;
 }
 
 // 🔓 봉인석 해방 패널 — 카드 하단에 삽입 (활성 시 해방 버튼 노출, MAX 도달 시 돌파 버튼)
-function _renderSealstoneLiberationPanel(ti, si) {
+//   typeUnlocked=false면 해방·돌파 버튼 모두 비활성화 (미리보기 모드)
+function _renderSealstoneLiberationPanel(ti, si, typeUnlocked) {
+    if (typeof typeUnlocked === 'undefined') typeUnlocked = isSealstoneTypeUnlocked(ti);
     const st = SEALSTONE_STATE.stones[_sealstoneId(ti, si)];
     if (!st) return ''; // 미공명 시 패널 미표시
     const active = isSealstoneLiberationActive(ti, si);
@@ -21973,7 +22200,9 @@ function _renderSealstoneLiberationPanel(ti, si) {
     const canBreak = breakIdx >= 0;
     const breakCost = canBreak ? _sealstoneLibBreakthroughCost(ti, breakIdx) : 0;
     const fragments = (typeof getScrollCount === 'function') ? getScrollCount('light_fragment') : 0;
-    const canAffordBreak = canBreak && fragments >= breakCost;
+    const canAffordBreak = canBreak && fragments >= breakCost && typeUnlocked;
+    const libBtnDisabled = !typeUnlocked || !active || lib.level >= maxLv;
+    const libBtnTitle = !typeUnlocked ? '타입 잠금 — 미리보기 모드입니다' : null;
 
     return `<div class="seal-lib-panel ${active ? 'active' : 'inactive'}">
         <div class="seal-lib-head">
@@ -21987,14 +22216,16 @@ function _renderSealstoneLiberationPanel(ti, si) {
         </div>
         ${lib.level < maxLv ? `<div class="seal-lib-bar"><div class="seal-lib-bar-fill" style="width:${expPct.toFixed(1)}%;"></div></div>` : ''}
         <div class="seal-lib-btn-row">
-            <button class="seal-lib-btn norm" onclick="onSealstoneLiberationOpen(${ti}, ${si}, false)" ${(!active || lib.level >= maxLv) ? 'disabled' : ''} title="${!active ? '동일 등급 옵션 2개 이상 필요' : (lib.level >= maxLv ? '돌파 후 해방 가능' : '일반 해방 — 골드만 소비')}">🪙 일반 해방</button>
-            <button class="seal-lib-btn prem" onclick="onSealstoneLiberationOpen(${ti}, ${si}, true)" ${(!active || lib.level >= maxLv) ? 'disabled' : ''} title="${!active ? '동일 등급 옵션 2개 이상 필요' : (lib.level >= maxLv ? '돌파 후 해방 가능' : '상급 해방 — 골드 + 빛의 파동석')}">💎 상급 해방</button>
-            ${canBreak ? `<button class="seal-lib-btn brk" onclick="onSealstoneBreakthrough(${ti}, ${si})" ${!canAffordBreak ? 'disabled' : ''} title="MAX ${maxLv} → ${SEALSTONE_LIB_BREAKTHROUGH_LEVELS_AFTER[breakIdx]}로 확장 — 빛의 파동석 ${breakCost.toLocaleString()}개">🚀 돌파 (${breakCost.toLocaleString()})</button>` : ''}
+            <button class="seal-lib-btn norm" onclick="onSealstoneLiberationOpen(${ti}, ${si}, false)" ${libBtnDisabled ? 'disabled' : ''} title="${libBtnTitle || (!active ? '동일 등급 옵션 2개 이상 필요' : (lib.level >= maxLv ? '돌파 후 해방 가능' : '일반 해방 — 골드만 소비'))}">🪙 일반 해방</button>
+            <button class="seal-lib-btn prem" onclick="onSealstoneLiberationOpen(${ti}, ${si}, true)" ${libBtnDisabled ? 'disabled' : ''} title="${libBtnTitle || (!active ? '동일 등급 옵션 2개 이상 필요' : (lib.level >= maxLv ? '돌파 후 해방 가능' : '상급 해방 — 골드 + 빛의 파동석'))}">💎 상급 해방</button>
+            ${canBreak ? `<button class="seal-lib-btn brk" onclick="onSealstoneBreakthrough(${ti}, ${si})" ${(!canAffordBreak) ? 'disabled' : ''} title="${libBtnTitle || `MAX ${maxLv} → ${SEALSTONE_LIB_BREAKTHROUGH_LEVELS_AFTER[breakIdx]}로 확장 — 빛의 파동석 ${breakCost.toLocaleString()}개`}">🚀 돌파 (${breakCost.toLocaleString()})</button>` : ''}
         </div>
     </div>`;
 }
 
-function _renderSealstoneCard(ti, si, stone, t) {
+function _renderSealstoneCard(ti, si, stone, t, typeUnlocked) {
+    // typeUnlocked 미지정 시 실제 타입 잠금 상태로 자동 폴백 (구버전 호출 호환)
+    if (typeof typeUnlocked === 'undefined') typeUnlocked = isSealstoneTypeUnlocked(ti);
     const reqSoul = _sealstoneSoulRequired(ti, si);
     const curSoul = (character && character.soulLevel) || 1;
     const unlocked = curSoul >= reqSoul;
@@ -22023,7 +22254,7 @@ function _renderSealstoneCard(ti, si, stone, t) {
         </div>`;
     }
 
-    // 옵션 슬롯 (3개)
+    // 옵션 슬롯 (3개) — 타입 잠금 시 잠금 토글도 비활성화
     let optsHtml = '';
     if (st.options.length === 0) {
         optsHtml = `<div class="seal-options empty">─ 미공명 (공명 실행 시 3개 옵션 추첨)</div>`;
@@ -22032,11 +22263,16 @@ function _renderSealstoneCard(ti, si, stone, t) {
         const slotHtml = st.options.map((o, oi) => {
             const g = SEALSTONE_GRADES[o.grade];
             const v = vals[o.grade];
-            const lockBtnDisabled = st.sublimated || (!o.locked && lockedCnt >= SEALSTONE_MAX_LOCK);
+            const lockBtnDisabled = !typeUnlocked || st.sublimated || (!o.locked && lockedCnt >= SEALSTONE_MAX_LOCK);
+            const lockTitle = !typeUnlocked
+                ? '타입 잠금 — 사용 불가'
+                : (st.sublimated ? '승화 완료 — 잠금 불필요'
+                    : (o.locked ? '잠금 해제'
+                        : (lockedCnt >= SEALSTONE_MAX_LOCK ? '잠금 한도(2개) 도달' : '잠금 — 다음 공명 시 유지')));
             return `<div class="seal-opt ${o.locked ? 'locked' : ''}" style="--grade-color:${g.color};border-color:${g.color}99;">
                 <span class="seal-opt-grade" style="color:${g.color};">${g.label}</span>
                 <span class="seal-opt-value">${fmtVal(v)}</span>
-                <button class="seal-opt-lock" onclick="onSealstoneToggleLock(${ti}, ${si}, ${oi})" ${lockBtnDisabled ? 'disabled' : ''} title="${st.sublimated ? '승화 완료 — 잠금 불필요' : (o.locked ? '잠금 해제' : (lockedCnt >= SEALSTONE_MAX_LOCK ? '잠금 한도(2개) 도달' : '잠금 — 다음 공명 시 유지'))}">
+                <button class="seal-opt-lock" onclick="onSealstoneToggleLock(${ti}, ${si}, ${oi})" ${lockBtnDisabled ? 'disabled' : ''} title="${lockTitle}">
                     ${o.locked ? '🔒' : '🔓'}
                 </button>
             </div>`;
@@ -22060,13 +22296,14 @@ function _renderSealstoneCard(ti, si, stone, t) {
         </div>`;
     }
 
-    // 공명 버튼 + 연속 공명 버튼
-    const canResonance = !st.sublimated && canAfford;
+    // 공명 버튼 + 연속 공명 버튼 — 타입 잠금 시 모두 disabled
+    const canResonance = !st.sublimated && canAfford && typeUnlocked;
     const lockedCnt = (st.options || []).filter(o => o.locked).length;
     const lockBoost = lockedCnt > 0 ? ` <span style="color:#ff7b72;">×${_sealstoneLockCostMult(lockedCnt).toFixed(0)}</span>` : '';
     const btnLabel = st.sublimated ? '✨ 승화 완료' : `🔄 공명 (${effectiveCost.toLocaleString()}개)${lockBoost}`;
-    const btnClass = st.sublimated ? 'sublimated' : (canAfford ? '' : 'no-afford');
-    const btnDisabled = st.sublimated || !canAfford;
+    const btnClass = st.sublimated ? 'sublimated' : (typeUnlocked ? (canAfford ? '' : 'no-afford') : 'type-locked');
+    const btnDisabled = st.sublimated || !canAfford || !typeUnlocked;
+    const btnTitle = !typeUnlocked ? '타입 잠금 — 미리보기 모드입니다' : '';
     // 연속 공명: 다른 카드 진행 중이면 disabled, 이 카드 진행 중이면 중단 버튼만
     const autoBusyElsewhere = _autoResonanceState.active && !isAutoTarget;
     let autoBtnHtml = '';
@@ -22074,11 +22311,12 @@ function _renderSealstoneCard(ti, si, stone, t) {
         if (isAutoTarget) {
             autoBtnHtml = `<button class="seal-resonance-btn auto-stop" onclick="onSealstoneAutoStop()">⏹ 연속 공명 중단 (${_autoResonanceState.iters}/${_autoResonanceState.maxIters})</button>`;
         } else {
-            autoBtnHtml = `<button class="seal-resonance-btn auto" onclick="onSealstoneAutoStart(${ti}, ${si})" ${(btnDisabled || autoBusyElsewhere) ? 'disabled' : ''} title="${autoBusyElsewhere ? '다른 봉인석 연속 공명 진행 중 — 잠시 대기' : '헤더의 연속 공명 조건으로 자동 반복'}">⏩ 연속 공명</button>`;
+            const autoTitle = !typeUnlocked ? '타입 잠금 — 미리보기 모드입니다' : (autoBusyElsewhere ? '다른 봉인석 연속 공명 진행 중 — 잠시 대기' : '헤더의 연속 공명 조건으로 자동 반복');
+            autoBtnHtml = `<button class="seal-resonance-btn auto" onclick="onSealstoneAutoStart(${ti}, ${si})" ${(btnDisabled || autoBusyElsewhere) ? 'disabled' : ''} title="${autoTitle}">⏩ 연속 공명</button>`;
         }
     }
 
-    return `<div class="seal-card ${st.sublimated ? 'sublimated-card' : ''}${isAutoTarget ? ' auto-target' : ''}" style="border-color:${t.color}55;">
+    return `<div class="seal-card ${st.sublimated ? 'sublimated-card' : ''}${isAutoTarget ? ' auto-target' : ''}${typeUnlocked ? '' : ' type-locked-card'}" style="border-color:${t.color}55;">
         <div class="seal-card-head">
             <span class="seal-card-icon">${stone.icon}</span>
             <div class="seal-card-info">
@@ -22091,17 +22329,19 @@ function _renderSealstoneCard(ti, si, stone, t) {
         <div class="seal-card-stat">공명 능력치: <b>${statLbl}</b></div>
         ${optsHtml}
         ${sublimHtml}
-        ${isAutoTarget ? '' : `<button class="seal-resonance-btn ${btnClass}" ${btnDisabled ? 'disabled' : ''} onclick="onSealstoneResonance(${ti}, ${si})">${btnLabel}</button>`}
+        ${isAutoTarget ? '' : `<button class="seal-resonance-btn ${btnClass}" ${btnDisabled ? 'disabled' : ''} onclick="onSealstoneResonance(${ti}, ${si})" title="${btnTitle}">${btnLabel}</button>`}
         ${autoBtnHtml}
-        ${!st.sublimated && !canAfford && !isAutoTarget ? `<div class="seal-cost-warn">⚠ 빛의 파동석 ${(effectiveCost - fragments).toLocaleString()}개 부족${lockedCnt > 0 ? ` (잠금 ${lockedCnt}개 ×${_sealstoneLockCostMult(lockedCnt).toFixed(0)} 가중)` : ''}</div>` : ''}
-        ${_renderSealstoneLiberationPanel(ti, si)}
+        ${!st.sublimated && !canAfford && !isAutoTarget && typeUnlocked ? `<div class="seal-cost-warn">⚠ 빛의 파동석 ${(effectiveCost - fragments).toLocaleString()}개 부족${lockedCnt > 0 ? ` (잠금 ${lockedCnt}개 ×${_sealstoneLockCostMult(lockedCnt).toFixed(0)} 가중)` : ''}</div>` : ''}
+        ${_renderSealstoneLiberationPanel(ti, si, typeUnlocked)}
     </div>`;
 }
 
 // 핸들러
 function onSealstoneResonance(ti, si) {
     const r = tryResonance(ti, si);
-    if (r.error === 'nofragment') {
+    if (r.error === 'locked') {
+        if (typeof addLog === 'function') addLog(`🔒 ${SEALSTONE_TYPES[ti].label} — 미리보기 모드 (캐릭터 레벨 ${SEALSTONE_TYPES[ti].openLv} 필요)`, 'info');
+    } else if (r.error === 'nofragment') {
         if (typeof addLog === 'function') addLog(`⚠ 빛의 파동석 부족 (필요 ${r.need.toLocaleString()}개)`, 'info');
     } else if (r.success) {
         const stoneLbl = SEALSTONE_STONES[si].label;
@@ -22136,6 +22376,10 @@ function onSealstoneAutoSettingChange(field, value) {
 let _pendingAutoStartTarget = null; // { ti, si }
 function onSealstoneAutoStart(ti, si) {
     if (_autoResonanceState.active) return; // 이미 진행중이면 무시
+    if (!isSealstoneTypeUnlocked(ti)) { // 미리보기 모드 — 연속 공명 불가
+        if (typeof addLog === 'function') addLog(`🔒 ${SEALSTONE_TYPES[ti].label} — 미리보기 모드 (캐릭터 레벨 ${SEALSTONE_TYPES[ti].openLv} 필요)`, 'info');
+        return;
+    }
     const st = getSealstoneStoneState(ti, si);
     if (st.sublimated) return;
     _pendingAutoStartTarget = { ti, si };
@@ -22626,9 +22870,17 @@ function _renderSanctuaryMainTab() {
         </div>`;
     }
 
+    // 🏛 계승 능력치 총합 — 보유 모든 레거시의 옵션 누적
+    const sanctuaryBonusMap = (typeof getSanctuaryBonuses === 'function') ? getSanctuaryBonuses() : {};
+    const sanctuaryBonusPanel = `<div class="mc-total-section">
+        <div class="mc-total-section-title">🏛 계승으로 획득한 능력치 총합</div>
+        ${renderBonusBreakdownHTML(sanctuaryBonusMap, '✨ 보유 레거시 합산', '#a78bfa')}
+    </div>`;
+
     body.innerHTML = `<div class="mm-fixed-header">${headerHtml}</div>` +
         `<div class="mm-scroll-area">
             ${typesPanel}
+            ${sanctuaryBonusPanel}
             <div class="sct-grid">${cardsHtml}</div>
         </div>`;
 }
@@ -22994,9 +23246,23 @@ function _renderSealstoneInfoTab() {
         </ol>
     </div>`;
 
+    // 💎 획득 능력치 총합 — 공명·승화·해방 세부 분류 + 통합 합산
+    const sealParts = (typeof getSealstoneBonusesByPart === 'function') ? getSealstoneBonusesByPart() : { resonance:{}, sublimation:{}, liberation:{} };
+    const totalMap = {};
+    for (const part of [sealParts.resonance, sealParts.sublimation, sealParts.liberation]) {
+        for (const [k, v] of Object.entries(part)) totalMap[k] = (totalMap[k] || 0) + v;
+    }
+    const bonusBreakdown = `<div class="mc-total-section">
+        <div class="mc-total-section-title">💎 획득 능력치 총합 — 공명 + 승화 + 해방</div>
+        ${renderBonusBreakdownHTML(totalMap,         '🔢 통합 합산',     '#ffd86b')}
+        ${renderBonusBreakdownHTML(sealParts.resonance,  '🌀 공명 능력치',  '#56c774')}
+        ${renderBonusBreakdownHTML(sealParts.sublimation,'✨ 승화 능력치',  '#b060ee')}
+        ${renderBonusBreakdownHTML(sealParts.liberation, '🌟 해방 능력치',  '#5b9bf3')}
+    </div>`;
+
     body.innerHTML =
         `<div class="mm-fixed-header">${headerHtml}</div>` +
-        `<div class="mm-scroll-area">${rulesHtml}${probsTable}${typeTable}${stoneTable}${sublimTable}</div>`;
+        `<div class="mm-scroll-area">${bonusBreakdown}${rulesHtml}${probsTable}${typeTable}${stoneTable}${sublimTable}</div>`;
 }
 
 // ════════════════════════════════════════════════════════════════════════════
